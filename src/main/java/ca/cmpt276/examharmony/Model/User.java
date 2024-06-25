@@ -1,8 +1,9 @@
 package ca.cmpt276.examharmony.Model;
-
-
+import java.util.HashSet;
+import java.util.Set;
 import jakarta.persistence.*;
 
+//User of the website
 @Entity
 @Table(name="User")
 public class User {
@@ -12,18 +13,28 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
     private String password;
-    private boolean isAdmin;
-    private boolean isInstructor;
-    private boolean isInvigilator;
     private String emailAddress;
 
-    public User createUser(String name, String password, boolean isAdmin, boolean isInstructor, boolean isInvigilator, String emailAddress){
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "userID"),
+            inverseJoinColumns = @JoinColumn(name = "roleID"))
+    private Set<Role> roles = new HashSet<>();
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public static User createUser(String name, String password, String emailAddress){
         User newUser = new User();
         newUser.username = name;
         newUser.password = password;
-        newUser.isAdmin = isAdmin;
-        newUser.isInstructor = isInstructor;
-        newUser.isInvigilator = isInvigilator;
+
         newUser.emailAddress= emailAddress;
         return newUser;
     }
@@ -40,17 +51,7 @@ public class User {
         this.username = name;
     }
 
-    public void setInvigilator(boolean invigilator) {
-        isInvigilator = invigilator;
-    }
 
-    public void setInstructor(boolean instructor) {
-        isInstructor = instructor;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
@@ -64,15 +65,4 @@ public class User {
         return username;
     }
 
-    public boolean isInvigilator() {
-        return isInvigilator;
-    }
-
-    public boolean isInstructor() {
-        return isInstructor;
-    }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
 }

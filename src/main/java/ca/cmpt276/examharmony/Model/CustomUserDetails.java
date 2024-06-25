@@ -2,21 +2,32 @@ package ca.cmpt276.examharmony.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
+//Used to collect details about a user on the website
 public class CustomUserDetails implements UserDetails {
 
     private User currentUser;
+
+    public CustomUserDetails(User selectedUser) {
+        this.currentUser = selectedUser;
+    }
 
     public void setUser(User user){
         this.currentUser = user;
     }
 
+    //Return a list of authorizations a user has
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return currentUser.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority("Role_"+role.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
