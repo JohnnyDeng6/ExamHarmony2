@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 //User of the website
 @Entity
-@Table(name="User")
+@Table(name="users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,8 +50,6 @@ public class User {
     public void setName(String name) {
         this.username = name;
     }
-
-
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
