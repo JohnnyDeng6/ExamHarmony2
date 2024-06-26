@@ -1,10 +1,8 @@
 package ca.cmpt276.examharmony;
 
 import ca.cmpt276.examharmony.Model.CustomUserDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,7 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/invigilator/**").hasRole("INVIGILATOR")
                         .anyRequest().authenticated()   //All other users must log in
                 )
-                .formLogin(withDefaults())  //TODO: Implement custom login page
+                .formLogin(form->form.loginPage("/login").permitAll())
                 .httpBasic(withDefaults());
         return http.build();
     }
