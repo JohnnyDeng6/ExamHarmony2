@@ -13,19 +13,24 @@
 
         <div class="outer-container">
 
-            <h2> Please Log in </h2>
 
             <div class="login-container">
+
+                <h2> Please Log in </h2>
 
                 <form th:action="@{/login}" method="post">
 
                     <div>
-                        <input type="text" name="username" placeholder="Username" required/>
+                        <label>
+                            <input class="text-input" type="text" name="username" placeholder="Username" required/>
+                        </label>
                     </div>
                     <div>
-                        <input type="password" name="password" placeholder="Password" required/>
+                        <label>
+                            <input class="text-input" type="password" name="password" placeholder="Password" required/>
+                        </label>
                     </div>
-                    <input type="submit" value="Log in" />
+                    <input class="sign-in-button" type="submit" value="Log in" />
 
                 </form>
 
@@ -35,8 +40,9 @@
                     You have been logged out.</div>
 
                 <div>
-                    <button> Sign Up</button>
+                    <button class="sign-up-button"> Sign Up </button>
                 </div>
+
             </div>
 
         </div>
@@ -59,13 +65,13 @@
         background-color: lightblue;
         display: flex;
         flex-direction: column;
-        font-family: "DejaVu Sans Mono, monospace";
+        font-family: DejaVu, Sans Mono, monospace,sans-serif;
     }
 
     h1{
         text-align: center;
         font-weight: bold;
-        font-size: 45px;
+        font-size: 75px;
     }
 
     .outer-container{
@@ -78,6 +84,16 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+
     }
 
+    .text-input{
+        width: 400px;
+        height: 50px;
+    }
+
+    .sign-in-button, .sign-up-button{
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
 </style>
