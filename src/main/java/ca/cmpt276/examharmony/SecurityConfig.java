@@ -1,6 +1,8 @@
 package ca.cmpt276.examharmony;
 
 import ca.cmpt276.examharmony.Model.CustomUserDetailService;
+import ca.cmpt276.examharmony.Model.LoginSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +20,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private LoginSuccessHandler successHandler;
 
     @Bean
     public CustomUserDetailService userDetailsService() {
@@ -52,7 +57,8 @@ public class SecurityConfig {
                         .requestMatchers("/invigilator/**").hasRole("INVIGILATOR")
                         .anyRequest().authenticated()   //All other users must log in
                 )
-                .formLogin(form->form.loginPage("/login").permitAll())
+                .formLogin(form->form.loginPage("/login")
+                        .successHandler(successHandler).permitAll())
                 .httpBasic(withDefaults());
         return http.build();
     }

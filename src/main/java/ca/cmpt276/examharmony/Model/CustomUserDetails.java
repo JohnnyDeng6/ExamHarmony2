@@ -30,6 +30,10 @@ public class CustomUserDetails implements UserDetails {
                 .collect(Collectors.toList());
     }
 
+    public boolean hasRole(String roleName) {
+        return this.currentUser.hasRole(roleName);
+    }
+
     @Override
     public String getPassword() {
         return currentUser.getPassword();

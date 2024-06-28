@@ -1,5 +1,6 @@
 package ca.cmpt276.examharmony.Model;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import jakarta.persistence.*;
 
@@ -61,6 +62,18 @@ public class User {
 
     public String getName() {
         return username;
+    }
+
+    public boolean hasRole(String roleName) {
+        Iterator<Role> iterator = this.roles.iterator();
+        while (iterator.hasNext()) {
+            Role role = iterator.next();
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
