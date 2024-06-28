@@ -26,6 +26,8 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
             redirectURL = "/instructor/home";
         } else if (userDetails.hasRole("INVIGILATOR")){
             redirectURL = "/invigilator/home";
+        } else {
+            redirectURL = "/test";  //For testing purposes
         }
 
         response.sendRedirect(redirectURL);
