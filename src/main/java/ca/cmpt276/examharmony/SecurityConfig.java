@@ -50,6 +50,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests( //Configure authorizations and permissions for users
                         authorize -> authorize
                         .requestMatchers("/admin/**").hasRole("ADMIN")  //Users with role ADMIN can only access "/admin/.." urls
