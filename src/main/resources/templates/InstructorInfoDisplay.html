@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Submitted Preferences</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #add8e6;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        header {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .table {
+            margin-bottom: 30px;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .btn-back {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <header class="text-center mb-4">
+            <h1>Submitted Preferences</h1>
+        </header>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Exam Code:</th><th>Exam Duration:</th><th>Preference 1:</th> <th>Preference 2:</th><th>Preference 3:</th><th>Status:</th>
+                </tr>
+                <tr>
+                    <td th:text="${instructor.code}"></td><td th:text="${instructor.duration}"></td><td th:text="${instructor.p1}"></td><td th:text="${instructor.p2}"></td><td th:text="${instructor.p3}"></td><td>Pending</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center mt-4">
+            <a href="/instructor/home" class="btn btn-primary">Back to Form</a>
+        </div>
+    </div>
+</body>
+</html>
