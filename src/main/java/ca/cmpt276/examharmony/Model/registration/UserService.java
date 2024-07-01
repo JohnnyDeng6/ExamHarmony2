@@ -28,7 +28,6 @@ public class UserService {
     private RoleRepository roleRepository;
 
     public void registerNewUser(UserRegistrationDto registrationDto) {
-        System.out.println("Creating User");
         if (emailExists(registrationDto.getEmail())) {
             throw new UserAlreadyExistException("There is an account with that email address: " + registrationDto.getEmail());
         } else if (usernameExists(registrationDto.getName())) {
@@ -43,14 +42,12 @@ public class UserService {
 
         Set<Role> roles = new HashSet<>();
         for (String roleName : registrationDto.getRoles()) {
-            System.out.println(roleName);
             Role role = roleRepository.findByName(roleName);
             if (role != null) {
                 roles.add(role);
             }
         }
         user.setRoles(roles);
-
         userRepository.save(user);
     }
 
