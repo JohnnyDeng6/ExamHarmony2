@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -49,6 +51,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.COOKIES));
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests( //Configure authorizations and permissions for users
@@ -60,6 +63,10 @@ public class SecurityConfig {
                 )
                 .formLogin(form->form.loginPage("/login")
                         .successHandler(successHandler).permitAll())
+                .logout((logout) -> logout
+                        .addLogoutHandler(clearSiteData)
+                        .logoutSuccessUrl("/login")
+                        .permitAll())
                 .httpBasic(withDefaults());
         return http.build();
     }
