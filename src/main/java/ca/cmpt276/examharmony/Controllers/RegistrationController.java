@@ -38,9 +38,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
                 userService.registerNewUser(registrationDto);
             } catch (UserAlreadyExistException uaeEx) {
                 redirectAttributes.addFlashAttribute("alertMessage", "Account already exists, please choose another email or username");
-                return "redirect:/admin/registration";
+                return "redirect:/admin/register";
             }
             return "redirect:/admin/home";
+
         }
 
         @PostMapping("/change-password")

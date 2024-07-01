@@ -28,6 +28,7 @@ public class UserService {
     private RoleRepository roleRepository;
 
     public void registerNewUser(UserRegistrationDto registrationDto) {
+        System.out.println("Creating User");
         if (emailExists(registrationDto.getEmail())) {
             throw new UserAlreadyExistException("There is an account with that email address: " + registrationDto.getEmail());
         } else if (usernameExists(registrationDto.getName())) {
