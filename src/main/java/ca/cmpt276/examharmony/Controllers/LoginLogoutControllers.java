@@ -38,11 +38,15 @@ public class LoginLogoutControllers {
         return "adminTestPage";
     }
 
-    @GetMapping("/instructor/home")
-    public String instructorTest(){
-        return "instructorTestPage";
+    // @GetMapping("/instructor/home")
+    // public String instructorTest(){
+    //     return "instructorTestPage";
+    // }
+     
+    @GetMapping("/invigilator/home")
+    public String invigilatorTest(){
+        return "invigilatorTestPage";
     }
-
     //For testing purposes
     @GetMapping("/test")
     public String test(){
