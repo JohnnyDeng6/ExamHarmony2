@@ -34,12 +34,21 @@ public class LoginLogoutControllers {
     //     return "instructorTestPage";
     // }
      
+<<<<<<< Updated upstream
     // @GetMapping("/invigilator/home")
     // public String invigilatorTest(){
     //     return "invigilatorTestPage";
     // }
    // For testing purposes
     @GetMapping("/test")    
+=======
+    @GetMapping("/invigilator/home")
+    public String invigilatorTest(){
+        return "invigilatorTestPage";
+    }
+    //For testing purposes
+    @GetMapping("/test")
+>>>>>>> Stashed changes
     public String test(){
         /*
         User newUser = new User();
