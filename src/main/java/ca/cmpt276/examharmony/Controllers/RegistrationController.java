@@ -57,7 +57,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
         }
 
         private String buildWelcomeEmailBody(UserRegistrationDto registrationDto) {
-            String link = "http://localhost:8080/reset-password?userId=" + registrationDto.getID();
+            String link = "https://examharmony.onrender.com/reset-password?userId=" + registrationDto.getID();
             return "<p>Dear " + registrationDto.getName() + ",</p>"
                     + "<p>Welcome to ExamHarmony! We are thrilled to have you on board.</p>"
                     + "<p>To get started, please set your password by clicking the link below:</p>"
