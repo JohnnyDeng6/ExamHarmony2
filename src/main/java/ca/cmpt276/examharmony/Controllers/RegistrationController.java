@@ -1,6 +1,7 @@
 package ca.cmpt276.examharmony.Controllers;
 
 import ca.cmpt276.examharmony.Model.User;
+import ca.cmpt276.examharmony.Model.emailSender.EmailService;
 import ca.cmpt276.examharmony.Model.registration.UserRegistrationDto;
 import ca.cmpt276.examharmony.Model.registration.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -25,6 +26,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
         @Autowired
         private UserService userService;
 
+        @Autowired
+        private EmailService emailService;
+
         @GetMapping("/admin/register")
         public String showRegistrationForm(Model model) {
             model.addAttribute("user", new UserRegistrationDto());
@@ -33,16 +37,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
         @PostMapping("/admin/registration")
         public String registerUserAccount(@ModelAttribute("user") UserRegistrationDto registrationDto, RedirectAttributes redirectAttributes, HttpSession session, Errors errors) {
-
             try {
                 userService.registerNewUser(registrationDto);
                 redirectAttributes.addFlashAttribute("alertMessage", "New user registered successfully. Return home");
+
+
+                String toEmail = registrationDto.getEmail();
+                String subject = "Registration Confirmation";
+                String body = "Dear " + registrationDto.getName() + ",\n\nThank you for registering.\n\nBest regards,\nYour Company";
+                emailService.sendSimpleEmail(toEmail, subject, body);
+
             } catch (UserAlreadyExistException uaeEx) {
                 redirectAttributes.addFlashAttribute("alertMessage", "Account already exists, please choose another email or username");
                 return "redirect:/admin/register";
             }
             return "redirect:/admin/home";
-
         }
 
         @PostMapping("/change-password")
