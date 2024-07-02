@@ -52,6 +52,18 @@ public class UserService {
         user.setRoles(roles);
 
         userRepository.save(user);
+        registrationDto.setID(user.getID());
+    }
+    public User findById(int userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
+    public void updatePassword(int userId, String newPassword) {
+        User user = findById(userId);
+        if (user != null) {
+            user.setPassword(passwordEncoder.encode(newPassword)); // Remember to hash the password
+            userRepository.save(user);
+        }
     }
 
     private boolean emailExists(String email) {

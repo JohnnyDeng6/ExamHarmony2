@@ -8,6 +8,7 @@ public class UserRegistrationDto {
     private String name;
     private String email;
     private String password;
+    private int id;
     private Set<String> role;
 
 
@@ -22,6 +23,14 @@ public class UserRegistrationDto {
     }
 
     // Getters and Setters
+
+    public void setID(int id) {
+        this.id = id;
+    }
+    public int getID() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
