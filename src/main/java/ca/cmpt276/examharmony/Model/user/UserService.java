@@ -1,19 +1,16 @@
-package ca.cmpt276.examharmony.Model.registration;
+package ca.cmpt276.examharmony.Model.user;
 
 import ca.cmpt276.examharmony.Controllers.UserAlreadyExistException;
 import ca.cmpt276.examharmony.Model.Role;
 import ca.cmpt276.examharmony.Model.RoleRepository;
-import ca.cmpt276.examharmony.Model.User;
-import ca.cmpt276.examharmony.Model.UserRepository;
+import ca.cmpt276.examharmony.Model.registration.UserRegistrationDto;
 import ca.cmpt276.examharmony.utils.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {

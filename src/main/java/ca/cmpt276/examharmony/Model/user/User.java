@@ -1,7 +1,9 @@
-package ca.cmpt276.examharmony.Model;
+package ca.cmpt276.examharmony.Model.user;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import ca.cmpt276.examharmony.Model.Role;
 import jakarta.persistence.*;
 
 //User of the website

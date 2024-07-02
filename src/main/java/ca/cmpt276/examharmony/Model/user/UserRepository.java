@@ -1,4 +1,4 @@
-package ca.cmpt276.examharmony.Model;
+package ca.cmpt276.examharmony.Model.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

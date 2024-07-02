@@ -1,5 +1,7 @@
 package ca.cmpt276.examharmony.Model;
 
+import ca.cmpt276.examharmony.Model.user.User;
+import ca.cmpt276.examharmony.Model.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
