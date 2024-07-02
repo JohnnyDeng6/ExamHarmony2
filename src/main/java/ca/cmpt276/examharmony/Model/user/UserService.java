@@ -1,10 +1,9 @@
-package ca.cmpt276.examharmony.Model.registration;
+package ca.cmpt276.examharmony.Model.user;
 
 import ca.cmpt276.examharmony.Controllers.UserAlreadyExistException;
 import ca.cmpt276.examharmony.Model.Role;
 import ca.cmpt276.examharmony.Model.RoleRepository;
-import ca.cmpt276.examharmony.Model.User;
-import ca.cmpt276.examharmony.Model.UserRepository;
+import ca.cmpt276.examharmony.Model.registration.UserRegistrationDto;
 import ca.cmpt276.examharmony.utils.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,10 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Objects;
+
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -53,6 +51,18 @@ public class UserService {
         }
         user.setRoles(roles);
         userRepository.save(user);
+        registrationDto.setID(user.getID());
+    }
+    public User findById(int userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
+    public void updatePassword(int userId, String newPassword) {
+        User user = findById(userId);
+        if (user != null) {
+            user.setPassword(passwordEncoder.encode(newPassword)); // Remember to hash the password
+            userRepository.save(user);
+        }
     }
 
     private boolean emailExists(String email) {

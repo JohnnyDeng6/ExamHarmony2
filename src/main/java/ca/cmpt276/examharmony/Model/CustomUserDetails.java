@@ -1,6 +1,6 @@
 package ca.cmpt276.examharmony.Model;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import ca.cmpt276.examharmony.Model.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

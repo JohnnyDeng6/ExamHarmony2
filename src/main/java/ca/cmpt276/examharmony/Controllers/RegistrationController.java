@@ -1,9 +1,8 @@
 package ca.cmpt276.examharmony.Controllers;
 
-import ca.cmpt276.examharmony.Model.User;
 import ca.cmpt276.examharmony.Model.emailSender.EmailService;
 import ca.cmpt276.examharmony.Model.registration.UserRegistrationDto;
-import ca.cmpt276.examharmony.Model.registration.UserService;
+import ca.cmpt276.examharmony.Model.user.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,7 +43,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
                 String toEmail = registrationDto.getEmail();
                 String subject = "Registration Confirmation";
-                String body = "Dear " + registrationDto.getName() + ",\n\nThank you for registering.\n\nBest regards,\nYour Company";
+                String link = "localhost:8080/reset-password?userId=" + registrationDto.getID();
+                String body = "Dear " + registrationDto.getName() + ",\n\nAn ExamHarmony account has been created for you . \n\nYour account username is :" + registrationDto.getName() + "\n\nClick this link to activate your account: " + link + "\n\nBest regards,\nYour Company";
                 emailService.sendSimpleEmail(toEmail, subject, body);
 
             } catch (UserAlreadyExistException uaeEx) {
