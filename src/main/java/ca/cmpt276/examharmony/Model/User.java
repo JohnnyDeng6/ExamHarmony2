@@ -40,6 +40,10 @@ public class User {
         return newUser;
     }
 
+    public int getID() {
+        return ID;
+    }
+
     public String getEmailAddress() {
         return emailAddress;
     }

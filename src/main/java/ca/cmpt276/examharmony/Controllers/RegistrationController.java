@@ -44,7 +44,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
                 String toEmail = registrationDto.getEmail();
                 String subject = "Registration Confirmation";
-                String body = "Dear " + registrationDto.getName() + ",\n\nThank you for registering.\n\nBest regards,\nYour Company";
+                String link = "localhost:8080/reset-password?userId=" + registrationDto.getID();
+                String body = "Dear " + registrationDto.getName() + ",\n\nAn ExamHarmony account has been created for you . \n\nYour account username is :" + registrationDto.getName() + "\n\nClick this link to activate your account: " + link + "\n\nBest regards,\nYour Company";
                 emailService.sendSimpleEmail(toEmail, subject, body);
 
             } catch (UserAlreadyExistException uaeEx) {
