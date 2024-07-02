@@ -32,7 +32,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
         @GetMapping("/admin/register")
         public String showRegistrationForm(Model model) {
             model.addAttribute("user", new UserRegistrationDto());
-            return "/registrationPage";
+            return "registrationPage";
         }
 
         @PostMapping("/admin/registration")
