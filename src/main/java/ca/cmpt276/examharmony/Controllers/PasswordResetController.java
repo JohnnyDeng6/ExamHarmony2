@@ -28,11 +28,23 @@ public class PasswordResetController {
 
     @PostMapping("/reset-password")
     public String handleResetPassword(@RequestParam("userId") int userId,
-                                      @RequestParam("password") String newPassword, Model model) {
+                                      @RequestParam("password") String newPassword,
+                                      @RequestParam("confirmPassword") String confirmPassword,
+                                      Model model) {
         User user = userService.findById(userId);
         if (user == null) {
             model.addAttribute("error", "Invalid user ID.");
             return "reset-password-error";
+        }
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "Passwords do not match.");
+            model.addAttribute("userId", userId);
+            return "reset-password-form";
+        }
+        if (!newPassword.matches("^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\\d@$!%*?&]{8,}$")) {
+            model.addAttribute("error", "Password must be at least 8 characters long and include a number and a symbol.");
+            model.addAttribute("userId", userId);
+            return "reset-password-form";
         }
         userService.updatePassword(userId, newPassword);
         return "redirect:/login";
