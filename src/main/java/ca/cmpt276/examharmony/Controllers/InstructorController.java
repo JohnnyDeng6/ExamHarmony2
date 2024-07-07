@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ca.cmpt276.examharmony.Model.Instructor;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -47,7 +48,7 @@ public class InstructorController {
     }
 
     @GetMapping("/instructor/examslots/{courseName}")
-    public String InstructorRequests(Model model, @RequestParam("courseName") String courseName) {
+    public String InstructorRequests(Model model, @PathVariable("courseName") String courseName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             User instructor = userRepo.findByUsername(userDetails.getUsername());
