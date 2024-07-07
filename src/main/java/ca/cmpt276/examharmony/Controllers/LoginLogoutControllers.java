@@ -29,12 +29,5 @@ public class LoginLogoutControllers {
         return "adminTestPage";
     }
 
-    //For testing purposes
-    @GetMapping("/test")
-    public String test(){
-        return "testPage";
-    }
-
-
 }
 

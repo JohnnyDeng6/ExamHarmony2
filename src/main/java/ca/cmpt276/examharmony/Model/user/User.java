@@ -3,7 +3,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.Role;
+import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
 import jakarta.persistence.*;
 
 //User of the website
@@ -25,8 +27,42 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "roleID"))
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "instructor_courses",
+            joinColumns = @JoinColumn(name = "userID"),
+            inverseJoinColumns = @JoinColumn(name = "courseID"))
+    private Set<CoursesSec> instructorCourses = new HashSet<>();
+
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "instructor_exam_requests",
+            joinColumns = @JoinColumn(name = "userID"),
+            inverseJoinColumns = @JoinColumn(name = "exam_requestID"))
+    private Set<ExamRequest> examSlotRequests = new HashSet<>();
+
+    public Set<ExamRequest> getExamSlotRequests() {
+        return examSlotRequests;
+    }
+
+    public void setExamSlotRequests(Set<ExamRequest> examSlotRequests) {
+        this.examSlotRequests = examSlotRequests;
+    }
+
+    public Set<CoursesSec> getInstructorCourses() {
+        return instructorCourses;
+    }
+
+    public void addCourse(CoursesSec course){
+        instructorCourses.add(course);
+    }
+
+    public void setInstructorCourses(Set<CoursesSec> instructorCourses) {
+        this.instructorCourses = instructorCourses;
     }
 
     public void setRoles(Set<Role> roles) {
@@ -37,7 +73,6 @@ public class User {
         User newUser = new User();
         newUser.username = name;
         newUser.password = password;
-
         newUser.emailAddress= emailAddress;
         return newUser;
     }
@@ -68,6 +103,18 @@ public class User {
 
     public String getName() {
         return username;
+    }
+
+    public Set<ExamRequest> findRequestsByCourse(String courseName){
+        Set<ExamRequest> examRequests = new HashSet<>();
+        Iterator<ExamRequest> examRequestIterator = this.examSlotRequests.iterator();
+        while (examRequestIterator.hasNext()){
+            ExamRequest exam = examRequestIterator.next();
+            if(exam.getCourseName().equals(courseName)){
+                examRequests.add(exam);
+            }
+        }
+        return examRequests;
     }
 
     public boolean hasRole(String roleName) {
