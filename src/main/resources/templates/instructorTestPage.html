@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <meta charset="UTF-8">
@@ -37,94 +36,40 @@
         }
     </style>
 </head>
-
-
-    <body>
-        <div class="container">
-            <header>Instructor's Page</header>
-
-            <div class="topnav">
-                <button class="log-out-button btn btn-primary">Log out</button>
+<body>
+    <div class="container">
+        <header>Instructor's Page</header>
+        <form action="/instructor/home" method="post">
+            <table class="table">
+                <tr>
+                    <td>Enter exam code:</td>
+                    <td><input type="text" class="form-control" name="code"></td>
+                </tr>
+                <tr>
+                    <td>Enter exam duration:</td>
+                    <td><input type="text" class="form-control" name="duration"></td>
+                </tr>
+                <tr>
+                    <td>Enter preference 1:</td>
+                    <td><input type="text" class="form-control" name="p1"></td>
+                </tr>
+                <tr>
+                    <td>Enter preference 2:</td>
+                    <td><input type="text" class="form-control" name="p2"></td>
+                </tr>
+                <tr>
+                    <td>Enter preference 3:</td>
+                    <td><input type="text" class="form-control" name="p3"></td>
+                </tr>
+                <tr>
+                    <td>Status:</td>
+                    <td>Pending</td>
+                </tr>
+            </table>
+            <div class="submit">
+                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
-
-            <div th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
-
-                <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Department </th>
-                            <th> Class </th>
-                            <th> Exam request Status </th>
-                            <th> View Requests </th>
-                        </tr>
-
-                    </thead>
-                    <tr th:each="course: ${instructor.getInstructorCourses()}">
-                        <td th:text="${course.getDepartment()}"> </td>
-                        <td th:text="${course.getCourseName()}"> </td>
-                        <td th:text="${course.getExamSlotStatus()} ? 'Approved' : 'Pending' "> </td>
-                        <td> <a href="/instructor/examslots"> Slot Requests </a></td>
-
-                    </tr>
-
-                </table>
-
-            </div>
-            <div th:if="${#lists.isEmpty(instructor.getInstructorCourses()) }"> You are not teaching any courses this semester </div>
-
-
-<!--            <form action="/instructor/home" method="post">-->
-<!--                <table class="table">-->
-<!--                    <tr>-->
-<!--                        <td>Enter exam code:</td>-->
-<!--                        <td><input type="text" class="form-control" name="code"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter exam duration:</td>-->
-<!--                        <td><input type="text" class="form-control" name="duration"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter preference 1:</td>-->
-<!--                        <td><input type="text" class="form-control" name="p1"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter preference 2:</td>-->
-<!--                        <td><input type="text" class="form-control" name="p2"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter preference 3:</td>-->
-<!--                        <td><input type="text" class="form-control" name="p3"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Status:</td>-->
-<!--                        <td>Pending</td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-<!--                <div class="submit">-->
-<!--                    <button type="submit" class="btn btn-primary">Submit</button>-->
-<!--                </div>-->
-<!--            </form>-->
-        </div>
-    </body>
-
-    <script>
-
-        let logout = document.querySelector(".log-out-button");
-
-        logout.addEventListener("click", async ()=>{
-            if(confirm("Are you sure you want to log out?")){
-                try{
-                    const response = await fetch("/logout");
-                    if(!response.ok){
-                        throw new Error("Error: Could not log out");
-                    }
-                    window.location.reload();
-                } catch (err){
-                    console.log(err);
-                }
-            }
-
-        });
-
-    </script>
+        </form>
+    </div>
+</body>
 </html>
