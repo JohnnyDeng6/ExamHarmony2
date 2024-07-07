@@ -40,8 +40,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
             try {
                 userService.registerNewUser(registrationDto);
                 redirectAttributes.addFlashAttribute("alertMessage", "New user registered successfully. Return home");
-
-
                 String toEmail = registrationDto.getEmail();
                 String subject = "Registration Confirmation";
                 String body = buildWelcomeEmailBody(registrationDto);

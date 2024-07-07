@@ -26,37 +26,8 @@ public class LoginLogoutControllers {
 
     @GetMapping("/admin/home")
     public String adminTest(){
-
-
         return "adminTestPage";
     }
-
-//    @GetMapping("/instructor/home")
-//    public String instructorTest(){
-//        /*
-//        User newUser = new User();
-//        newUser.setEmailAddress("jca543@sfu.ca");
-//        newUser.setName("Bob");
-//        newUser.setPassword(encoder.encode("1111"));
-//
-//        Set<Role> roles = new HashSet<>();
-//        roles.add(roleRepo.findByName("ADMIN"));
-//        newUser.setRoles(roles);
-//
-//        userRepo.save(newUser);
-//        */
-//
-//        return "instructorTestPage";
-//
-//    }
-
-
-    //For testing purposes
-    @GetMapping("/test")
-    public String test(){
-        return "testPage";
-    }
-
 
 }
 
