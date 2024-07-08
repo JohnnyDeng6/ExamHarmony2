@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.UUID;
+
 @Controller
 public class PasswordResetController {
 
@@ -16,8 +18,9 @@ public class PasswordResetController {
     private UserService userService;
 
     @GetMapping("/reset-password")
-    public String showResetPasswordForm(@RequestParam("userId") int userId, Model model) {
-        User user = userService.findById(userId);
+    public String showResetPasswordForm(@RequestParam("userId") UUID userId, Model model) {
+        User user = userService.findByUUID(userId);
+
         if (user == null) {
             model.addAttribute("error", "Invalid user ID.");
             return "reset-password-error";
@@ -27,11 +30,11 @@ public class PasswordResetController {
     }
 
     @PostMapping("/reset-password")
-    public String handleResetPassword(@RequestParam("userId") int userId,
+    public String handleResetPassword(@RequestParam("userId") UUID userId,
                                       @RequestParam("password") String newPassword,
                                       @RequestParam("confirmPassword") String confirmPassword,
                                       Model model) {
-        User user = userService.findById(userId);
+        User user = userService.findByUUID(userId);
         if (user == null) {
             model.addAttribute("error", "Invalid user ID.");
             return "reset-password-error";

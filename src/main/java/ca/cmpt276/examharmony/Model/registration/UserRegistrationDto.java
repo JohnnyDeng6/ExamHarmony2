@@ -3,12 +3,14 @@ package ca.cmpt276.examharmony.Model.registration;
 import ca.cmpt276.examharmony.Model.Role;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class UserRegistrationDto {
     private String name;
+    private String username;
     private String email;
     private String password;
-    private int id;
+    private UUID id;
     private Set<String> role;
 
 
@@ -24,13 +26,19 @@ public class UserRegistrationDto {
 
     // Getters and Setters
 
-    public void setID(int id) {
+    public void setUUID(UUID id) {
         this.id = id;
     }
-    public int getID() {
+    public UUID getUUID() {
         return id;
     }
 
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
     public String getName() {
         return name;
     }
