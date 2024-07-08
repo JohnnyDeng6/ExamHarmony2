@@ -34,12 +34,12 @@ public class LoginLogoutControllers {
     //     return "instructorTestPage";
     // }
      
-    @GetMapping("/invigilator/home")
-    public String invigilatorTest(){
-        return "invigilatorTestPage";
-    }
-    //For testing purposes
-    @GetMapping("/test")
+    // @GetMapping("/invigilator/home")
+    // public String invigilatorTest(){
+    //     return "invigilatorTestPage";
+    // }
+   // For testing purposes
+    @GetMapping("/test")    
     public String test(){
         /*
         User newUser = new User();

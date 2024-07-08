@@ -8,7 +8,7 @@ public class InvigilatorController {
 
     @GetMapping("/invigilator/home")
     public String invigilatorHome(){
-        return "InvigilatorHomePage";
+        return "InvigilatorTestPage";
     }
 
 

@@ -51,10 +51,10 @@ public class TestingController {
 
     }
 
-    @GetMapping("/test")
-    public String getTestPage(){
-        return "testPage";
-    }
+    // @GetMapping("/test")
+    // public String getTestPage(){
+    //     return "testPage";
+    // }
 
     @GetMapping("/test/add_user_with_course")
     public void addTestInstructor(){
