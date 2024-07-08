@@ -59,41 +59,15 @@
     </style>
 </head>
 
-<!--<P>I am an admin!</P>-->
-<!--<button id="logout-button" onclick=""> Log out </button>-->
-
-<!--</body>-->
-
-<!--<script>-->
-
-<!--    let logout = document.querySelector("#logout-button");-->
-
-<!--    logout.addEventListener("click", async ()=>{-->
-<!--        if(confirm("Are you sure you want to log out?")){-->
-<!--            try{-->
-<!--                const response = await fetch("/logout");-->
-<!--                if(!response.ok){-->
-<!--                    throw new Error("Error: Could not log out");-->
-<!--                }-->
-<!--                window.location.reload();-->
-<!--            } catch (err){-->
-<!--                console.log(err);-->
-<!--            }-->
-<!--        }-->
-
-<!--    });-->
-
-<!--</script>-->
-
-<!--</html>-->
 <body>
     <main id="mainpart">
-        <h1 class="display-1">Admin Home Page</h1>
-        <a href="/admin/register">Add new User</a>
-
         <div class="topnav">
             <button class="log-out-button btn btn-primary">Log out</button>
         </div>
+
+        <h1 class="display-1">Admin Home Page</h1>
+        <a href="/admin/register">Add new User</a>
+
 
         <div class="container pt-3">
             <div class="admin-container">

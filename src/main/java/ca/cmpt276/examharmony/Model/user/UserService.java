@@ -6,11 +6,17 @@ import ca.cmpt276.examharmony.Model.RoleRepository;
 import ca.cmpt276.examharmony.Model.registration.UserRegistrationDto;
 import ca.cmpt276.examharmony.utils.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+
+import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -25,7 +31,6 @@ public class UserService {
     private RoleRepository roleRepository;
 
     public void registerNewUser(UserRegistrationDto registrationDto) {
-        System.out.println("Creating User");
         if (emailExists(registrationDto.getEmail())) {
             throw new UserAlreadyExistException("There is an account with that email address: " + registrationDto.getEmail());
         } else if (usernameExists(registrationDto.getName())) {
@@ -33,30 +38,28 @@ public class UserService {
         }
 
         User user = User.createUser(
-                registrationDto.getName(),
+                registrationDto.getUsername(),
                 passwordEncoder.encode(PasswordGenerator.generatePassword(15)),
                 registrationDto.getEmail()
         );
 
         Set<Role> roles = new HashSet<>();
         for (String roleName : registrationDto.getRoles()) {
-            System.out.println(roleName);
             Role role = roleRepository.findByName(roleName);
             if (role != null) {
                 roles.add(role);
             }
         }
         user.setRoles(roles);
-
         userRepository.save(user);
-        registrationDto.setID(user.getID());
+        registrationDto.setUUID(user.getUUID());
     }
-    public User findById(int userId) {
+    public User findByUUID(UUID userId) {
         return userRepository.findById(userId).orElse(null);
     }
 
-    public void updatePassword(int userId, String newPassword) {
-        User user = findById(userId);
+    public void updatePassword(UUID userId, String newPassword) {
+        User user = findByUUID(userId);
         if (user != null) {
             user.setPassword(passwordEncoder.encode(newPassword)); // Remember to hash the password
             userRepository.save(user);
@@ -70,4 +73,7 @@ public class UserService {
         return userRepository.findByUsername(username) != null;
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }

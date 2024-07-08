@@ -56,9 +56,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests( //Configure authorizations and permissions for users
                         authorize -> authorize
+                        .requestMatchers("/reset-password").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")  //Users with role ADMIN can only access "/admin/.." urls
                         .requestMatchers("/instructor/**").hasRole("INSTRUCTOR")
                         .requestMatchers("/invigilator/**").hasRole("INVIGILATOR")
+                        .requestMatchers("/reset-password").permitAll()
+                                .requestMatchers("/test/**").permitAll() //For testing
                         .anyRequest().authenticated()   //All other users must log in
                 )
                 .formLogin(form->form.loginPage("/login")
