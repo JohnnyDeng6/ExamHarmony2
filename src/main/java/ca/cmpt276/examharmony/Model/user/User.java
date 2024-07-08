@@ -2,23 +2,32 @@ package ca.cmpt276.examharmony.Model.user;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.UUID;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.Role;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UuidGenerator;
 
 //User of the website
 @Entity
 @Table(name="users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ID;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "uuid", columnDefinition = "CHAR(36)")
+    private UUID uuid;
     @Column(nullable = false, unique = true)
     private String username;
-    private String password;
+    @Column(nullable = false, unique = true)
     private String emailAddress;
+    @Column(nullable = false)
+    private String password;
+    private boolean passwordReset = false;
+    private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -69,16 +78,24 @@ public class User {
         this.roles = roles;
     }
 
-    public static User createUser(String name, String password, String emailAddress){
+    public User(String username, String password, String emailAddress) {
+        this.username = username;
+        this.password = password;
+        this.emailAddress = emailAddress;
+        this.uuid = UUID.randomUUID(); // Generate UUID here
+    }
+    public User() {}
+
+    public static User createUser(String username, String password, String emailAddress){
         User newUser = new User();
-        newUser.username = name;
+        newUser.username = username;
         newUser.password = password;
         newUser.emailAddress= emailAddress;
         return newUser;
     }
 
-    public int getID() {
-        return ID;
+    public UUID getUUID() {
+        return uuid;
     }
 
     public String getEmailAddress() {
@@ -90,7 +107,10 @@ public class User {
     }
 
     public void setName(String name) {
-        this.username = name;
+        this.name = name;
+    }
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setEmailAddress(String emailAddress) {
@@ -101,8 +121,12 @@ public class User {
         return password;
     }
 
-    public String getName() {
+    public String getUsername() {
         return username;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Set<ExamRequest> findRequestsByCourse(String courseName){
