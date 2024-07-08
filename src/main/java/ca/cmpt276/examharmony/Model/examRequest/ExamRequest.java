@@ -12,16 +12,23 @@ public class ExamRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
 
+    private int examCode;
     private LocalDate examDate;
     private double examDuration;
     private String status;
-
     private String courseName;
 
     public String getCourseName() {
         return courseName;
     }
 
+    public int getExamCode() {
+        return examCode;
+    }
+
+    public void setExamCode(int examCode) {
+        this.examCode = examCode;
+    }
     public void setCourseName(String courseName) {
         this.courseName = courseName;
     }

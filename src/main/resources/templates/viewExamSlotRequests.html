@@ -24,7 +24,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            max-width: 1200px;
             width: 100%;
         }
         header {
@@ -41,17 +41,21 @@
 
 <body>
 <div class="container">
-    <header>Instructor's Page</header>
+    <header th:text="'Exam Slot Requests for ' + ${courseName}"></header>
 
     <div class="topnav">
         <button class="log-out-button btn btn-primary">Log out</button>
     </div>
 
-        <div th:if="${ not #lists.isEmpty(examRequests)}">
+        <div th:if="${ not #lists.isEmpty(examRequests) }" style="margin: 40px">
             <table class="table">
 
                 <thead class="thead-dark">
+
                     <tr>
+                        <th>
+                            Exam Code
+                        </th>
                         <th>
                             Exam Duration
                         </th>
@@ -65,6 +69,7 @@
                 </thead>
                 <tbody>
                     <tr th:each="examRequest: ${examRequests}">
+                        <td th:text="${examRequest.getExamCode()}"></td>
                         <td th:text="${examRequest.getExamDuration()}"> </td>
                         <td th:text="${examRequest.getExamDate()}"> </td>
                         <td th:text="${examRequest.getStatus()}"> </td>
@@ -76,44 +81,45 @@
             <div> Edit or Create Exam Slots </div>
         </div>
         <div th:if="${#lists.isEmpty(examRequests)}"> Create Exam Slots </div>
-        <form action="/instructor/examslots" method="post">
+
+        <form class="form-container">
             <table class="table">
                 <tr>
                     <td>Enter exam code:</td>
-                    <td><input type="text" class="form-control" name="code"></td>
+                    <td><input type="text" class="form-control code" name="code"></td>
                 </tr>
                 <tr>
                     <td>Enter exam duration:</td>
-                    <td><input type="text" class="form-control" name="duration"></td>
+                    <td><input type="text" class="form-control duration" name="duration"></td>
                 </tr>
                 <tr>
                     <td>Enter preference 1:</td>
-                    <td><input type="text" class="form-control" name="p1"></td>
+                    <td><input type="text" class="form-control p1" name="p1"></td>
                 </tr>
                 <tr>
                     <td>Enter preference 2:</td>
-                    <td><input type="text" class="form-control" name="p2"></td>
+                    <td><input type="text" class="form-control p2" name="p2"></td>
                 </tr>
                 <tr>
                     <td>Enter preference 3:</td>
-                    <td><input type="text" class="form-control" name="p3"></td>
-                </tr>
-                <tr>
-                    <td>Status:</td>
-                    <td>Pending</td>
+                    <td><input type="text" class="form-control p3" name="p3"></td>
                 </tr>
             </table>
+            <div> Enter dates in the form "year-month-day". Ex: 2024-04-15</div>
             <div class="submit">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
 
+        <div class="feedback"> </div>
+
 </div>
 </body>
 
-<script>
+<script th:inline="javascript">
 
     let logout = document.querySelector(".log-out-button");
+    let form = document.querySelector(".form-container");
 
     logout.addEventListener("click", async ()=>{
         if(confirm("Are you sure you want to log out?")){
@@ -127,8 +133,52 @@
                 console.log(err);
             }
         }
-
     });
+
+    form.addEventListener("submit", async ()=>{
+
+        const examCode = document.querySelector('.code').value;
+        const examDuration = document.querySelector('.duration').value;
+        const preference1 = document.querySelector('.p1').value;
+        const preference2 = document.querySelector('.p2').value;
+        const preference3 = document.querySelector('.p3').value;
+        const courseName = '[[${courseName}]]';
+        const preferences = [];
+
+        if(preference1){
+            preferences.push({ examCode: examCode, examDuration: examDuration, examDate: preference1});
+        }
+        if(preference2){
+            preferences.push({ examCode: examCode, examDuration: examDuration, examDate: preference2});
+        }
+        if(preference3){
+            preferences.push({ examCode: examCode, examDuration: examDuration, examDate: preference3});
+        }
+        console.log(preferences);
+        try{
+            const response = await fetch(`/instructor/examslots/edit/${courseName}`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(preferences)
+            });
+            if(!response.ok){
+                throw new Error(`HTTP Status ${response.status}`);
+            } else {
+                document.querySelector(".feedback").innerText = "Requests Successfully sent";
+                let pageContent = await response.text();
+                const ExamRequestDisplayPage = window.open(`/instructor/examslots/edit/${courseName}`, "_self");
+                ExamRequestDisplayPage.document.body.innerHTML = pageContent;
+                window.location.reload();
+
+            }
+
+        } catch (err){
+            document.querySelector(".feedback").innerText = err;
+        }
+
+    })
 
 </script>
 </html>

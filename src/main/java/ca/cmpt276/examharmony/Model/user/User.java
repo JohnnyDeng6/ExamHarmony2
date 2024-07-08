@@ -117,6 +117,10 @@ public class User {
         return examRequests;
     }
 
+    public void addExamRequest(ExamRequest request){
+        examSlotRequests.add(request);
+    }
+
     public boolean hasRole(String roleName) {
         Iterator<Role> iterator = this.roles.iterator();
         while (iterator.hasNext()) {
