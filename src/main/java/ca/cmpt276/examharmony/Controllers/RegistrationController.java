@@ -55,7 +55,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
         }
 
         private String buildWelcomeEmailBody(UserRegistrationDto registrationDto) {
-            String link = "https://examharmony.onrender.com/reset-password?PasswordResetToken" + registrationDto.getResetPasswordToken();
+            String link = "https://examharmony.onrender.com/reset-password?passwordResetToken=" + registrationDto.getResetPasswordToken();
             return "<p>Dear " + registrationDto.getUsername() + ",</p>"
                     + "<p>Welcome to ExamHarmony! We are thrilled to have you on board.</p>"
                     + "<p>Your unique username is: " + registrationDto.getUsername() + ",</p>"
