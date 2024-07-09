@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 
 import java.util.Properties;
@@ -50,8 +51,12 @@ public class UserService {
                 roles.add(role);
             }
         }
+
+        user.setPasswordResetToken(UUID.randomUUID());
+        user.setPasswordResetTokenExpiry(LocalDateTime.now().plusDays(7)); //password reset for 7 days
         user.setRoles(roles);
         userRepository.save(user);
+        registrationDto.setResetPasswordToken(user.getPasswordResetToken());
         registrationDto.setUUID(user.getUUID());
     }
     public User findByUUID(UUID userId) {
@@ -61,7 +66,16 @@ public class UserService {
     public void updatePassword(UUID userId, String newPassword) {
         User user = findByUUID(userId);
         if (user != null) {
-            user.setPassword(passwordEncoder.encode(newPassword)); // Remember to hash the password
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        }
+    }
+
+    public void invalidatePasswordResetToken(UUID userId) {
+        User user = findByUUID(userId);
+        if (user != null) {
+            user.setPasswordResetToken(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+            user.setPasswordResetTokenExpiry(null);
             userRepository.save(user);
         }
     }
@@ -75,5 +89,9 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public User findByPasswordResetToken(UUID passwordResetToken) {
+        return userRepository.findByPasswordResetToken(passwordResetToken);
     }
 }

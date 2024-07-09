@@ -1,4 +1,5 @@
 package ca.cmpt276.examharmony.Model.user;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -24,9 +25,12 @@ public class User {
     private String username;
     @Column(nullable = false, unique = true)
     private String emailAddress;
+    @Column(name = "prtExpiry", unique = true)
+    private LocalDateTime passwordResetTokenExpiry;
     @Column(nullable = false)
     private String password;
-    private boolean passwordReset = false;
+    @Column(name = "prt")
+    private UUID passwordResetToken;
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -82,7 +86,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.emailAddress = emailAddress;
-        this.uuid = UUID.randomUUID(); // Generate UUID here
+        this.passwordResetToken = UUID.randomUUID();
     }
     public User() {}
 
@@ -129,6 +133,17 @@ public class User {
         return name;
     }
 
+    public void setPasswordResetToken(UUID passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
+    }
+    public UUID getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public boolean isPasswordResetTokenValid() {
+        return passwordResetToken != null && !passwordResetToken.equals(UUID.fromString("00000000-0000-0000-0000-000000000000")) && passwordResetTokenExpiry != null && passwordResetTokenExpiry.isAfter(LocalDateTime.now());
+    }
+
     public Set<ExamRequest> findRequestsByCourse(String courseName){
         Set<ExamRequest> examRequests = new HashSet<>();
         Iterator<ExamRequest> examRequestIterator = this.examSlotRequests.iterator();
@@ -157,4 +172,10 @@ public class User {
         return false;
     }
 
+    public LocalDateTime getPasswordResetTokenExpiry() {
+        return passwordResetTokenExpiry;
+    }
+    public void setPasswordResetTokenExpiry(LocalDateTime passwordResetTokenExpiry) {
+        this.passwordResetTokenExpiry = passwordResetTokenExpiry;
+    }
 }
