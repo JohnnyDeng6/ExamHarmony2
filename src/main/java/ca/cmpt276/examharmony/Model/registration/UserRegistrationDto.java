@@ -11,6 +11,7 @@ public class UserRegistrationDto {
     private String email;
     private String password;
     private UUID id;
+    private UUID resetPasswordToken;
     private Set<String> role;
 
 
@@ -31,6 +32,13 @@ public class UserRegistrationDto {
     }
     public UUID getUUID() {
         return id;
+    }
+
+    public void setResetPasswordToken(UUID resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
+    }
+    public UUID getResetPasswordToken() {
+        return resetPasswordToken;
     }
 
     public String getUsername() {
