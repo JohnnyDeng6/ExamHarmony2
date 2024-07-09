@@ -16,6 +16,7 @@ import java.util.HashSet;
 
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -37,7 +38,7 @@ public class UserService {
         }
 
         User user = User.createUser(
-                registrationDto.getName(),
+                registrationDto.getUsername(),
                 passwordEncoder.encode(PasswordGenerator.generatePassword(15)),
                 registrationDto.getEmail()
         );
@@ -51,14 +52,14 @@ public class UserService {
         }
         user.setRoles(roles);
         userRepository.save(user);
-        registrationDto.setID(user.getID());
+        registrationDto.setUUID(user.getUUID());
     }
-    public User findById(int userId) {
+    public User findByUUID(UUID userId) {
         return userRepository.findById(userId).orElse(null);
     }
 
-    public void updatePassword(int userId, String newPassword) {
-        User user = findById(userId);
+    public void updatePassword(UUID userId, String newPassword) {
+        User user = findByUUID(userId);
         if (user != null) {
             user.setPassword(passwordEncoder.encode(newPassword)); // Remember to hash the password
             userRepository.save(user);
@@ -72,4 +73,7 @@ public class UserService {
         return userRepository.findByUsername(username) != null;
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
