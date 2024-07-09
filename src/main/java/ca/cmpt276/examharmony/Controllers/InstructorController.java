@@ -1,7 +1,6 @@
 package ca.cmpt276.examharmony.Controllers;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
-import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.CustomUserDetails;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequestDTO;
@@ -14,10 +13,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ca.cmpt276.examharmony.Model.Instructor;
-
+import java.util.Collections.*;
 import java.util.List;
-import java.util.Set;
+
+import static java.util.Collections.sort;
 
 @Controller
 public class InstructorController {
@@ -60,6 +59,8 @@ public class InstructorController {
         }
 
         List<ExamRequest> previousRequests = requestRepo.findExamRequestsByCourseName(courseName);
+        sort(previousRequests);
+        sort(examRequestDTOList);
 
         // Update already-existing exam requests
         for (ExamRequest previousRequest : previousRequests) {
@@ -67,13 +68,15 @@ public class InstructorController {
             if (previousRequest.getStatus().equals("APPROVED")) {
                 //Do something
             }
-
-            if (!examRequestDTOList.isEmpty()) {
-                ExamRequestDTO newRequest = examRequestDTOList.remove(0);
-                previousRequest.setExamCode(newRequest.examCode);
-                previousRequest.setExamDuration(newRequest.examDuration);
-                previousRequest.setExamDate(newRequest.examDate);
-                requestRepo.save(previousRequest);
+            //Find a new request which has the same preference and update the old request
+            for(ExamRequestDTO newRequest: examRequestDTOList){
+                if(newRequest.preferenceStatus == previousRequest.getPreferenceStatus()){
+                    previousRequest.setExamCode(newRequest.examCode);
+                    previousRequest.setExamDuration(newRequest.examDuration);
+                    previousRequest.setExamDate(newRequest.examDate);
+                    requestRepo.save(previousRequest);
+                    examRequestDTOList.remove(newRequest);
+                }
             }
         }
 
@@ -88,7 +91,6 @@ public class InstructorController {
             requestRepo.save(newRequest);
             instructor.addExamRequest(newRequest);
         }
-        System.out.println(instructor.getName() + " " + instructor.getEmailAddress());
         userRepo.save(instructor);
 
         model.addAttribute("examRequests", instructor.getExamSlotRequests());

@@ -3,20 +3,26 @@ package ca.cmpt276.examharmony.Model.examRequest;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "exam_request")
-public class ExamRequest {
+public class ExamRequest implements Comparable<ExamRequest>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
 
+    //1st, 2nd, or 3rd preference
+    @Column(name = "preference")
+    private int preferenceStatus;
     private int examCode;
-    private LocalDate examDate;
+    private LocalDateTime examDate;
     private double examDuration;
     private String status;
     private String courseName;
+
 
     public String getCourseName() {
         return courseName;
@@ -49,11 +55,25 @@ public class ExamRequest {
         this.status = status;
     }
 
-    public LocalDate getExamDate() {
+    public LocalDateTime getExamDate() {
         return examDate;
     }
 
-    public void setExamDate(LocalDate examDate) {
-        this.examDate = examDate;
+    public void setExamDate(String examDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        this.examDate = LocalDateTime.parse(examDate, formatter);
+    }
+
+    public int getPreferenceStatus() {
+        return preferenceStatus;
+    }
+
+    public void setPreferenceStatus(int preferenceStatus) {
+        this.preferenceStatus = preferenceStatus;
+    }
+
+    @Override
+    public int compareTo(ExamRequest o) {
+        return ~(this.preferenceStatus - o.preferenceStatus);
     }
 }
