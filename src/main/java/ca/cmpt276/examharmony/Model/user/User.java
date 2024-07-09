@@ -90,11 +90,12 @@ public class User {
     }
     public User() {}
 
-    public static User createUser(String username, String password, String emailAddress){
+    public static User createUser(String username, String password, String emailAddress, String name){
         User newUser = new User();
         newUser.username = username;
         newUser.password = password;
-        newUser.emailAddress= emailAddress;
+        newUser.emailAddress = emailAddress;
+        newUser.name = name;
         return newUser;
     }
 

@@ -34,14 +34,15 @@ public class UserService {
     public void registerNewUser(UserRegistrationDto registrationDto) {
         if (emailExists(registrationDto.getEmail())) {
             throw new UserAlreadyExistException("There is an account with that email address: " + registrationDto.getEmail());
-        } else if (usernameExists(registrationDto.getName())) {
-            throw new UserAlreadyExistException("There is an account with that username: " + registrationDto.getName());
+        } else if (findByUsername(registrationDto.getUsername()) != null) {
+            throw new UserAlreadyExistException("There is an account with that username: " + registrationDto.getUsername());
         }
 
         User user = User.createUser(
                 registrationDto.getUsername(),
                 passwordEncoder.encode(PasswordGenerator.generatePassword(15)),
-                registrationDto.getEmail()
+                registrationDto.getEmail(),
+                registrationDto.getName()
         );
 
         Set<Role> roles = new HashSet<>();
@@ -82,9 +83,6 @@ public class UserService {
 
     private boolean emailExists(String email) {
         return userRepository.findByEmailAddress(email) != null;
-    }
-    private boolean usernameExists(String username) {
-        return userRepository.findByUsername(username) != null;
     }
 
     public User findByUsername(String username) {
