@@ -1,4 +1,5 @@
 package ca.cmpt276.examharmony.Model.examSlot;
+import ca.cmpt276.examharmony.Model.user.User;
 
 import jakarta.persistence.*;
 
@@ -12,7 +13,7 @@ public class examSlot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
 
-    @OneToMany(mappedBy = "Exam_request", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "Exam_request", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private int CourseID;
 
     private LocalDate StartTime;
@@ -21,6 +22,9 @@ public class examSlot {
     private int assignedRooms;
     private int numInvigilator;
     
+    @ManyToOne
+    @JoinColumn(name = "adminID", referencedColumnName="adminID")
+    private User admin;
     /*Admin ID */
 
     private String status;
@@ -74,13 +78,21 @@ public class examSlot {
     public void setAssignedRooms(int assignedRooms) {
         this.assignedRooms = assignedRooms;
     }
-
+    
     public int getNumInvigilator() {
         return this.numInvigilator;
     }
 
     public void setNumInvigilator(int numInvigilator) {
         this.numInvigilator = numInvigilator;
+    }
+
+    public void setAdmin(User admin) {
+        this.admin = admin;
+    }
+
+    public User getAdmin(){
+        return this.admin;
     }
 
     public String getStatus() {
