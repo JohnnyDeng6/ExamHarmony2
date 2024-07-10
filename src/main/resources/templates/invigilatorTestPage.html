@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -62,7 +62,22 @@
         <!-- Requests Section -->
         <div id="requestsSection" class="hidden">
             <h2>Invigilator Requests</h2>
-            <p>This is a test page for invigilator requests.</p>
+            <div id="requestsList" th:if="${not #lists.isEmpty(requests)}">
+                <div th:each="request : ${requests}">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Exam Code: <span th:text="${request.examCode}"></span></h5>
+                            <p class="card-text">Date: <span th:text="${request.examDate}"></span></p>
+                            <p class="card-text">Status: <span th:text="${request.status}"></span></p>
+                            <div class="btn-group" role="group" aria-label="Request Actions">
+                                <button type="button" class="btn btn-success accept" th:data-request-id="${request.id}">Accept</button>
+                                <button type="button" class="btn btn-danger reject" th:data-request-id="${request.id}">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p th:if="${#lists.isEmpty(requests)}">No requests available.</p>
         </div>
     </div>
 
@@ -96,6 +111,49 @@
                         console.log(err);
                     }
                 }
+            });
+
+            // Handle Accept and Reject buttons
+            document.querySelectorAll(".accept").forEach(button => {
+                button.addEventListener("click", async function() {
+                    let requestId = this.getAttribute("data-request-id");
+                    try {
+                        const response = await fetch(`/invigilator/requests/${requestId}/status`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ status: 'Accepted' })
+                        });
+                        if (!response.ok) {
+                            throw new Error('Error accepting request');
+                        }
+                        window.location.reload(); // Refresh page after successful update
+                    } catch (err) {
+                        console.error('Error accepting request:', err);
+                    }
+                });
+            });
+
+            document.querySelectorAll(".reject").forEach(button => {
+                button.addEventListener("click", async function() {
+                    let requestId = this.getAttribute("data-request-id");
+                    try {
+                        const response = await fetch(`/invigilator/requests/${requestId}/status`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ status: 'Rejected' })
+                        });
+                        if (!response.ok) {
+                            throw new Error('Error rejecting request');
+                        }
+                        window.location.reload(); 
+                    } catch (err) {
+                        console.error('Error rejecting request:', err);
+                    }
+                });
             });
         });
     </script>
