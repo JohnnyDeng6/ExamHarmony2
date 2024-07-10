@@ -56,6 +56,7 @@ public class examSlotController {
         exam.setDuration(duration);
         exam.setNumOfRooms(numOfRooms);
         exam.setNumInvigilator(numInvigilator);
+        exam.setAssignedRooms(assignedRooms);
         exam.setAdmin(admin);
         exam.setStatus(status);
         
@@ -75,7 +76,7 @@ public class examSlotController {
         return "redirect:/adminExamSlot";
     }
 
-    
+
 
     @PostMapping("examSlot/update")
     public String updateExamSlot(@ModelAttribute examSlot exam){
