@@ -1,12 +1,14 @@
 
 package ca.cmpt276.examharmony.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import ca.cmpt276.examharmony.Model.examSlot.examSlotRepository;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
-
+import ca.cmpt276.examharmony.Model.CustomUserDetails;
 import ca.cmpt276.examharmony.Model.examSlot.examSlot;
 import ca.cmpt276.examharmony.Model.user.User;
 
@@ -27,8 +29,7 @@ public class examSlotController {
     @Autowired
     private examSlotRepository examRepo;
 
-    @Autowired
-    private UserRepository userRepo;
+
 
     @GetMapping("/examSlot/showAll")
     public String getAllExamSlots(Model model){
@@ -45,8 +46,13 @@ public class examSlotController {
         int assignedRooms = Integer.parseInt(newExamSlot.get("assignedRooms"));
         int numInvigilator = Integer.parseInt(newExamSlot.get("numInvigilator"));
     
-        /*Admin ID */
-        User admin = userRepo.findById(UUID.fromString(newExamSlot.get("adminID"))).orElseThrow(()-> new IllegalArgumentException("Invalid admin ID"));
+        /*Admin ID PUT IN A TRY CATCH */
+
+        // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        // User user = userDetails.getCurrentUser();
+
+        // UUID admin = user.getUUID();
 
         String status = newExamSlot.get("status");
         
@@ -57,7 +63,7 @@ public class examSlotController {
         exam.setNumOfRooms(numOfRooms);
         exam.setNumInvigilator(numInvigilator);
         exam.setAssignedRooms(assignedRooms);
-        exam.setAdmin(admin);
+        // exam.setAdmin(admin);
         exam.setStatus(status);
         
         examRepo.save(exam);

@@ -1,8 +1,9 @@
 package ca.cmpt276.examharmony.Model.examSlot;
-import ca.cmpt276.examharmony.Model.user.User;
+import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
 import java.time.LocalDate;
 
 @Entity
@@ -13,9 +14,9 @@ public class examSlot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
 
-    @OneToOne(mappedBy = "course_section", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    private int CourseID;
+    @OneToOne
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    private CoursesSec CourseID;
 
     private LocalDate StartTime;
     private double duration;
@@ -23,10 +24,10 @@ public class examSlot {
     private int assignedRooms;
     private int numInvigilator;
     
-    @ManyToOne
-    @JoinColumn(name = "adminID", referencedColumnName="adminID")
-    private User admin;
-    /*Admin ID */
+    // @ManyToOne
+    // @JoinColumn(name = "users", referencedColumnName="uuid")
+    // private UUID admin;
+    // /*Admin ID */
 
     private String status;
 
@@ -40,11 +41,11 @@ public class examSlot {
         this.ID = ID;
     }
 
-    public int getCourseID() {
+    public CoursesSec getCourseID() {
         return this.CourseID;
     }
 
-    public void setCourseID(int CourseID) {
+    public void setCourseID(CoursesSec CourseID) {
         this.CourseID = CourseID;
     }
 
@@ -88,13 +89,13 @@ public class examSlot {
         this.numInvigilator = numInvigilator;
     }
 
-    public void setAdmin(User admin) {
-        this.admin = admin;
-    }
+    // public void setAdmin(UUID admin) {
+    //     this.admin = admin;
+    // }
 
-    public User getAdmin(){
-        return this.admin;
-    }
+    // public UUID getAdmin(){
+    //     return this.admin;
+    // }
 
     public String getStatus() {
         return this.status;

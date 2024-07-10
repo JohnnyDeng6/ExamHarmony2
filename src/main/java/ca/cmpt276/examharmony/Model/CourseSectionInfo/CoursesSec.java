@@ -1,4 +1,5 @@
 package ca.cmpt276.examharmony.Model.CourseSectionInfo;
+import ca.cmpt276.examharmony.Model.examSlot.examSlot;
 
 import jakarta.persistence.*;
 
@@ -15,6 +16,9 @@ public class CoursesSec {
     private String department;
 
     private boolean examSlotStatus;
+
+    @OneToOne(mappedBy ="CourseID")
+    private examSlot examSlot;
 
     public boolean getExamSlotStatus() {
         return examSlotStatus;
@@ -38,6 +42,14 @@ public class CoursesSec {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public examSlot getExamSlot(){
+        return examSlot;
+    }
+
+    public void setExamSlot(examSlot e){
+        this.examSlot = e;
     }
 
 }
