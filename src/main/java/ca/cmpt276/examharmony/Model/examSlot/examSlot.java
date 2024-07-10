@@ -13,7 +13,8 @@ public class examSlot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
 
-    @OneToOne(mappedBy = "Exam_request", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "course_section", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private int CourseID;
 
     private LocalDate StartTime;

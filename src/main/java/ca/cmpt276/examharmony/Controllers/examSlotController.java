@@ -37,7 +37,7 @@ public class examSlotController {
         return "/adminExamSlot";
     }
     
-    @PostMapping("/examSlot/add")
+    @PostMapping("/admin/addExamSlot")
     public String addExamSlot(@RequestParam Map<String, String> newExamSlot, HttpServletResponse response) {
         LocalDate StartTime = LocalDate.parse(newExamSlot.get("StartTime"));
         double duration = Double.parseDouble(newExamSlot.get("duration"));
