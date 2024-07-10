@@ -107,7 +107,7 @@
         </div>
     </main>
     <script th:if="${alertMessage != null}" th:inline="javascript">
-        window.alert([[${alertMessage}]]);
+        window.alert([['${alertMessage}']]);
     </script>
     <script>
         document.querySelectorAll('.preference').forEach(function(pref) {

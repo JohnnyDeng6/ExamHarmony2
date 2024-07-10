@@ -32,15 +32,8 @@ public class InstructorController {
     private ExamRequestRepository requestRepo;
     
     @GetMapping("/instructor/home")
-    public String InstructorInfo(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-            User instructor = userRepo.findByUsername(userDetails.getUsername());
-            model.addAttribute("instructor", instructor);
-            return "instructorTestPage";
-        } else {
-            return "redirect:/login";
-        }
+    public String InstructorInfo() {
+        return "instructorTestPage";
     }
 
     @PostMapping("/instructor/examslots/edit/{courseName}")
