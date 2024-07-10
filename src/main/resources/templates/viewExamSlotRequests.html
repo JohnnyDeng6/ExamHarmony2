@@ -54,6 +54,9 @@
 
                     <tr>
                         <th>
+                            Preference
+                        </th>
+                        <th>
                             Exam Code
                         </th>
                         <th>
@@ -69,6 +72,7 @@
                 </thead>
                 <tbody>
                     <tr th:each="examRequest: ${examRequests}">
+                        <td th:text="${examRequest.getPreferenceStatus()}"></td>
                         <td th:text="${examRequest.getExamCode()}"></td>
                         <td th:text="${examRequest.getExamDuration()}"> </td>
                         <td th:text="${examRequest.getExamDate()}"> </td>
@@ -105,7 +109,7 @@
                     <td><input type="text" class="form-control p3" name="p3"></td>
                 </tr>
             </table>
-            <div> Enter dates in the form "year-month-day". Ex: 2024-04-15</div>
+            <div> Enter dates in the form "yyyy-MM-dd-HH:mm". Ex: 2024-04-15-14:30 </div>
             <div class="submit">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
@@ -146,13 +150,13 @@
         const preferences = [];
 
         if(preference1){
-            preferences.push({ examCode: examCode, examDuration: examDuration, examDate: preference1});
+            preferences.push({ preferenceStatus: 1, examCode: examCode, examDuration: examDuration, examDate: preference1});
         }
         if(preference2){
-            preferences.push({ examCode: examCode, examDuration: examDuration, examDate: preference2});
+            preferences.push({ preferenceStatus: 2, examCode: examCode, examDuration: examDuration, examDate: preference2});
         }
         if(preference3){
-            preferences.push({ examCode: examCode, examDuration: examDuration, examDate: preference3});
+            preferences.push({ preferenceStatus: 3, examCode: examCode, examDuration: examDuration, examDate: preference3});
         }
         console.log(preferences);
         try{
@@ -181,4 +185,5 @@
     })
 
 </script>
+
 </html>

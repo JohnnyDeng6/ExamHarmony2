@@ -1,11 +1,16 @@
 package ca.cmpt276.examharmony.Model.examRequest;
 
-import java.time.LocalDate;
+public class ExamRequestDTO implements Comparable<ExamRequestDTO>{
 
-public class ExamRequestDTO {
+    public int preferenceStatus;
     public int examCode;
-    public LocalDate examDate;
+    public String examDate;
     public double examDuration;
     public String courseName;
 
+    @Override
+    public int compareTo(ExamRequestDTO o) {
+        return ~(this.preferenceStatus - o.preferenceStatus);
+    }
 }
+
