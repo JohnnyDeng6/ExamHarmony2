@@ -10,17 +10,35 @@ import ca.cmpt276.examharmony.Model.examRequest.ExamRequestRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collections.*;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
 import static java.util.Collections.sort;
 
 @Controller
 public class InstructorController {
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    static class BadRequest extends RuntimeException{
+        public BadRequest(String message) {
+            super(message);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    static class NotFoundException extends RuntimeException{
+        public NotFoundException(String message) {
+            super(message);
+        }
+    }
 
     @Autowired
     private UserRepository userRepo;
@@ -65,32 +83,40 @@ public class InstructorController {
 
         // Update already-existing exam requests
         for (ExamRequest previousRequest : previousRequests) {
-            //TODO: Handle case where instructor modifies request after it has been approved
-            if (previousRequest.getStatus().equals("APPROVED")) {
-                //Do something
-            }
+
             //Find a new request which has the same preference and update the old request
-            for(ExamRequestDTO newRequest: examRequestDTOList){
+            Iterator<ExamRequestDTO> iterator = examRequestDTOList.iterator();
+            while (iterator.hasNext()){
+                ExamRequestDTO newRequest = iterator.next();
                 if(newRequest.preferenceStatus == previousRequest.getPreferenceStatus()){
-                    previousRequest.setExamCode(newRequest.examCode);
-                    previousRequest.setExamDuration(newRequest.examDuration);
-                    previousRequest.setExamDate(newRequest.examDate);
-                    requestRepo.save(previousRequest);
-                    examRequestDTOList.remove(newRequest);
+                    try{
+                        previousRequest.setExamCode(newRequest.examCode);
+                        previousRequest.setExamDuration(newRequest.examDuration);
+                        previousRequest.setExamDate(newRequest.examDate);
+                        requestRepo.save(previousRequest);
+                        iterator.remove();
+                    } catch (RuntimeException invalidParameter){
+                        throw new BadRequest(invalidParameter.getMessage());
+                    }
                 }
             }
         }
 
         // Add new exam requests
         for (ExamRequestDTO newRequestDTO : examRequestDTOList) {
-            ExamRequest newRequest = new ExamRequest();
-            newRequest.setExamCode(newRequestDTO.examCode);
-            newRequest.setExamDuration(newRequestDTO.examDuration);
-            newRequest.setExamDate(newRequestDTO.examDate);
-            newRequest.setCourseName(courseName);
-            newRequest.setStatus("PENDING");
-            requestRepo.save(newRequest);
-            instructor.addExamRequest(newRequest);
+            try{
+                ExamRequest newRequest = new ExamRequest();
+                newRequest.setExamCode(newRequestDTO.examCode);
+                newRequest.setExamDuration(newRequestDTO.examDuration);
+                newRequest.setExamDate(newRequestDTO.examDate);
+                newRequest.setCourseName(courseName);
+                newRequest.setStatus("PENDING");
+                requestRepo.save(newRequest);
+                instructor.addExamRequest(newRequest);
+            } catch (RuntimeException invalidParameter){
+                throw new BadRequest(invalidParameter.getMessage());
+            }
+
         }
         userRepo.save(instructor);
 
@@ -106,10 +132,35 @@ public class InstructorController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             User instructor = userRepo.findByUsername(userDetails.getUsername());
-            model.addAttribute("examRequests", instructor.getExamSlotRequests());
+            model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
             model.addAttribute("instructor", instructor);
             model.addAttribute("courseName", courseName);
             return "viewExamSlotRequests";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @DeleteMapping("/instructor/examslots/delete/{courseName}/{preference}")
+    public String deleteRequest(Model model, @PathVariable("courseName") String courseName
+            , @PathVariable("preference") int preference){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails){
+            User instructor = userRepo.findByUsername(userDetails.getUsername());
+            Set<ExamRequest> examRequestList = instructor.findRequestsByCourse(courseName);
+            Iterator<ExamRequest> iterator = examRequestList.iterator();
+            while (iterator.hasNext()) {
+                ExamRequest request = iterator.next();
+                if (request.getPreferenceStatus() == preference) {
+                    requestRepo.delete(request);
+                    iterator.remove();
+                    model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
+                    model.addAttribute("instructor", instructor);
+                    model.addAttribute("courseName", courseName);
+                    return "viewExamSlotRequests";
+                }
+            }
+            throw new NotFoundException("Requested exam slot request does not exist");
         } else {
             return "redirect:/login";
         }

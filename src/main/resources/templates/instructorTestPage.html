@@ -49,6 +49,7 @@
 
             <div class="topnav">
                 <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
+                <button class="btn btn-secondary"> Add a new course </button>
             </div>
 
             <div th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
@@ -77,37 +78,6 @@
             <div th:if="${#lists.isEmpty(instructor.getInstructorCourses()) }"> You are not teaching any courses this semester </div>
             <div class="errorContainer"> </div>
 
-<!--            <form action="/instructor/home" method="post">-->
-<!--                <table class="table">-->
-<!--                    <tr>-->
-<!--                        <td>Enter exam code:</td>-->
-<!--                        <td><input type="text" class="form-control" name="code"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter exam duration:</td>-->
-<!--                        <td><input type="text" class="form-control" name="duration"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter preference 1:</td>-->
-<!--                        <td><input type="text" class="form-control" name="p1"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter preference 2:</td>-->
-<!--                        <td><input type="text" class="form-control" name="p2"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter preference 3:</td>-->
-<!--                        <td><input type="text" class="form-control" name="p3"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Status:</td>-->
-<!--                        <td>Pending</td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-<!--                <div class="submit">-->
-<!--                    <button type="submit" class="btn btn-primary">Submit</button>-->
-<!--                </div>-->
-<!--            </form>-->
         </div>
     </body>
 
