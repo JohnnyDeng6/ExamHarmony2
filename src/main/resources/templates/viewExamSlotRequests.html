@@ -196,6 +196,7 @@
                         throw new Error("Error: " + await response.text());
                     }
                     window.location.reload();
+                    document.querySelector(".feedback").innerText = "Request Successfully deleted";
                 } catch (err){
                     document.querySelector(".feedback").innerText = err;
                 }
