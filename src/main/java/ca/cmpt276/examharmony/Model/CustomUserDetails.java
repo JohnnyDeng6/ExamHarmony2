@@ -1,11 +1,12 @@
 package ca.cmpt276.examharmony.Model;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import ca.cmpt276.examharmony.Model.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 //Used to collect details about a user on the website
@@ -41,6 +42,19 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
+        return currentUser.getUsername();
+    }
+
+    public UUID getPasswordResetToken() {
+        return currentUser.getPasswordResetToken();
+    }
+    public String getName() {
         return currentUser.getName();
+    }
+    public String getEmail() {
+        return currentUser.getEmailAddress();
+    }
+    public User getCurrentUser() {
+        return currentUser;
     }
 }

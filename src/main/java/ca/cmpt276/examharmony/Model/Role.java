@@ -19,4 +19,9 @@ public class Role {
         this.name = name;
     }
 
+    public static Role createRole(String roleName){
+        Role newRole = new Role();
+        newRole.name = roleName;
+        return newRole;
+    }
 }

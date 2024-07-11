@@ -1,20 +1,11 @@
 package ca.cmpt276.examharmony.Controllers;
 
-import ca.cmpt276.examharmony.Model.Role;
 import ca.cmpt276.examharmony.Model.RoleRepository;
-import ca.cmpt276.examharmony.Model.User;
-import ca.cmpt276.examharmony.Model.UserRepository;
+import ca.cmpt276.examharmony.Model.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Controller
 public class LoginLogoutControllers {
@@ -43,12 +34,13 @@ public class LoginLogoutControllers {
     //     return "instructorTestPage";
     // }
      
-    @GetMapping("/invigilator/home")
-    public String invigilatorTest(){
-        return "invigilatorTestPage";
-    }
-    //For testing purposes
-    @GetMapping("/test")
+
+    // @GetMapping("/invigilator/home")
+    // public String invigilatorTest(){
+    //     return "invigilatorTestPage";
+    // }
+   // For testing purposes
+    @GetMapping("/test")    
     public String test(){
         /*
         User newUser = new User();
