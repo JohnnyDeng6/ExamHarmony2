@@ -44,20 +44,6 @@
             height: 50px;
             margin: 20px 0;
         }
-        .table-hover tbody tr:hover td {
-            background-color: lightgray;
-        }
-        .table tbody tr td:hover {
-            background-color: lightblue;
-            cursor: pointer;
-        }
-        .approved {
-            background-color: lightgreen !important;
-        }
-        .approved-text {
-            color: darkgreen;
-            font-weight: bold;
-        }
     </style>
 </head>
 
@@ -75,33 +61,13 @@
             <button class="btn btn-primary" onclick="addUser()">Add new User</button>
         </div>
 
-
         <h1 class="display-1">Admin Home Page</h1>
 
         <div class="container pt-3">
             <div class="admin-container">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Exam Code</th>
-                            <th>Exam Duration</th>
-                            <th>Preference 1</th>
-                            <th>Preference 2</th>
-                            <th>Preference 3</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>CMPT135</td>
-                            <td>3</td>
-                            <td class="preference">10 AUG</td>
-                            <td class="preference">11 AUG</td>
-                            <td class="preference">12 AUG</td>
-                            <td class="status">Pending</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <button class="btn btn-lg btn-primary" onclick="location.href='/viewRequests'">View Requests</button>
+                <button class="btn btn-lg btn-primary" onclick="location.href='/viewInstructors'">View Instructors</button>
+                <button class="btn btn-lg btn-primary" onclick="location.href='/viewInvigilators'">View Invigilators</button>
             </div>
         </div>
     </main>
@@ -111,20 +77,6 @@
     </script>
 
     <script>
-        document.querySelectorAll('.preference').forEach(function(pref) {
-            pref.addEventListener('click', function() {
-                // Remove approved class from all preferences
-                document.querySelectorAll('.preference').forEach(function(p) {
-                    p.classList.remove('approved');
-                });
-                // Add approved class to the clicked preference
-                pref.classList.add('approved');
-                // Change the status to Approved
-                document.querySelector('.status').textContent = 'Approved';
-                document.querySelector('.status').classList.add('approved-text');
-            });
-        });
-
         let logout = document.querySelector(".log-out-button");
 
         logout.addEventListener("click", async ()=>{
@@ -146,6 +98,9 @@
             location.replace("/admin/register")
         }
 
+        function changePassword() {
+            location.replace("/admin/change-password")
+        }
     </script>
 </body>
 </html>
