@@ -64,12 +64,11 @@
                         </tr>
 
                     </thead>
-                    <tr th:each="course: ${instructor.getInstructorCourses()}">
+                    <tr class="course" th:each="course: ${instructor.getInstructorCourses()}">
                         <td th:text="${course.getDepartment()}"> </td>
                         <td class="course_name" th:text="${course.getCourseName()}"> </td>
                         <td th:text="${course.getExamSlotStatus()} ? 'Approved' : 'Pending' "> </td>
                         <td> <button class="see-requests"> View Requests </button> </td>
-
                     </tr>
 
                 </table>
@@ -84,7 +83,7 @@
     <script>
 
         let logout = document.querySelector(".log-out-button");
-        let viewRequests = document.querySelector(".see-requests");
+        let viewRequests = Array.from(document.getElementsByClassName("course"));
         let viewDepartments = document.querySelector(".view-departments");
         let errorContainer = document.querySelector(".errorContainer");
 
@@ -107,39 +106,42 @@
 
         viewDepartments.addEventListener("click", async ()=>{
             let currentMonthNumber = new Date().getMonth();
-            let month;
+            let semester;
             if (springMonths.includes(currentMonthNumber)){
-                month = "spring";
+                semester = "spring";
             } else if (summerMonths.includes(currentMonthNumber)){
-                month= "summer";
+                semester= "summer";
             } else {
-                month = "fall";
+                semester = "fall";
             }
             try{
-                const response = await fetch(`http://www.sfu.ca/bin/wcm/course-outlines?${ new Date().getFullYear()}/${month}`);
+                const response = await fetch(`http://www.sfu.ca/bin/wcm/course-outlines?${ new Date().getFullYear()}/${semester}`);
                 if(!response.ok){
                     throw new Error(`${response.statusText}`)
                 }
                 const departmentInfo = await response.json();
-                const response2 = await fetch(`instructor/view/departments`, {
+                const response2 = await fetch("/instructor/get/departments", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(departmentInfo)
                 });
-                window.location.href = `/instructor/view/departments`;
+
+                if (!response2.ok) {
+                    throw new Error(`Error in POST request: ${response2.statusText}`);
+                }
+
+                window.location.href = `/instructor/view/departments/${semester}`;
 
             } catch (err){
                 errorContainer.innerText = err;
             }
         });
 
-        document.addEventListener("DOMContentLoaded", (e)=>{
-            e.preventDefault();
-            let courseName = document.querySelector(".course_name").innerText;
-            viewRequests.addEventListener("click", async ()=>{
-
+        document.addEventListener("DOMContentLoaded", ()=>{
+            viewRequests.forEach(element=>element.addEventListener("click", async ()=>{
+                let courseName = element.querySelector(".course_name").innerText;
                 try{
                     const response = await fetch(`/instructor/examslots/${courseName}`);
                     if(!response.ok){
@@ -153,7 +155,7 @@
                 } catch (e){
                     errorContainer.innerText = e;
                 }
-            });
+            }));
 
 
         })

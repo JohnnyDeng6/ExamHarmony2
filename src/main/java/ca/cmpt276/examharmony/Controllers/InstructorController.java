@@ -2,6 +2,8 @@ package ca.cmpt276.examharmony.Controllers;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 
+import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
+import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSecDTO;
 import ca.cmpt276.examharmony.Model.CustomUserDetails;
 import ca.cmpt276.examharmony.Model.DepartmentDTO;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
@@ -17,9 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Collections.sort;
 
@@ -49,7 +49,7 @@ public class InstructorController {
     @Autowired
     private ExamRequestRepository requestRepo;
 
-    private List<DepartmentDTO> departments;
+    private List<DepartmentDTO> departments = Collections.synchronizedList(new ArrayList<>());;
 
     @GetMapping("/instructor/home")
     public String InstructorInfo(Model model) {
@@ -168,17 +168,37 @@ public class InstructorController {
         }
     }
 
-    @PostMapping("/instructor/view/departments/")
-    public void getDepartments(@RequestBody List<DepartmentDTO> departments){
+
+    @PostMapping("/instructor/get/departments")
+    public String getDepartments(Model model, @RequestBody List<DepartmentDTO> departments) {
         this.departments.clear();
         this.departments.addAll(departments);
-    }
-
-    @GetMapping("/instructor/view/departments")
-    public String viewDepartments(Model model){
-        System.out.println(this.departments);
         model.addAttribute("departmentInfo", this.departments);
         return "department-selection";
+    }
+
+    @GetMapping("/instructor/view/departments/{semester}")
+    public String viewDepartments(Model model, @PathVariable("semester") String semester){
+        System.out.println(this.departments);
+        model.addAttribute("departmentInfo", this.departments);
+        model.addAttribute("semester", semester);
+        return "department-selection";
+    }
+
+    @PostMapping("/instructor/view/add/course")
+    public String addCourse(Model model, @RequestBody CoursesSecDTO newCourse){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails){
+            User currentUser = userRepo.findByUsername(userDetails.getUsername());
+            CoursesSec course = CoursesSec.CreateNewCourse(newCourse.department, newCourse.courseName);
+            courseRepo.save(course);
+            currentUser.addCourse(course);
+            userRepo.save(currentUser);
+            model.addAttribute("instructor", currentUser);
+            return "instructorTestPage";
+        } else {
+            return "redirect:/login";
+        }
     }
 }
 

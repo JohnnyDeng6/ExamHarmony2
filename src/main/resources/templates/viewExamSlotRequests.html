@@ -19,7 +19,6 @@
         }
         .container {
             text-align: center;
-            font-family: DejaVu, Sans Mono, monospace,sans-serif;
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -41,7 +40,7 @@
 
 <body>
 <div class="container">
-    <header th:text="'Exam Slot Requests for ' + ${courseName}"></header>
+    <header class="display-4" th:text="'Exam Slot Requests for ' + ${courseName}"></header>
 
     <div class="topnav">
         <button class="log-out-button btn btn-primary">Log out</button>
@@ -77,6 +76,7 @@
                         <td th:text="${examRequest.getExamDuration()}"> </td>
                         <td th:text="${examRequest.getExamDate()}"> </td>
                         <td th:text="${examRequest.getStatus()}"> </td>
+
                         <td class="delete-button"> <button class="btn-danger"> Delete Request </button> </td>
                     </tr>
                 </tbody>

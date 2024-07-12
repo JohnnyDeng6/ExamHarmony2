@@ -52,4 +52,12 @@ public class CoursesSec {
         this.examSlot = e;
     }
 
+    public static CoursesSec CreateNewCourse(String department, String courseName){
+        CoursesSec newCourse = new CoursesSec();
+        newCourse.courseName = courseName;
+        newCourse.department = department;
+        newCourse.examSlotStatus = false;
+        return newCourse;
+    }
+
 }
