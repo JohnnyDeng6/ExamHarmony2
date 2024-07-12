@@ -24,7 +24,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px; 
+            max-width: 1000px;
             width: 100%;
         }
         header {
@@ -38,22 +38,23 @@
     </style>
 </head>
 
-
     <body>
         <div class="container">
             <header>Instructor's Page</header>
 
             <div class="topnav">
                 <button class="log-out-button btn btn-primary">Log out</button>
-            </div>
-
-            <div class="topnav">
                 <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
+                <button class="btn btn-secondary view-departments"> Add a new course </button>
             </div>
 
-            <div th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
+            <div class="test">
 
-                <table class="table">
+            </div>
+
+            <div style="margin: 60px" th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
+
+                <table class="table" >
                     <thead class="thead-dark">
                         <tr>
                             <th> Department </th>
@@ -63,58 +64,31 @@
                         </tr>
 
                     </thead>
-                    <tr th:each="course: ${instructor.getInstructorCourses()}">
+                    <tr class="course" th:each="course: ${instructor.getInstructorCourses()}">
                         <td th:text="${course.getDepartment()}"> </td>
                         <td class="course_name" th:text="${course.getCourseName()}"> </td>
                         <td th:text="${course.getExamSlotStatus()} ? 'Approved' : 'Pending' "> </td>
                         <td> <button class="see-requests"> View Requests </button> </td>
-
                     </tr>
 
                 </table>
 
             </div>
-            <div th:if="${#lists.isEmpty(instructor.getInstructorCourses()) }"> You are not teaching any courses this semester </div>
+            <div style="margin: 60px" th:if="${#lists.isEmpty(instructor.getInstructorCourses()) }"> You are not teaching any courses this semester </div>
             <div class="errorContainer"> </div>
 
-<!--            <form action="/instructor/home" method="post">-->
-<!--                <table class="table">-->
-<!--                    <tr>-->
-<!--                        <td>Enter exam code:</td>-->
-<!--                        <td><input type="text" class="form-control" name="code"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter exam duration:</td>-->
-<!--                        <td><input type="text" class="form-control" name="duration"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter preference 1:</td>-->
-<!--                        <td><input type="text" class="form-control" name="p1"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter preference 2:</td>-->
-<!--                        <td><input type="text" class="form-control" name="p2"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Enter preference 3:</td>-->
-<!--                        <td><input type="text" class="form-control" name="p3"></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Status:</td>-->
-<!--                        <td>Pending</td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-<!--                <div class="submit">-->
-<!--                    <button type="submit" class="btn btn-primary">Submit</button>-->
-<!--                </div>-->
-<!--            </form>-->
         </div>
     </body>
 
     <script>
 
         let logout = document.querySelector(".log-out-button");
-        let viewRequests = document.querySelector(".see-requests");
+        let viewRequests = Array.from(document.getElementsByClassName("course"));
+        let viewDepartments = document.querySelector(".view-departments");
+        let errorContainer = document.querySelector(".errorContainer");
+
+        const springMonths = [0,1,2,3];
+        const summerMonths = [4,5,6,7];
 
         logout.addEventListener("click", async ()=>{
             if(confirm("Are you sure you want to log out?")){
@@ -130,11 +104,44 @@
             }
         });
 
-        document.addEventListener("DOMContentLoaded", (e)=>{
-            e.preventDefault();
-            let courseName = document.querySelector(".course_name").innerText;
-            let errorContainer = document.querySelector(".errorContainer");
-            viewRequests.addEventListener("click", async ()=>{
+        viewDepartments.addEventListener("click", async ()=>{
+            let currentMonthNumber = new Date().getMonth();
+            let semester;
+            if (springMonths.includes(currentMonthNumber)){
+                semester = "spring";
+            } else if (summerMonths.includes(currentMonthNumber)){
+                semester= "summer";
+            } else {
+                semester = "fall";
+            }
+            try{
+                const response = await fetch(`http://www.sfu.ca/bin/wcm/course-outlines?${ new Date().getFullYear()}/${semester}`);
+                if(!response.ok){
+                    throw new Error(`${response.statusText}`)
+                }
+                const departmentInfo = await response.json();
+                const response2 = await fetch("/instructor/get/departments", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(departmentInfo)
+                });
+
+                if (!response2.ok) {
+                    throw new Error(`Error in POST request: ${response2.statusText}`);
+                }
+
+                window.location.href = `/instructor/view/departments/${semester}`;
+
+            } catch (err){
+                errorContainer.innerText = err;
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", ()=>{
+            viewRequests.forEach(element=>element.addEventListener("click", async ()=>{
+                let courseName = element.querySelector(".course_name").innerText;
                 try{
                     const response = await fetch(`/instructor/examslots/${courseName}`);
                     if(!response.ok){
@@ -148,7 +155,9 @@
                 } catch (e){
                     errorContainer.innerText = e;
                 }
-            })
+            }));
+
+
         })
 
 

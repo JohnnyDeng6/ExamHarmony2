@@ -44,6 +44,9 @@ public class ExamRequest implements Comparable<ExamRequest>{
     }
 
     public void setExamDuration(double examDuration) {
+        if(examDuration <= 0){
+            throw new RuntimeException("Duration cannot be negative");
+        }
         this.examDuration = examDuration;
     }
 
