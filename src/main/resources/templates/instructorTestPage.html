@@ -24,7 +24,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px; 
+            max-width: 1000px;
             width: 100%;
         }
         header {
@@ -38,23 +38,23 @@
     </style>
 </head>
 
-
     <body>
         <div class="container">
             <header>Instructor's Page</header>
 
             <div class="topnav">
                 <button class="log-out-button btn btn-primary">Log out</button>
-            </div>
-
-            <div class="topnav">
                 <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
-                <button class="btn btn-secondary"> Add a new course </button>
+                <button class="btn btn-secondary view-departments"> Add a new course </button>
             </div>
 
-            <div th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
+            <div class="test">
 
-                <table class="table">
+            </div>
+
+            <div style="margin: 60px" th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
+
+                <table class="table" >
                     <thead class="thead-dark">
                         <tr>
                             <th> Department </th>
@@ -75,7 +75,7 @@
                 </table>
 
             </div>
-            <div th:if="${#lists.isEmpty(instructor.getInstructorCourses()) }"> You are not teaching any courses this semester </div>
+            <div style="margin: 60px" th:if="${#lists.isEmpty(instructor.getInstructorCourses()) }"> You are not teaching any courses this semester </div>
             <div class="errorContainer"> </div>
 
         </div>
@@ -85,6 +85,11 @@
 
         let logout = document.querySelector(".log-out-button");
         let viewRequests = document.querySelector(".see-requests");
+        let viewDepartments = document.querySelector(".view-departments");
+        let errorContainer = document.querySelector(".errorContainer");
+
+        const springMonths = [0,1,2,3];
+        const summerMonths = [4,5,6,7];
 
         logout.addEventListener("click", async ()=>{
             if(confirm("Are you sure you want to log out?")){
@@ -100,11 +105,41 @@
             }
         });
 
+        viewDepartments.addEventListener("click", async ()=>{
+            let currentMonthNumber = new Date().getMonth();
+            let month;
+            if (springMonths.includes(currentMonthNumber)){
+                month = "spring";
+            } else if (summerMonths.includes(currentMonthNumber)){
+                month= "summer";
+            } else {
+                month = "fall";
+            }
+            try{
+                const response = await fetch(`http://www.sfu.ca/bin/wcm/course-outlines?${ new Date().getFullYear()}/${month}`);
+                if(!response.ok){
+                    throw new Error(`${response.statusText}`)
+                }
+                const departmentInfo = await response.json();
+                const response2 = await fetch(`instructor/view/departments`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(departmentInfo)
+                });
+                window.location.href = `/instructor/view/departments`;
+
+            } catch (err){
+                errorContainer.innerText = err;
+            }
+        });
+
         document.addEventListener("DOMContentLoaded", (e)=>{
             e.preventDefault();
             let courseName = document.querySelector(".course_name").innerText;
-            let errorContainer = document.querySelector(".errorContainer");
             viewRequests.addEventListener("click", async ()=>{
+
                 try{
                     const response = await fetch(`/instructor/examslots/${courseName}`);
                     if(!response.ok){
@@ -118,7 +153,9 @@
                 } catch (e){
                     errorContainer.innerText = e;
                 }
-            })
+            });
+
+
         })
 
 
