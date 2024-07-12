@@ -17,9 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Collections.sort;
 
@@ -49,7 +47,7 @@ public class InstructorController {
     @Autowired
     private ExamRequestRepository requestRepo;
 
-    private List<DepartmentDTO> departments;
+    private List<DepartmentDTO> departments = Collections.synchronizedList(new ArrayList<>());;
 
     @GetMapping("/instructor/home")
     public String InstructorInfo(Model model) {
@@ -168,10 +166,12 @@ public class InstructorController {
         }
     }
 
-    @PostMapping("/instructor/view/departments")
-    public void getDepartments(@RequestBody List<DepartmentDTO> departments){
+    @PostMapping("/instructor/get/departments")
+    public String getDepartments(Model model, @RequestBody List<DepartmentDTO> departments) {
         this.departments.clear();
         this.departments.addAll(departments);
+        model.addAttribute("departmentInfo", this.departments);
+        return "department-selection";
     }
 
     @GetMapping("/instructor/view/departments")

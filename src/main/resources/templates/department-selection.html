@@ -6,13 +6,11 @@
 <body>
     <main>
         <h1> Departments </h1>
-      <div>
-            <div th:each="department : ${departmentInfo}">
+        <div th:each="department : ${departmentInfo}">
 
-                <h3 th:text="${department.name} + '(' + ${department.text} + ')' "> </h3>
-                <button> View Courses </button>
-            </div>
-      </div>
+            <h2 th:text="${department.name} + ' (' + ${department.text} + ')' "> </h2>
+            <button> View Courses </button>
+        </div>
     </main>
 </body>
 </html>

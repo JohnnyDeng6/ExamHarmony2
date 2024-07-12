@@ -69,7 +69,6 @@
                         <td class="course_name" th:text="${course.getCourseName()}"> </td>
                         <td th:text="${course.getExamSlotStatus()} ? 'Approved' : 'Pending' "> </td>
                         <td> <button class="see-requests"> View Requests </button> </td>
-
                     </tr>
 
                 </table>
@@ -121,13 +120,18 @@
                     throw new Error(`${response.statusText}`)
                 }
                 const departmentInfo = await response.json();
-                const response2 = await fetch(`instructor/view/departments`, {
+                const response2 = await fetch("/instructor/get/departments", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(departmentInfo)
                 });
+
+                if (!response2.ok) {
+                    throw new Error(`Error in POST request: ${response2.statusText}`);
+                }
+
                 window.location.href = `/instructor/view/departments`;
 
             } catch (err){
