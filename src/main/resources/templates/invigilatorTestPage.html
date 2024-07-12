@@ -1,10 +1,12 @@
+
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Instructor's Availability</title>
+    <title>Invigilator's Page</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="/scripts.js" defer></script>
     <style>
         body {
             display: flex;
@@ -14,85 +16,146 @@
             background-color: #add8e6;
         }
         .container {
+            text-align: center;
+            font-family: DejaVu, Sans Mono, monospace, sans-serif;
             background: white;
-            font-family: DejaVu, Sans Mono, monospace,sans-serif;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 1000px;
+            max-width: 800px;
             width: 100%;
+            margin-top: 20px;
         }
         header {
             font-size: 24px;
             font-weight: bold;
-            text-align: center;
             margin-bottom: 20px;
         }
-        .embed-responsive {
-            position: relative;
-            display: block;
-            width: 100%;
-            padding: 0;
-            overflow: hidden;
-        }
-        .embed-responsive-16by9::before {
-            padding-top: 56.25%;
-        }
-        .embed-responsive .embed-responsive-item,
-        .embed-responsive iframe,
-        .embed-responsive embed,
-        .embed-responsive object,
-        .embed-responsive video {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
         .submit {
-            margin-top: 20px; 
-            text-align: center;
+            margin-top: 20px;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <div class="topnav">
-            <button class="log-out-button btn btn-primary">Log out</button>
+        <header>Welcome Invigilator</header>
+        <button class="btn btn-primary calendar">Give Availability</button>
+        <button class="btn btn-primary requests">View Requests</button>
+        <button class="log-out-button btn btn-primary">Log out</button>
+        
+        <!-- Google Calendar Section -->
+        <div id="calendarSection" class="hidden">
+            <h2>Invigilator Calendar</h2>
+            <form action="/invigilator/home" method="get">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=America%2FVancouver&bgcolor=%23ffffff&src=YzBiODQyYTFlYzkxNGFkYjM0NjEyZmM2NTI3NDk4OGZkZjZmNTNmZWM1MTY3ZTYxZDM5NmUzMGJkM2EyYWE0ZkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%238E24AA" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                </div>
+                <div class="submit">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
         </div>
-        <header>Invigilator's Availability</header>
-        <form action="/invigilator/home" method="get">
-            <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" src="https://www.when2meet.com/?25467966-k3gkR" allowfullscreen></iframe>
+
+        <!-- Requests Section -->
+        <div id="requestsSection" class="hidden">
+            <h2>Invigilator Requests</h2>
+            <div id="requestsList" th:if="${not #lists.isEmpty(requests)}">
+                <div th:each="request : ${requests}">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Exam Code: <span th:text="${request.examCode}"></span></h5>
+                            <p class="card-text">Date: <span th:text="${request.examDate}"></span></p>
+                            <p class="card-text">Status: <span th:text="${request.status}"></span></p>
+                            <div class="btn-group" role="group" aria-label="Request Actions">
+                                <button type="button" class="btn btn-success accept" th:data-request-id="${request.id}">Accept</button>
+                                <button type="button" class="btn btn-danger reject" th:data-request-id="${request.id}">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="submit">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-        </form>
+            <p th:if="${#lists.isEmpty(requests)}">No requests available.</p>
+        </div>
     </div>
-</body>
 
-<script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let calendarButton = document.querySelector(".calendar");
+            let requestsButton = document.querySelector(".requests");
+            let calendarSection = document.getElementById("calendarSection");
+            let requestsSection = document.getElementById("requestsSection");
 
-    let logout = document.querySelector(".log-out-button");
+            calendarButton.addEventListener("click", function() {
+                calendarSection.classList.remove("hidden");
+                requestsSection.classList.add("hidden");
+            });
 
-    logout.addEventListener("click", async ()=>{
-        if(confirm("Are you sure you want to log out?")){
-            try{
-                const response = await fetch("/logout");
-                if(!response.ok){
-                    throw new Error("Error: Could not log out");
+            requestsButton.addEventListener("click", function() {
+                requestsSection.classList.remove("hidden");
+                calendarSection.classList.add("hidden");
+            });
+
+            let logoutButton = document.querySelector(".log-out-button");
+            logoutButton.addEventListener("click", async () => {
+                if (confirm("Are you sure you want to log out?")) {
+                    try {
+                        const response = await fetch("/logout");
+                        if (!response.ok) {
+                            throw new Error("Error: Could not log out");
+                        }
+                        window.location.reload();
+                    } catch (err) {
+                        console.log(err);
+                    }
                 }
-                window.location.reload();
-            } catch (err){
-                console.log(err);
-            }
-        }
+            });
 
-    });
+            // Handle Accept and Reject buttons
+            document.querySelectorAll(".accept").forEach(button => {
+                button.addEventListener("click", async function() {
+                    let requestId = this.getAttribute("data-request-id");
+                    try {
+                        const response = await fetch(`/invigilator/requests/${requestId}/status`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ status: 'Accepted' })
+                        });
+                        if (!response.ok) {
+                            throw new Error('Error accepting request');
+                        }
+                        window.location.reload(); // Refresh page after successful update
+                    } catch (err) {
+                        console.error('Error accepting request:', err);
+                    }
+                });
+            });
 
-</script>
+            document.querySelectorAll(".reject").forEach(button => {
+                button.addEventListener("click", async function() {
+                    let requestId = this.getAttribute("data-request-id");
+                    try {
+                        const response = await fetch(`/invigilator/requests/${requestId}/status`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ status: 'Rejected' })
+                        });
+                        if (!response.ok) {
+                            throw new Error('Error rejecting request');
+                        }
+                        window.location.reload(); 
+                    } catch (err) {
+                        console.error('Error rejecting request:', err);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
 </html>

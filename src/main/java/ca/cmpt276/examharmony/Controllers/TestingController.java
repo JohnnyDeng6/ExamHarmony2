@@ -51,16 +51,16 @@ public class TestingController {
 
     }
 
-    @GetMapping("/test")
-    public String getTestPage(){
-        return "testPage";
-    }
+    // @GetMapping("/test")
+    // public String getTestPage(){
+    //     return "testPage";
+    // }
 
     @GetMapping("/test/add_user_with_course")
     public void addTestInstructor(){
         CoursesSec course = courseRepo.findByCourseName("CMPT354");
         String password = pwEncorder.encode("Helios6789!");
-        User newUser = User.createUser("Jackson", password , "JacksonPollack@lazersharks.com");
+        User newUser = User.createUser("Jackson", password , "JacksonPollack@lazersharks.com", "Jackson");
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(roleRepo.findByName("INSTRUCTOR"));
         newUser.addCourse(course);

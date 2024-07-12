@@ -39,7 +39,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
         public String registerUserAccount(@ModelAttribute("user") UserRegistrationDto registrationDto, RedirectAttributes redirectAttributes, HttpSession session, Errors errors) {
             try {
                 userService.registerNewUser(registrationDto);
-                redirectAttributes.addFlashAttribute("alertMessage", "New user registered successfully. Return home");
+                redirectAttributes.addFlashAttribute("alertMessage", "New user registered successfully, a link has been sent to the email. Return home");
                 String toEmail = registrationDto.getEmail();
                 String subject = "Registration Confirmation";
                 String body = buildWelcomeEmailBody(registrationDto);
@@ -55,9 +55,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
         }
 
         private String buildWelcomeEmailBody(UserRegistrationDto registrationDto) {
-            String link = "https://examharmony.onrender.com/reset-password?userId=" + registrationDto.getUUID();
-            return "<p>Dear " + registrationDto.getUsername() + ",</p>"
+            String link = "https://examharmony.onrender.com/reset-password?passwordResetToken=" + registrationDto.getResetPasswordToken();
+            return "<p>Dear " + registrationDto.getName() + ",</p>"
                     + "<p>Welcome to ExamHarmony! We are thrilled to have you on board.</p>"
+                    + "<p>Your unique username is: " + registrationDto.getUsername() + ",</p>"
                     + "<p>To get started, please set your password by clicking the link below:</p>"
                     + "<p><a href=\"" + link + "\">Set Your Password</a></p>"
                     + "<p>If you did not register for an account, please ignore this email.</p>"
@@ -65,15 +66,5 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
                     + "<p>The ExamHarmony Team</p>"
                     + "<p><em>Note: This is an automated message, please do not reply.</em></p>";
         }
-
-        @PostMapping("/change-password")
-        public String changePassword(@ModelAttribute("user") UserRegistrationDto registrationDto) {
-
-            return "redirect:/home";
-        }
-
-        //TO DO:
-        //SEND EMAIL TO registrationDto.getEmail()
-        //prompt password change: passwordEncoder.encode(user.setPassword(NEW_PASSWORD);
     }
 

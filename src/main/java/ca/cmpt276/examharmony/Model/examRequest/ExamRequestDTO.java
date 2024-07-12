@@ -13,3 +13,4 @@ public class ExamRequestDTO implements Comparable<ExamRequestDTO>{
         return ~(this.preferenceStatus - o.preferenceStatus);
     }
 }
+

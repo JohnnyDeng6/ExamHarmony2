@@ -1,6 +1,8 @@
 package ca.cmpt276.examharmony.Controllers;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
+
+import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.CustomUserDetails;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequestDTO;
@@ -15,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collections.*;
 import java.util.List;
-
 import static java.util.Collections.sort;
 
 @Controller
