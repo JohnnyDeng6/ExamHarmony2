@@ -168,7 +168,7 @@ public class InstructorController {
         }
     }
 
-    @PostMapping("/instructor/view/departments")
+    @PostMapping("/instructor/view/departments/")
     public void getDepartments(@RequestBody List<DepartmentDTO> departments){
         this.departments.clear();
         this.departments.addAll(departments);

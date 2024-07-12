@@ -1,18 +1,79 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Exam Slot Requests </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #add8e6;
+        }
+        .container {
+            text-align: center;
+            font-family: DejaVu, Sans Mono, monospace,sans-serif;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            width: 100%;
+        }
+        header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+    </style>
 </head>
 <body>
     <main>
         <h1> Departments </h1>
       <div>
-            <div th:each="department : ${departmentInfo}">
+            <div class="department-list" th:each="department : ${departmentInfo}">
 
-                <h3 th:text="${department.name} + '(' + ${department.text} + ')' "> </h3>
-                <button> View Courses </button>
+                <div class="department">
+                    <h3 th:text="${department.name} + '(' + ${department.text} + ')' "> </h3>
+                    <ul class="courses"> </ul>
+                </div>
+
             </div>
       </div>
     </main>
 </body>
+
+<script>
+
+    let departmentsContainer = document.querySelector(".department-list");
+
+    departmentsContainer.addEventListener("DOMContentLoaded", ()=>{
+        let departmentsField = document.getElementsByName("department");
+
+        departmentsField.forEach( async element=>{
+            let departmentName = element.textContent.split('(')[0].trim().toLowerCase();
+
+            try{
+                const response = await fetch(`http://www.sfu.ca/bin/wcm/course-outlines?2015/fall/${departmentName}`);
+                if(!response.ok){
+                    throw new Error(await response.text());
+                }
+                let courses = await response.json();
+
+            }
+        })
+
+    })
+
+
+</script>
 </html>
