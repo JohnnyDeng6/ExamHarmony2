@@ -38,7 +38,6 @@
     </style>
 </head>
 
-
     <body>
         <div class="container">
             <header>Instructor's Page</header>
@@ -47,6 +46,10 @@
                 <button class="log-out-button btn btn-primary">Log out</button>
                 <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
                 <button class="btn btn-secondary view-departments"> Add a new course </button>
+            </div>
+
+            <div class="test">
+
             </div>
 
             <div style="margin: 60px" th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
@@ -117,8 +120,16 @@
                 if(!response.ok){
                     throw new Error(`${response.statusText}`)
                 }
+                const departmentInfo = await response.json();
+                const response2 = await fetch(`instructor/view/departments`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(departmentInfo)
+                });
+                window.location.href = `/instructor/view/departments`;
 
-                console.log(await response.json());
             } catch (err){
                 errorContainer.innerText = err;
             }

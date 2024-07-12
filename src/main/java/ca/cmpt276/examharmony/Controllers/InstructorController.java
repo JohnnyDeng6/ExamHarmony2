@@ -2,7 +2,6 @@ package ca.cmpt276.examharmony.Controllers;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 
-import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.CustomUserDetails;
 import ca.cmpt276.examharmony.Model.DepartmentDTO;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
@@ -17,7 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.Collections.*;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +48,9 @@ public class InstructorController {
 
     @Autowired
     private ExamRequestRepository requestRepo;
-    
+
+    private List<DepartmentDTO> departments;
+
     @GetMapping("/instructor/home")
     public String InstructorInfo(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -167,10 +168,17 @@ public class InstructorController {
         }
     }
 
+    @PostMapping("/instructor/view/departments")
+    public void getDepartments(@RequestBody List<DepartmentDTO> departments){
+        this.departments.clear();
+        this.departments.addAll(departments);
+    }
+
     @GetMapping("/instructor/view/departments")
-    public String viewDepartments(Model model, @RequestBody List<DepartmentDTO> departments){
-        model.addAttribute("departmentInfo", departments);
-        return "fragments/department-selection";
+    public String viewDepartments(Model model){
+        System.out.println(this.departments);
+        model.addAttribute("departmentInfo", this.departments);
+        return "department-selection";
     }
 }
 

@@ -5,7 +5,8 @@
 </head>
 <body>
     <main>
-      <div th:fragment="departmentSelection">
+        <h1> Departments </h1>
+      <div>
             <div th:each="department : ${departmentInfo}">
 
                 <h3 th:text="${department.name} + '(' + ${department.text} + ')' "> </h3>
