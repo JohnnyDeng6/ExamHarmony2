@@ -4,6 +4,7 @@ import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.CustomUserDetails;
+import ca.cmpt276.examharmony.Model.DepartmentDTO;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequestDTO;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequestRepository;
@@ -165,6 +166,11 @@ public class InstructorController {
             return "redirect:/login";
         }
     }
-    
+
+    @GetMapping("/instructor/view/departments")
+    public String viewDepartments(Model model, @RequestBody List<DepartmentDTO> departments){
+        model.addAttribute("departmentInfo", departments);
+        return "fragments/department-selection";
+    }
 }
 
