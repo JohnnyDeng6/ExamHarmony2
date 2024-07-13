@@ -40,7 +40,7 @@
 
     <body>
         <div class="container">
-            <header>Instructor's Page</header>
+            <header th:text="'Welcome Back, ' + ${instructor.username}"> </header>
 
             <div class="topnav">
                 <button class="log-out-button btn btn-primary">Log out</button>
@@ -53,7 +53,7 @@
             </div>
 
             <div style="margin: 60px" th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
-
+                <h3> Your Classes </h3>
                 <table class="table" >
                     <thead class="thead-dark">
                         <tr>
@@ -86,7 +86,6 @@
         let viewRequests = Array.from(document.getElementsByClassName("course"));
         let viewDepartments = document.querySelector(".view-departments");
         let errorContainer = document.querySelector(".errorContainer");
-
         const springMonths = [0,1,2,3];
         const summerMonths = [4,5,6,7];
 
@@ -97,7 +96,9 @@
                     if(!response.ok){
                         throw new Error("Error: Could not log out");
                     }
-                    window.location.reload();
+                    let pageContent = await response.text();
+                    const ExamRequestDisplayPage = window.open(`/instructor/home`, "_self");
+                    ExamRequestDisplayPage.document.body.innerHTML = pageContent;
                 } catch (err){
                     console.log(err);
                 }
@@ -120,6 +121,7 @@
                     throw new Error(`${response.statusText}`)
                 }
                 const departmentInfo = await response.json();
+
                 const response2 = await fetch("/instructor/get/departments", {
                     method: "POST",
                     headers: {
@@ -132,7 +134,9 @@
                     throw new Error(`Error in POST request: ${response2.statusText}`);
                 }
 
-                window.location.href = `/instructor/view/departments/${semester}`;
+                let pageContent = await response2.text();
+                const ExamRequestDisplayPage = window.open(`/instructor/view/departments/${semester}`, "_self");
+                ExamRequestDisplayPage.document.body.innerHTML = pageContent;
 
             } catch (err){
                 errorContainer.innerText = err;
@@ -156,8 +160,6 @@
                     errorContainer.innerText = e;
                 }
             }));
-
-
         })
 
 

@@ -66,7 +66,7 @@ public class InstructorController {
     @PostMapping("/instructor/examslots/edit/{courseName}")
     public String submitData(@RequestBody List<ExamRequestDTO> examRequestDTOList, Model model, @PathVariable("courseName") String courseName) {
         if (examRequestDTOList.isEmpty()) {
-            return "redirect:/login";
+            return "redirect:/instructor/examslots/" + courseName;
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -80,17 +80,19 @@ public class InstructorController {
         }
 
         List<ExamRequest> previousRequests = requestRepo.findExamRequestsByCourseName(courseName);
-        sort(previousRequests);
+
         sort(examRequestDTOList);
+        sort(previousRequests);
 
         // Update already-existing exam requests
         for (ExamRequest previousRequest : previousRequests) {
-
+            System.out.println(previousRequest.getPreferenceStatus());
             //Find a new request which has the same preference and update the old request
             Iterator<ExamRequestDTO> iterator = examRequestDTOList.iterator();
             while (iterator.hasNext()){
                 ExamRequestDTO newRequest = iterator.next();
                 if(newRequest.preferenceStatus == previousRequest.getPreferenceStatus()){
+                    System.out.println(newRequest.examDuration);
                     try{
                         previousRequest.setExamCode(newRequest.examCode);
                         previousRequest.setExamDuration(newRequest.examDuration);
@@ -113,6 +115,7 @@ public class InstructorController {
                 newRequest.setExamDate(newRequestDTO.examDate);
                 newRequest.setCourseName(courseName);
                 newRequest.setStatus("PENDING");
+                newRequest.setPreferenceStatus(newRequestDTO.preferenceStatus);
                 requestRepo.save(newRequest);
                 instructor.addExamRequest(newRequest);
             } catch (RuntimeException invalidParameter){
@@ -122,11 +125,11 @@ public class InstructorController {
         }
         userRepo.save(instructor);
 
-        model.addAttribute("examRequests", instructor.getExamSlotRequests());
+        model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
         model.addAttribute("instructor", instructor);
         model.addAttribute("courseName", courseName);
-
         return "viewExamSlotRequests";
+
     }
 
     @GetMapping("/instructor/examslots/{courseName}")
@@ -134,6 +137,7 @@ public class InstructorController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             User instructor = userRepo.findByUsername(userDetails.getUsername());
+            System.out.println(instructor.findRequestsByCourse(courseName));
             model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
             model.addAttribute("instructor", instructor);
             model.addAttribute("courseName", courseName);
@@ -149,7 +153,7 @@ public class InstructorController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails){
             User instructor = userRepo.findByUsername(userDetails.getUsername());
-            Set<ExamRequest> examRequestList = instructor.findRequestsByCourse(courseName);
+            List<ExamRequest> examRequestList = instructor.findRequestsByCourse(courseName);
             Iterator<ExamRequest> iterator = examRequestList.iterator();
             while (iterator.hasNext()) {
                 ExamRequest request = iterator.next();
@@ -179,7 +183,6 @@ public class InstructorController {
 
     @GetMapping("/instructor/view/departments/{semester}")
     public String viewDepartments(Model model, @PathVariable("semester") String semester){
-        System.out.println(this.departments);
         model.addAttribute("departmentInfo", this.departments);
         model.addAttribute("semester", semester);
         return "department-selection";

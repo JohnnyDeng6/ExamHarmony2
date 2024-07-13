@@ -1,9 +1,6 @@
 package ca.cmpt276.examharmony.Model.user;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
@@ -58,13 +55,13 @@ public class User {
             name = "instructor_exam_requests",
             joinColumns = @JoinColumn(name = "userID"),
             inverseJoinColumns = @JoinColumn(name = "exam_requestID"))
-    private Set<ExamRequest> examSlotRequests = new HashSet<>();
+    private List<ExamRequest> examSlotRequests = new ArrayList<>();
 
-    public Set<ExamRequest> getExamSlotRequests() {
+    public List<ExamRequest> getExamSlotRequests() {
         return examSlotRequests;
     }
 
-    public void setExamSlotRequests(Set<ExamRequest> examSlotRequests) {
+    public void setExamSlotRequests(List<ExamRequest> examSlotRequests) {
         this.examSlotRequests = examSlotRequests;
     }
 
@@ -147,8 +144,8 @@ public class User {
         return passwordResetToken != null && !passwordResetToken.equals(UUID.fromString("00000000-0000-0000-0000-000000000000")) && passwordResetTokenExpiry != null && passwordResetTokenExpiry.isAfter(LocalDateTime.now());
     }
 
-    public Set<ExamRequest> findRequestsByCourse(String courseName){
-        Set<ExamRequest> examRequests = new HashSet<>();
+    public List<ExamRequest> findRequestsByCourse(String courseName){
+        List<ExamRequest> examRequests = new ArrayList<>();
         Iterator<ExamRequest> examRequestIterator = this.examSlotRequests.iterator();
         while (examRequestIterator.hasNext()){
             ExamRequest exam = examRequestIterator.next();
