@@ -6,12 +6,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
-import ca.cmpt276.examharmony.Model.Role;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
 import jakarta.persistence.*;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
+
+import ca.cmpt276.examharmony.Model.Role;
 
 //User of the website
 @Entity
