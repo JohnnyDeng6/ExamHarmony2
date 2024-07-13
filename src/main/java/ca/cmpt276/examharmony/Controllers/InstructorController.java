@@ -66,7 +66,7 @@ public class InstructorController {
     @PostMapping("/instructor/examslots/edit/{courseName}")
     public String submitData(@RequestBody List<ExamRequestDTO> examRequestDTOList, Model model, @PathVariable("courseName") String courseName) {
         if (examRequestDTOList.isEmpty()) {
-            return "redirect:/login";
+            return "redirect:/instructor/examslots/" + courseName;
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -82,7 +82,6 @@ public class InstructorController {
         List<ExamRequest> previousRequests = requestRepo.findExamRequestsByCourseName(courseName);
         sort(previousRequests);
         sort(examRequestDTOList);
-
         // Update already-existing exam requests
         for (ExamRequest previousRequest : previousRequests) {
 
@@ -125,8 +124,8 @@ public class InstructorController {
         model.addAttribute("examRequests", instructor.getExamSlotRequests());
         model.addAttribute("instructor", instructor);
         model.addAttribute("courseName", courseName);
-
         return "viewExamSlotRequests";
+
     }
 
     @GetMapping("/instructor/examslots/{courseName}")
@@ -134,6 +133,7 @@ public class InstructorController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             User instructor = userRepo.findByUsername(userDetails.getUsername());
+            System.out.println(instructor.findRequestsByCourse(courseName));
             model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
             model.addAttribute("instructor", instructor);
             model.addAttribute("courseName", courseName);

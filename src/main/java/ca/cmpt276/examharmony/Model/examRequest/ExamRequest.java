@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @Entity
 @Table(name = "exam_request")
@@ -17,10 +18,15 @@ public class ExamRequest implements Comparable<ExamRequest>{
     //1st, 2nd, or 3rd preference
     @Column(name = "preference")
     private int preferenceStatus;
+    @Column(name = "exam_code")
     private int examCode;
+
+    @Column(name = "exam_date")
     private LocalDateTime examDate;
+    @Column(name = "exam_duration")
     private double examDuration;
     private String status;
+    @Column(name = "course_name")
     private String courseName;
 
 
@@ -63,8 +69,12 @@ public class ExamRequest implements Comparable<ExamRequest>{
     }
 
     public void setExamDate(String examDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        this.examDate = LocalDateTime.parse(examDate, formatter);
+        try{
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            this.examDate = LocalDateTime.parse(examDate, formatter);
+        } catch (DateTimeParseException err){
+            throw err;
+        }
     }
 
     public int getPreferenceStatus() {

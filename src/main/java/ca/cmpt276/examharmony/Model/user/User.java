@@ -158,6 +158,7 @@ public class User {
     }
 
     public void addExamRequest(ExamRequest request){
+        System.out.println("Adding request");
         examSlotRequests.add(request);
     }
 
