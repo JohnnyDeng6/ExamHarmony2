@@ -44,6 +44,7 @@
 
     <div class="topnav">
         <button class="log-out-button btn btn-primary">Log out</button>
+        <button class="home-button btn btn-primary"> Homepage</button>
     </div>
 
         <div th:if="${ not #lists.isEmpty(examRequests) }" style="margin: 40px">
@@ -68,17 +69,19 @@
                             Status
                         </th>
                     </tr>
+
                 </thead>
                 <tbody>
-                    <tr th:each="examRequest: ${examRequests}">
+
+                    <tr class="request" th:each="examRequest: ${examRequests}">
                         <td class="preference" th:text="${examRequest.getPreferenceStatus()}"></td>
                         <td th:text="${examRequest.getExamCode()}"></td>
                         <td th:text="${examRequest.getExamDuration()}"> </td>
                         <td th:text="${examRequest.getExamDate()}"> </td>
                         <td th:text="${examRequest.getStatus()}"> </td>
-
                         <td class="delete-button"> <button class="btn-danger"> Delete Request </button> </td>
                     </tr>
+
                 </tbody>
 
             </table>
@@ -126,6 +129,34 @@
     let logout = document.querySelector(".log-out-button");
     let form = document.querySelector(".form-container");
     let displayContainer = document.querySelector(".table");
+    let requestContainer = Array.from(document.getElementsByClassName("request"));
+    let homeButton = document.querySelector(".home-button");
+
+    homeButton.addEventListener("click", async ()=>{
+        if(confirm("Any exam slot requests not yet submitted will be deleted")){
+            try{
+                const response = await fetch("/instructor/home");
+                if(!response.ok){
+                    throw new Error("Error: Could not go back to homepage");
+                }
+                let pageContent = await response.text();
+                const ExamRequestDisplayPage = window.open(`/instructor/home`, "_self");
+                ExamRequestDisplayPage.document.body.innerHTML = pageContent;
+
+            } catch (err){
+                try{
+                    const response = await fetch("/logout");
+                    if(!response.ok){
+                        throw new Error("Error: Could not log out");
+                    }
+                    window.location.reload();
+                } catch (err){
+                    console.log(err);
+                }
+            }
+        }
+    })
+
     logout.addEventListener("click", async ()=>{
         if(confirm("Are you sure you want to log out?")){
             try{
@@ -151,17 +182,23 @@
         const preferences = [];
 
         if(preference1){
-            preferences.push({ preferenceStatus: 1, examCode: examCode, examDuration: examDuration, examDate: preference1});
+            preferences.push({preferenceStatus: 0, examCode: examCode, examDuration: examDuration, examDate: preference1});
         }
         if(preference2){
-            preferences.push({ preferenceStatus: 2, examCode: examCode, examDuration: examDuration, examDate: preference2});
+            preferences.push({preferenceStatus: 0, examCode: examCode, examDuration: examDuration, examDate: preference2});
         }
         if(preference3){
-            preferences.push({ preferenceStatus: 3, examCode: examCode, examDuration: examDuration, examDate: preference3});
+            preferences.push({preferenceStatus: 0, examCode: examCode, examDuration: examDuration, examDate: preference3});
         }
         console.log(JSON.stringify(preferences));
+        let preferenceStatus = 1;
+        preferences.forEach(element=>{
+            element.preferenceStatus = preferenceStatus;
+            preferenceStatus++;
+        });
+        console.log(preferences);
         try{
-            const response = await fetch(`/instructor/examslots/edit/${courseName}`, {
+            const response = await fetch(`/instructor/examslots/edit/${courseName.replace(/['"]+/g, '')}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -172,9 +209,10 @@
                 throw new Error(`HTTP Status ${response.status}`);
             } else {
                 let pageContent = await response.text();
-                const ExamRequestDisplayPage = window.open(`/instructor/examslots/edit/${courseName}`, "_self");
+                const ExamRequestDisplayPage = window.open(`/instructor/examslots/${courseName.replace(/['"]+/g, '')}`, "_self");
                 ExamRequestDisplayPage.document.body.innerHTML = pageContent;
                 window.location.reload();
+
                 document.querySelector(".feedback").innerText = "Requests Successfully sent";
             }
 
@@ -184,14 +222,13 @@
 
     });
 
-    displayContainer.addEventListener("DOMContentLoaded", (e)=>{
-        e.preventDefault();
-        displayContainer.addEventListener("click", async ()=>{
+    displayContainer.addEventListener("DOMContentLoaded", ()=>{
+        requestContainer.forEach(element=>element.addEventListener("click", async ()=> {
             if(confirm("Are you sure you want to delete this request?")){
-                let preference = displayContainer.querySelector(".preference").value;
+                let preference = element.querySelector(".preference").value;
                 let courseName = '[[${courseName}]]';
                 try{
-                    const response = await fetch(`instructor/examslots/delete/${courseName}/${preference}`);
+                    const response = await fetch(`instructor/examslots/delete/${courseName.replace(/['"]+/g, '')}/${preference}`);
                     if(!response.ok){
                         throw new Error("Error: " + await response.text());
                     }
@@ -201,8 +238,8 @@
                     document.querySelector(".feedback").innerText = err;
                 }
             }
-        })
-    })
+        }));
+    });
 
 </script>
 

@@ -87,7 +87,7 @@ public class ExamRequest implements Comparable<ExamRequest>{
 
     @Override
     public int compareTo(ExamRequest o) {
-        return ~(this.preferenceStatus - o.preferenceStatus);
+        return -(this.preferenceStatus - o.preferenceStatus);
     }
 }
 
