@@ -88,43 +88,53 @@ public class InstructorController {
         sort(examRequestDTOList);
         sort(previousRequests);
 
+        int preferenceStatus = 1;
         // Update already-existing exam requests
         for (ExamRequest previousRequest : previousRequests) {
-            System.out.println(previousRequest.getPreferenceStatus());
             //Find a new request which has the same preference and update the old request
             Iterator<ExamRequestDTO> iterator = examRequestDTOList.iterator();
+
             while (iterator.hasNext()){
                 ExamRequestDTO newRequest = iterator.next();
                 if(newRequest.preferenceStatus == previousRequest.getPreferenceStatus()){
-                    System.out.println(newRequest.examDuration);
                     try{
                         previousRequest.setExamCode(newRequest.examCode);
                         previousRequest.setExamDuration(newRequest.examDuration);
                         previousRequest.setExamDate(newRequest.examDate);
                         requestRepo.save(previousRequest);
+
                         iterator.remove();
                     } catch (RuntimeException invalidParameter){
                         throw new BadRequest(invalidParameter.getMessage());
                     }
                 }
             }
+            preferenceStatus++;
         }
 
         // Add new exam requests
         for (ExamRequestDTO newRequestDTO : examRequestDTOList) {
-            try{
+            try {
                 ExamRequest newRequest = new ExamRequest();
                 newRequest.setExamCode(newRequestDTO.examCode);
                 newRequest.setExamDuration(newRequestDTO.examDuration);
                 newRequest.setExamDate(newRequestDTO.examDate);
                 newRequest.setCourseName(courseName);
                 newRequest.setStatus("PENDING");
-                newRequest.setPreferenceStatus(newRequestDTO.preferenceStatus);
+                newRequest.setPreferenceStatus(preferenceStatus);
                 requestRepo.save(newRequest);
                 instructor.addExamRequest(newRequest);
-            } catch (RuntimeException invalidParameter){
+                preferenceStatus++;
+            } catch (RuntimeException invalidParameter) {
                 throw new BadRequest(invalidParameter.getMessage());
             }
+        }
+
+        for(ExamRequest t: instructor.findRequestsByCourse(courseName)){
+            System.out.println(t.getExamDuration());
+            System.out.println(t.getExamDate());
+            System.out.println(t.getPreferenceStatus());
+            System.out.println(t.getExamCode());
 
         }
         userRepo.save(instructor);

@@ -51,7 +51,7 @@ public class ExamRequest implements Comparable<ExamRequest>{
 
     public void setExamDuration(double examDuration) {
         if(examDuration <= 0){
-            throw new RuntimeException("Duration cannot be negative");
+            throw new RuntimeException("Duration must be non-negative");
         }
         this.examDuration = examDuration;
     }
@@ -73,7 +73,7 @@ public class ExamRequest implements Comparable<ExamRequest>{
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             this.examDate = LocalDateTime.parse(examDate, formatter);
         } catch (DateTimeParseException err){
-            throw err;
+            throw new RuntimeException("Date could not be parsed, check format and make sure it contains valid characters");
         }
     }
 

@@ -97,7 +97,7 @@
                     <td><input type="text" class="form-control code" name="code"></td>
                 </tr>
                 <tr>
-                    <td>Enter exam duration:</td>
+                    <td>Enter exam duration (hours):</td>
                     <td><input type="text" class="form-control duration" name="duration"></td>
                 </tr>
                 <tr>
@@ -171,8 +171,8 @@
         }
     });
 
-    form.addEventListener("submit", async ()=>{
-
+    form.addEventListener("submit", async (e)=>{
+        e.preventDefault();
         const examCode = document.querySelector('.code').value;
         const examDuration = document.querySelector('.duration').value;
         const preference1 = document.querySelector('.p1').value;
@@ -182,21 +182,15 @@
         const preferences = [];
 
         if(preference1){
-            preferences.push({preferenceStatus: 0, examCode: examCode, examDuration: examDuration, examDate: preference1});
+            preferences.push({preferenceStatus: 1, examCode: examCode, examDuration: examDuration, examDate: preference1});
         }
         if(preference2){
-            preferences.push({preferenceStatus: 0, examCode: examCode, examDuration: examDuration, examDate: preference2});
+            preferences.push({preferenceStatus: 2, examCode: examCode, examDuration: examDuration, examDate: preference2});
         }
         if(preference3){
-            preferences.push({preferenceStatus: 0, examCode: examCode, examDuration: examDuration, examDate: preference3});
+            preferences.push({preferenceStatus: 3, examCode: examCode, examDuration: examDuration, examDate: preference3});
         }
-        console.log(JSON.stringify(preferences));
-        let preferenceStatus = 1;
-        preferences.forEach(element=>{
-            element.preferenceStatus = preferenceStatus;
-            preferenceStatus++;
-        });
-        console.log(preferences);
+
         try{
             const response = await fetch(`/instructor/examslots/edit/${courseName.replace(/['"]+/g, '')}`, {
                 method: "POST",
@@ -206,7 +200,9 @@
                 body: JSON.stringify(preferences)
             });
             if(!response.ok){
-                throw new Error(`HTTP Status ${response.status}`);
+                const errorData = await response.json();
+                const errorMessage = errorData.trace;
+                throw new Error(errorMessage);
             } else {
                 let pageContent = await response.text();
                 const ExamRequestDisplayPage = window.open(`/instructor/examslots/${courseName.replace(/['"]+/g, '')}`, "_self");
@@ -215,19 +211,21 @@
             }
 
         } catch (err){
-            document.querySelector(".feedback").innerText = err;
+            document.querySelector(".feedback").innerText = err.message.split("\tat ca.cmpt276.examharmony.Controllers.InstructorController.submitData(InstructorController.java:134)")[0];
+            console.log(err.message.split("\tat ca.cmpt276.examharmony.Controllers.InstructorController.submitData(InstructorController.java:134)")[0]);
         }
 
     });
 
-    document.addEventListener("DOMContentLoaded", ()=>{
+    document.addEventListener("DOMContentLoaded", (e)=>{
+        e.preventDefault();
         let requestContainer = Array.from(document.getElementsByClassName("request"));
         requestContainer.forEach(element=>{
             let deleteButton = element.querySelector(".delete-button");
-            deleteButton.addEventListener("click", async ()=> {
+            deleteButton.addEventListener("click", async (e)=> {
+                e.preventDefault();
                 if(confirm("Are you sure you want to delete this request?")){
                     let preference = element.querySelector(".preference").innerText;
-                    console.log(preference);
                     let courseName = '[[${courseName}]]';
                     try{
                         const response = await fetch(`/instructor/examslots/delete/${courseName.replace(/['"]+/g, '')}/${preference}`,{
