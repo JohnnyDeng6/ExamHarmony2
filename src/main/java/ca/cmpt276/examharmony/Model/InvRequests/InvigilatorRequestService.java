@@ -10,22 +10,22 @@ public class InvigilatorRequestService {
     @Autowired
     private InvigilatorRequestRepository invigilatorRequestRepository;
 
-    public List<InvigilatorRequest> getRequests(String username) {
-        List<InvigilatorRequest> requests = invigilatorRequestRepository.findByUsername(username);
+    public List<invigilatorRequest> getRequests(String username) {
+        List<invigilatorRequest> requests = invigilatorRequestRepository.findByUsername(username);
         System.out.println("Fetched requests for username " + username + ": " + requests.size());
         return requests;
     }
 
-    public InvigilatorRequest updateStatus(int id, String status) {
-        InvigilatorRequest request = invigilatorRequestRepository.findById(id)
+    public invigilatorRequest updateStatus(int id, String status) {
+        invigilatorRequest request = invigilatorRequestRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Request not found"));
         request.setStatus(status);
         return invigilatorRequestRepository.save(request);
     }
 
-    public InvigilatorRequest createRequest(String username, String email, String examCode,
-    LocalDateTime examDate) {
-        InvigilatorRequest request = new InvigilatorRequest(username, email,  examCode, examDate);
+    public invigilatorRequest createRequest(String username, String email, String examCode,
+                                            LocalDateTime examDate) {
+        invigilatorRequest request = new invigilatorRequest(username, email,  examCode, examDate);
         return invigilatorRequestRepository.save(request);
     }
 }
