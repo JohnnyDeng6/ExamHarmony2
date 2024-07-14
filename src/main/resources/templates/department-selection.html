@@ -176,7 +176,6 @@
     let homeButton = document.querySelector(".home-button");
 
     homeButton.addEventListener("click", async ()=>{
-        if(confirm("Any exam slot requests not yet submitted will be deleted")){
             try{
                 const response = await fetch("/instructor/home");
                 if(!response.ok){
@@ -197,7 +196,6 @@
                     console.log(err);
                 }
             }
-        }
     })
 
     document.addEventListener("DOMContentLoaded", async () => {
