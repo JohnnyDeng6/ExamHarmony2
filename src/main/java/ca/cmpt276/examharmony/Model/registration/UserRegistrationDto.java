@@ -1,7 +1,5 @@
 package ca.cmpt276.examharmony.Model.registration;
 
-import ca.cmpt276.examharmony.Model.Role;
-
 import java.util.Set;
 import java.util.UUID;
 

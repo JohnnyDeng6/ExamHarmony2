@@ -1,4 +1,4 @@
-package ca.cmpt276.examharmony.Model;
+package ca.cmpt276.examharmony.Model.DTOs;
 
 public class DepartmentDTO {
 

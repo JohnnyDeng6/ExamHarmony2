@@ -6,22 +6,22 @@ import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
 import jakarta.persistence.*;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.UuidGenerator;
-
-import ca.cmpt276.examharmony.Model.Role;
+import ca.cmpt276.examharmony.Model.roles.Role;
+import jakarta.transaction.Transactional;
 
 //User of the website
 @Entity
 @Table(name="users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "uuid", columnDefinition = "CHAR(36)")
     private UUID uuid;
     @Column(nullable = false, unique = true)
     private String username;
+
+
     @Column(nullable = false, unique = true)
     private String emailAddress;
     @Column(name = "prtExpiry", unique = true)
@@ -50,7 +50,7 @@ public class User {
         return roles;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
     @JoinTable(
             name = "instructor_exam_requests",
             joinColumns = @JoinColumn(name = "userID"),
@@ -140,6 +140,10 @@ public class User {
         return passwordResetToken;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
     public boolean isPasswordResetTokenValid() {
         return passwordResetToken != null && !passwordResetToken.equals(UUID.fromString("00000000-0000-0000-0000-000000000000")) && passwordResetTokenExpiry != null && passwordResetTokenExpiry.isAfter(LocalDateTime.now());
     }
@@ -178,4 +182,10 @@ public class User {
     public void setPasswordResetTokenExpiry(LocalDateTime passwordResetTokenExpiry) {
         this.passwordResetTokenExpiry = passwordResetTokenExpiry;
     }
+
+    @Transactional
+    public void deleteExamRequest(ExamRequest examRequest) {
+        this.examSlotRequests.remove(examRequest);
+    }
+
 }

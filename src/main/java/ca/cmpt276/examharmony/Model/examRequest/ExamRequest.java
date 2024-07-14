@@ -77,6 +77,10 @@ public class ExamRequest implements Comparable<ExamRequest>{
         }
     }
 
+    public int getID() {
+        return ID;
+    }
+
     public int getPreferenceStatus() {
         return preferenceStatus;
     }
@@ -87,7 +91,7 @@ public class ExamRequest implements Comparable<ExamRequest>{
 
     @Override
     public int compareTo(ExamRequest o) {
-        return -(this.preferenceStatus - o.preferenceStatus);
+        return (this.preferenceStatus - o.preferenceStatus);
     }
 }
 

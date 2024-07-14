@@ -4,13 +4,14 @@ import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSecDTO;
-import ca.cmpt276.examharmony.Model.CustomUserDetails;
-import ca.cmpt276.examharmony.Model.DepartmentDTO;
+import ca.cmpt276.examharmony.utils.CustomUserDetails;
+import ca.cmpt276.examharmony.Model.DTOs.DepartmentDTO;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequestDTO;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequestRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
+import ca.cmpt276.examharmony.utils.InstructorExamSlotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -48,6 +49,9 @@ public class InstructorController {
 
     @Autowired
     private ExamRequestRepository requestRepo;
+
+    @Autowired
+    private InstructorExamSlotRepository instructorExamSlotRepo;
 
     private List<DepartmentDTO> departments = Collections.synchronizedList(new ArrayList<>());;
 
@@ -158,8 +162,15 @@ public class InstructorController {
             while (iterator.hasNext()) {
                 ExamRequest request = iterator.next();
                 if (request.getPreferenceStatus() == preference) {
+                    instructorExamSlotRepo.removeUserExamRequestAssociation(instructor.getUuid(), request.getID());
+                    instructor.deleteExamRequest(request);
                     requestRepo.delete(request);
                     iterator.remove();
+                    while(iterator.hasNext()){
+                        ExamRequest nextRequest = iterator.next();
+                        nextRequest.setPreferenceStatus(nextRequest.getPreferenceStatus()-1);
+                        requestRepo.save(nextRequest);
+                    }
                     model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
                     model.addAttribute("instructor", instructor);
                     model.addAttribute("courseName", courseName);
