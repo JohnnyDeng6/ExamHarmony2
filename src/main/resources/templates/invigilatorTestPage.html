@@ -14,6 +14,7 @@
         .body {
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: #add8e6;
@@ -81,6 +82,7 @@
             <p th:if="${#lists.isEmpty(requests)}">No requests available.</p>
         </div>
     </div>
+    <header th:insert="fragments/footer :: footer"></header>
 </div>
 
     <script>
