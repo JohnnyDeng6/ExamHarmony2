@@ -63,7 +63,7 @@ public class InvigilatorRequest {
     }
     public InvigilatorRequest() {
     }
-    public InvigilatorRequest(String username, String email, String examCode,LocalDateTime examDate) {
+    public InvigilatorRequest(String username, String email, String examCode, LocalDateTime examDate) {
         this.username = username;
         this.email = email;
         //this.inv_id = inv_id;

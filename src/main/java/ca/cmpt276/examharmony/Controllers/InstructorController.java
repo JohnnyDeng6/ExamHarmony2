@@ -4,13 +4,14 @@ import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSecDTO;
-import ca.cmpt276.examharmony.Model.CustomUserDetails;
-import ca.cmpt276.examharmony.Model.DepartmentDTO;
+import ca.cmpt276.examharmony.utils.CustomUserDetails;
+import ca.cmpt276.examharmony.Model.DTOs.DepartmentDTO;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequestDTO;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequestRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
+import ca.cmpt276.examharmony.utils.InstructorExamSlotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -49,6 +50,9 @@ public class InstructorController {
     @Autowired
     private ExamRequestRepository requestRepo;
 
+    @Autowired
+    private InstructorExamSlotRepository instructorExamSlotRepo;
+
     private List<DepartmentDTO> departments = Collections.synchronizedList(new ArrayList<>());;
 
     @GetMapping("/instructor/home")
@@ -83,20 +87,22 @@ public class InstructorController {
 
         sort(examRequestDTOList);
         sort(previousRequests);
-
+        Iterator<ExamRequest> examRequestIterator = previousRequests.iterator();
+        int preferenceStatus = 1;
         // Update already-existing exam requests
-        for (ExamRequest previousRequest : previousRequests) {
-            System.out.println(previousRequest.getPreferenceStatus());
+       while(examRequestIterator.hasNext()) {
+           ExamRequest previousRequest = examRequestIterator.next();
             //Find a new request which has the same preference and update the old request
             Iterator<ExamRequestDTO> iterator = examRequestDTOList.iterator();
+
             while (iterator.hasNext()){
                 ExamRequestDTO newRequest = iterator.next();
                 if(newRequest.preferenceStatus == previousRequest.getPreferenceStatus()){
-                    System.out.println(newRequest.examDuration);
                     try{
                         previousRequest.setExamCode(newRequest.examCode);
                         previousRequest.setExamDuration(newRequest.examDuration);
                         previousRequest.setExamDate(newRequest.examDate);
+                        instructor.updateExamRequest(previousRequest, newRequest.examDate);
                         requestRepo.save(previousRequest);
                         iterator.remove();
                     } catch (RuntimeException invalidParameter){
@@ -104,23 +110,31 @@ public class InstructorController {
                     }
                 }
             }
+            preferenceStatus++;
         }
-
         // Add new exam requests
         for (ExamRequestDTO newRequestDTO : examRequestDTOList) {
-            try{
+            try {
                 ExamRequest newRequest = new ExamRequest();
                 newRequest.setExamCode(newRequestDTO.examCode);
                 newRequest.setExamDuration(newRequestDTO.examDuration);
                 newRequest.setExamDate(newRequestDTO.examDate);
                 newRequest.setCourseName(courseName);
                 newRequest.setStatus("PENDING");
-                newRequest.setPreferenceStatus(newRequestDTO.preferenceStatus);
+                newRequest.setPreferenceStatus(preferenceStatus);
                 requestRepo.save(newRequest);
-                instructor.addExamRequest(newRequest);
-            } catch (RuntimeException invalidParameter){
+                instructor.addNewExamRequest(newRequest);
+                preferenceStatus++;
+            } catch (RuntimeException invalidParameter) {
                 throw new BadRequest(invalidParameter.getMessage());
             }
+        }
+
+        for(ExamRequest t: instructor.findRequestsByCourse(courseName)){
+            System.out.println(t.getExamDuration());
+            System.out.println(t.getExamDate());
+            System.out.println(t.getPreferenceStatus());
+            System.out.println(t.getExamCode());
 
         }
         userRepo.save(instructor);
@@ -158,8 +172,15 @@ public class InstructorController {
             while (iterator.hasNext()) {
                 ExamRequest request = iterator.next();
                 if (request.getPreferenceStatus() == preference) {
+                    instructorExamSlotRepo.removeUserExamRequestAssociation(instructor.getUuid(), request.getID());
+                    instructor.deleteExamRequest(request);
                     requestRepo.delete(request);
                     iterator.remove();
+                    while(iterator.hasNext()){
+                        ExamRequest nextRequest = iterator.next();
+                        nextRequest.setPreferenceStatus(nextRequest.getPreferenceStatus()-1);
+                        requestRepo.save(nextRequest);
+                    }
                     model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
                     model.addAttribute("instructor", instructor);
                     model.addAttribute("courseName", courseName);

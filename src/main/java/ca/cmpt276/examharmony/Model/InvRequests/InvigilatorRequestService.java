@@ -24,7 +24,7 @@ public class InvigilatorRequestService {
     }
 
     public InvigilatorRequest createRequest(String username, String email, String examCode,
-    LocalDateTime examDate) {
+                                            LocalDateTime examDate) {
         InvigilatorRequest request = new InvigilatorRequest(username, email,  examCode, examDate);
         return invigilatorRequestRepository.save(request);
     }
