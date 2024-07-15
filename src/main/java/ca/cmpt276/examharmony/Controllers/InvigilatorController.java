@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequest;
 
 @Controller
 @RequestMapping("/invigilator")

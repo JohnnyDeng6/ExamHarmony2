@@ -118,6 +118,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/scripts.js" defer></script>
     <style>
         body {
             display: flex;
@@ -176,7 +177,6 @@
     let homeButton = document.querySelector(".home-button");
 
     homeButton.addEventListener("click", async ()=>{
-        if(confirm("Any exam slot requests not yet submitted will be deleted")){
             try{
                 const response = await fetch("/instructor/home");
                 if(!response.ok){
@@ -197,7 +197,6 @@
                     console.log(err);
                 }
             }
-        }
     })
 
     document.addEventListener("DOMContentLoaded", async () => {
