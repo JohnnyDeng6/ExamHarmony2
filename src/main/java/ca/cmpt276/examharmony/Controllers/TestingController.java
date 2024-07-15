@@ -2,15 +2,14 @@ package ca.cmpt276.examharmony.Controllers;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
-import ca.cmpt276.examharmony.Model.Role;
-import ca.cmpt276.examharmony.Model.RoleRepository;
+import ca.cmpt276.examharmony.Model.roles.Role;
+import ca.cmpt276.examharmony.Model.roles.RoleRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.HashSet;
 import java.util.Set;

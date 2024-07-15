@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "invigilator_request")
-public class InvigilatorRequest {
+public class invigilatorRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
@@ -62,9 +62,9 @@ public class InvigilatorRequest {
     public void setInv_id(int inv_id) {
         this.inv_id = inv_id;
     }
-    public InvigilatorRequest() {
+    public invigilatorRequest() {
     }
-    public InvigilatorRequest(String username, String email, String examCode,LocalDateTime examDate) {
+    public invigilatorRequest(String username, String email, String examCode,LocalDateTime examDate) {
         this.username = username;
         this.email = email;
         //this.inv_id = inv_id;

@@ -1,7 +1,7 @@
 package ca.cmpt276.examharmony;
 
-import ca.cmpt276.examharmony.Model.CustomUserDetailService;
-import ca.cmpt276.examharmony.Model.LoginSuccessHandler;
+import ca.cmpt276.examharmony.utils.CustomUserDetailService;
+import ca.cmpt276.examharmony.utils.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
