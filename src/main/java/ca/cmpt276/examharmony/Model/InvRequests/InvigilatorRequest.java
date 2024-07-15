@@ -1,13 +1,12 @@
 package ca.cmpt276.examharmony.Model.InvRequests;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "invigilator_request")
-public class invigilatorRequest {
+public class InvigilatorRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
@@ -62,9 +61,9 @@ public class invigilatorRequest {
     public void setInv_id(int inv_id) {
         this.inv_id = inv_id;
     }
-    public invigilatorRequest() {
+    public InvigilatorRequest() {
     }
-    public invigilatorRequest(String username, String email, String examCode,LocalDateTime examDate) {
+    public InvigilatorRequest(String username, String email, String examCode, LocalDateTime examDate) {
         this.username = username;
         this.email = email;
         //this.inv_id = inv_id;

@@ -1,6 +1,6 @@
 package ca.cmpt276.examharmony.Controllers;
 
-import ca.cmpt276.examharmony.Model.InvRequests.invigilatorRequest;
+import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequest;
 import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.web.exchanges.HttpExchange.Principal;
@@ -21,7 +21,7 @@ public class InvigilatorController {
     @GetMapping("/home")
     public String showHomePage(Model model, Principal principal) {
         String username = principal.getName();
-        List<invigilatorRequest> requests = invigilatorRequestService.getRequests(username);
+        List<InvigilatorRequest> requests = invigilatorRequestService.getRequests(username);
         model.addAttribute("requests", requests);
         return "invigilatorTestPage";
     }
@@ -29,13 +29,13 @@ public class InvigilatorController {
 
     @GetMapping("/requests/{username}")
     @ResponseBody
-    public List<invigilatorRequest> getRequests(@PathVariable String username) {
+    public List<InvigilatorRequest> getRequests(@PathVariable String username) {
         return invigilatorRequestService.getRequests(username);
     }
 
     @PostMapping("/requests/{requestId}/status")
     @ResponseBody
-    public invigilatorRequest updateRequestStatus(@PathVariable int requestId, @RequestParam String status) {
+    public InvigilatorRequest updateRequestStatus(@PathVariable int requestId, @RequestParam String status) {
         return invigilatorRequestService.updateStatus(requestId, status);
     }
 }
