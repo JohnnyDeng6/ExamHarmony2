@@ -1,6 +1,6 @@
 package ca.cmpt276.examharmony.Model.user;
 
-import ca.cmpt276.examharmony.Controllers.UserAlreadyExistException;
+import ca.cmpt276.examharmony.utils.UserAlreadyExistException;
 import ca.cmpt276.examharmony.Model.roles.Role;
 import ca.cmpt276.examharmony.Model.roles.RoleRepository;
 import ca.cmpt276.examharmony.Model.registration.UserRegistrationDto;
