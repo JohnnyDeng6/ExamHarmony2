@@ -87,10 +87,11 @@ public class InstructorController {
 
         sort(examRequestDTOList);
         sort(previousRequests);
-
+        Iterator<ExamRequest> examRequestIterator = previousRequests.iterator();
         int preferenceStatus = 1;
         // Update already-existing exam requests
-        for (ExamRequest previousRequest : previousRequests) {
+       while(examRequestIterator.hasNext()) {
+           ExamRequest previousRequest = examRequestIterator.next();
             //Find a new request which has the same preference and update the old request
             Iterator<ExamRequestDTO> iterator = examRequestDTOList.iterator();
 
@@ -101,8 +102,8 @@ public class InstructorController {
                         previousRequest.setExamCode(newRequest.examCode);
                         previousRequest.setExamDuration(newRequest.examDuration);
                         previousRequest.setExamDate(newRequest.examDate);
+                        instructor.updateExamRequest(previousRequest, newRequest.examDate);
                         requestRepo.save(previousRequest);
-
                         iterator.remove();
                     } catch (RuntimeException invalidParameter){
                         throw new BadRequest(invalidParameter.getMessage());
@@ -111,7 +112,6 @@ public class InstructorController {
             }
             preferenceStatus++;
         }
-
         // Add new exam requests
         for (ExamRequestDTO newRequestDTO : examRequestDTOList) {
             try {
@@ -123,7 +123,7 @@ public class InstructorController {
                 newRequest.setStatus("PENDING");
                 newRequest.setPreferenceStatus(preferenceStatus);
                 requestRepo.save(newRequest);
-                instructor.addExamRequest(newRequest);
+                instructor.addNewExamRequest(newRequest);
                 preferenceStatus++;
             } catch (RuntimeException invalidParameter) {
                 throw new BadRequest(invalidParameter.getMessage());

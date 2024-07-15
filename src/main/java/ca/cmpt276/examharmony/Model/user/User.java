@@ -160,8 +160,21 @@ public class User {
         return examRequests;
     }
 
-    public void addExamRequest(ExamRequest request){
+    public void addNewExamRequest(ExamRequest request){
+
         examSlotRequests.add(request);
+    }
+
+    public void updateExamRequest(ExamRequest request, String newDate){
+        for(ExamRequest examRequest: this.examSlotRequests){
+            if(examRequest.getPreferenceStatus() == request.getPreferenceStatus() && examRequest.getCourseName().equals(request.getCourseName())){
+                examRequest.setExamCode(request.getExamCode());
+                examRequest.setExamDate(newDate);
+                examRequest.setExamDuration(request.getExamDuration());
+                examRequest.setStatus(request.getStatus());
+                return;
+            }
+        }
     }
 
     public boolean hasRole(String roleName) {
