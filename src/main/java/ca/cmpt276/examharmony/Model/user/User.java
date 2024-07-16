@@ -1,30 +1,27 @@
 package ca.cmpt276.examharmony.Model.user;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
 import jakarta.persistence.*;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.UuidGenerator;
-
-import ca.cmpt276.examharmony.Model.Role;
+import ca.cmpt276.examharmony.Model.roles.Role;
+import jakarta.transaction.Transactional;
 
 //User of the website
 @Entity
 @Table(name="users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "uuid", columnDefinition = "CHAR(36)")
     private UUID uuid;
     @Column(nullable = false, unique = true)
     private String username;
+
+
     @Column(nullable = false, unique = true)
     private String emailAddress;
     @Column(name = "prtExpiry", unique = true)
@@ -53,18 +50,25 @@ public class User {
         return roles;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    public String getHighestRole() {
+        for (Role role : roles) {
+            return role.getName().toLowerCase();
+        }
+        return "";
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
     @JoinTable(
             name = "instructor_exam_requests",
             joinColumns = @JoinColumn(name = "userID"),
             inverseJoinColumns = @JoinColumn(name = "exam_requestID"))
-    private Set<ExamRequest> examSlotRequests = new HashSet<>();
+    private List<ExamRequest> examSlotRequests = new ArrayList<>();
 
-    public Set<ExamRequest> getExamSlotRequests() {
+    public List<ExamRequest> getExamSlotRequests() {
         return examSlotRequests;
     }
 
-    public void setExamSlotRequests(Set<ExamRequest> examSlotRequests) {
+    public void setExamSlotRequests(List<ExamRequest> examSlotRequests) {
         this.examSlotRequests = examSlotRequests;
     }
 
@@ -143,12 +147,16 @@ public class User {
         return passwordResetToken;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
     public boolean isPasswordResetTokenValid() {
         return passwordResetToken != null && !passwordResetToken.equals(UUID.fromString("00000000-0000-0000-0000-000000000000")) && passwordResetTokenExpiry != null && passwordResetTokenExpiry.isAfter(LocalDateTime.now());
     }
 
-    public Set<ExamRequest> findRequestsByCourse(String courseName){
-        Set<ExamRequest> examRequests = new HashSet<>();
+    public List<ExamRequest> findRequestsByCourse(String courseName){
+        List<ExamRequest> examRequests = new ArrayList<>();
         Iterator<ExamRequest> examRequestIterator = this.examSlotRequests.iterator();
         while (examRequestIterator.hasNext()){
             ExamRequest exam = examRequestIterator.next();
@@ -159,9 +167,21 @@ public class User {
         return examRequests;
     }
 
-    public void addExamRequest(ExamRequest request){
-        System.out.println("Adding request");
+    public void addNewExamRequest(ExamRequest request){
+
         examSlotRequests.add(request);
+    }
+
+    public void updateExamRequest(ExamRequest request, String newDate){
+        for(ExamRequest examRequest: this.examSlotRequests){
+            if(examRequest.getPreferenceStatus() == request.getPreferenceStatus() && examRequest.getCourseName().equals(request.getCourseName())){
+                examRequest.setExamCode(request.getExamCode());
+                examRequest.setExamDate(newDate);
+                examRequest.setExamDuration(request.getExamDuration());
+                examRequest.setStatus(request.getStatus());
+                return;
+            }
+        }
     }
 
     public boolean hasRole(String roleName) {
@@ -182,4 +202,10 @@ public class User {
     public void setPasswordResetTokenExpiry(LocalDateTime passwordResetTokenExpiry) {
         this.passwordResetTokenExpiry = passwordResetTokenExpiry;
     }
+
+    @Transactional
+    public void deleteExamRequest(ExamRequest examRequest) {
+        this.examSlotRequests.remove(examRequest);
+    }
+
 }

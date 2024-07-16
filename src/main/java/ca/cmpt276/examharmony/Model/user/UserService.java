@@ -1,21 +1,17 @@
 package ca.cmpt276.examharmony.Model.user;
 
-import ca.cmpt276.examharmony.Controllers.UserAlreadyExistException;
-import ca.cmpt276.examharmony.Model.Role;
-import ca.cmpt276.examharmony.Model.RoleRepository;
+import ca.cmpt276.examharmony.utils.UserAlreadyExistException;
+import ca.cmpt276.examharmony.Model.roles.Role;
+import ca.cmpt276.examharmony.Model.roles.RoleRepository;
 import ca.cmpt276.examharmony.Model.registration.UserRegistrationDto;
 import ca.cmpt276.examharmony.utils.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
-import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 
