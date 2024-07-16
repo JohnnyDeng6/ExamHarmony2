@@ -1,16 +1,11 @@
 
 package ca.cmpt276.examharmony.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import ca.cmpt276.examharmony.Model.examSlot.examSlotRepository;
-import ca.cmpt276.examharmony.Model.user.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import ca.cmpt276.examharmony.Model.CustomUserDetails;
 import ca.cmpt276.examharmony.Model.examSlot.examSlot;
-import ca.cmpt276.examharmony.Model.user.User;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.ui.Model;
 
-import java.util.UUID;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;

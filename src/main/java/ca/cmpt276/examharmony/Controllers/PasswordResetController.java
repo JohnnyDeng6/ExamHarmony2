@@ -1,12 +1,10 @@
 package ca.cmpt276.examharmony.Controllers;
 
-import ca.cmpt276.examharmony.Model.CustomUserDetails;
+import ca.cmpt276.examharmony.utils.CustomUserDetails;
 import ca.cmpt276.examharmony.Model.emailSender.EmailService;
-import ca.cmpt276.examharmony.Model.registration.UserRegistrationDto;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import ca.cmpt276.examharmony.Model.user.UserService;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

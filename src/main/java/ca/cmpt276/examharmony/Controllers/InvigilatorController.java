@@ -1,5 +1,7 @@
 package ca.cmpt276.examharmony.Controllers;
 
+import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequest;
+import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService; 
 import java.security.Principal;
 import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
