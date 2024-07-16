@@ -10,8 +10,7 @@ import jakarta.persistence.*;
 public class InvigilatorRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ID;
-
+    private int id;
     private String username;
     private String email;
     private int inv_id;
@@ -19,12 +18,17 @@ public class InvigilatorRequest {
     private LocalDateTime examDate;
     private String status;
 
-    public int getID() {
-        return ID;
+    public InvigilatorRequest() {
     }
-    public void setID(int iD) {
-        ID = iD;
+    public InvigilatorRequest(String username, String email, String examCode,LocalDateTime examDate, String status) {
+        this.username = username;
+        this.email = email;
+        this.examCode = examCode;
+        this.examDate = examDate;
+        this.status = "pending";
+  
     }
+    
     public String getUsername() {
         return username;
     }
@@ -62,15 +66,12 @@ public class InvigilatorRequest {
     public void setInv_id(int inv_id) {
         this.inv_id = inv_id;
     }
-    public InvigilatorRequest() {
+    
+    public int getId() {
+        return id;
     }
-    public InvigilatorRequest(String username, String email, String examCode,LocalDateTime examDate) {
-        this.username = username;
-        this.email = email;
-        //this.inv_id = inv_id;
-        this.examCode = examCode;
-        this.examDate = examDate;
-       // this.status = status;
+    public void setId(int id) {
+        this.id = id;
     }
- 
+
 }

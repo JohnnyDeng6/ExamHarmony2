@@ -44,6 +44,10 @@
             height: 50px;
             margin: 20px 0;
         }
+        .request-form {
+            display: none; /* Initially hide the form */
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -65,6 +69,25 @@
 
         <div class="container pt-3">
             <div class="admin-container">
+                <button class="btn btn-lg btn-primary" onclick="toggleRequestForm()">Send Request</button>
+                <div class="request-form">
+                    <form action="/admin/sendRequest" method="post">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                        <label for="examCode">Exam Code:</label>
+                        <input type="text" id="examCode" name="examCode" required>
+                        <label for="examDate">Exam Date (yyyy-MM-ddTHH:mm):</label>
+                        <input type="datetime-local" id="examDate" name="examDate" required>
+                        <label for="status">Status:</label>
+                        <select id="status" name="status" required>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                        </select>
+                        <button type="submit">Send Request</button>
+                    </form>
+                </div>
                 <button class="btn btn-lg btn-primary" onclick="location.href='/viewRequests'">View Requests</button>
                 <button class="btn btn-lg btn-primary" onclick="location.href='/viewInstructors'">View Instructors</button>
                 <button class="btn btn-lg btn-primary" onclick="location.href='/viewInvigilators'">View Invigilators</button>
@@ -91,15 +114,19 @@
                     console.log(err);
                 }
             }
-
         });
 
         function addUser() {
-            location.replace("/admin/register")
+            location.replace("/admin/register");
         }
 
         function changePassword() {
-            location.replace("/admin/change-password")
+            location.replace("/admin/change-password");
+        }
+
+        function toggleRequestForm() {
+            let form = document.querySelector('.request-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
         }
     </script>
 </body>

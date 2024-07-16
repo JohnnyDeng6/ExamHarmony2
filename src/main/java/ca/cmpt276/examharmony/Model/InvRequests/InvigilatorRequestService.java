@@ -16,16 +16,17 @@ public class InvigilatorRequestService {
         return requests;
     }
 
-    public InvigilatorRequest updateStatus(int id, String status) {
-        InvigilatorRequest request = invigilatorRequestRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+    public InvigilatorRequest updateStatus(String username, String examCode, String status) {
+        InvigilatorRequest request = invigilatorRequestRepository.findByUsernameAndExamCode(username, examCode)
+                .orElseThrow(() -> new IllegalArgumentException("Request not found here"));
         request.setStatus(status);
         return invigilatorRequestRepository.save(request);
     }
 
+
     public InvigilatorRequest createRequest(String username, String email, String examCode,
-    LocalDateTime examDate) {
-        InvigilatorRequest request = new InvigilatorRequest(username, email,  examCode, examDate);
+    LocalDateTime examDate, String Status) {
+        InvigilatorRequest request = new InvigilatorRequest(username, email, examCode, examDate, Status);
         return invigilatorRequestRepository.save(request);
     }
 }
