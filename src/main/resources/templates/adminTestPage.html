@@ -38,9 +38,12 @@
             align-items: center;
         }
         .btn-lg {
-            width: 200%;
-            height: 50%;
-            margin: 3% 0;
+            width: 400px;
+            height: 50px;
+            margin: 10px 0;
+        }
+        .request-form {
+            display: none;
         }
     </style>
 
@@ -50,11 +53,29 @@
 <header th:insert="fragments/header :: header"></header>
     <main id="mainpart">
 
-
         <h1 class="display-1">Admin Home Page</h1>
 
         <div class="container pt-3">
             <div class="admin-container">
+                <button class="btn btn-lg btn-primary dropdown-toggle" onclick="toggleRequestForm()">Send Request</button>
+                <div class="request-form">
+                    <form action="/admin/sendRequest" method="post">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                        <label for="examCode">Exam Code:</label>
+                        <input type="text" id="examCode" name="examCode" required>
+                        <label for="examDate">Exam Date (yyyy-MM-ddTHH:mm):</label>
+                        <input type="datetime-local" id="examDate" name="examDate" required>
+                        <label for="status">Status:</label>
+                        <select id="status" name="status" required>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                        </select>
+                        <button type="submit">Send Request</button>
+                    </form>
+                </div>
                 <button class="btn btn-lg btn-primary" onclick="location.href='/viewRequests'">View Requests</button>
                 <button class="btn btn-lg btn-primary" onclick="location.href='/viewInstructors'">View Instructors</button>
                 <button class="btn btn-lg btn-primary" onclick="location.href='/viewInvigilators'">View Invigilators</button>
@@ -69,11 +90,14 @@
     </script>
 
     <script>
-
         function addUser() {
-            location.replace("/admin/register")
+            location.replace("/admin/register");
         }
 
+        function toggleRequestForm() {
+            let form = document.querySelector('.request-form');
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        }
     </script>
 </body>
 </html>
