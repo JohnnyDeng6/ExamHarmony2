@@ -173,7 +173,7 @@
             } else {
                 let pageContent = await response.text();
                 const ExamRequestDisplayPage = window.open(`/instructor/examslots/edit/${courseName}`, "_self");
-                ExamRequestDisplayPage.document.body.innerHTML = pageContent;
+                ExamRequestDisplayPage.document.bgitody.innerHTML = pageContent;
                 window.location.reload();
                 document.querySelector(".feedback").innerText = "Requests Successfully sent";
             }
