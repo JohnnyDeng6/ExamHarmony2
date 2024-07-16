@@ -34,6 +34,11 @@ public class TestingController {
         return "adminExamSlot"; // This returns the template named "adminExamSlot.html"
     }
 
+    @GetMapping("/adminExamDisplay")
+    public String showAdminExamDisplayPage(){
+        return "/adminExamDisplay";
+    }
+
     @GetMapping("/invTest")
     public String showInvigilator() {
         return "invigilatorTestPage"; // This returns the template named "adminExamSlot.html"

@@ -20,6 +20,14 @@ public class CoursesSec {
     @OneToOne(mappedBy ="CourseID")
     private examSlot examSlot;
 
+    public int getId(){
+        return this.id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
     public boolean getExamSlotStatus() {
         return examSlotStatus;
     }

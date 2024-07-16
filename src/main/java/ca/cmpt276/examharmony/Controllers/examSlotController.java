@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import ca.cmpt276.examharmony.Model.examSlot.examSlotRepository;
+import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import ca.cmpt276.examharmony.Model.examSlot.examSlot;
+import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.ui.Model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -23,30 +25,32 @@ public class examSlotController {
     @Autowired
     private examSlotRepository examRepo;
 
+    @Autowired
+    private CourseRepository courseRepo;
+
 
 
     @GetMapping("/examSlot/showAll")
     public String getAllExamSlots(Model model){
         List<examSlot> examSlot = examRepo.findAll();
         model.addAttribute("examSlots", examSlot);
-        return "/adminExamSlot";
+        return "/adminExamDisplay";
     }
     
     @PostMapping("/admin/addExamSlot")
     public String addExamSlot(@RequestParam Map<String, String> newExamSlot, HttpServletResponse response) {
-        LocalDate StartTime = LocalDate.parse(newExamSlot.get("StartTime"));
+
+        System.out.print("In addExamSlot");
+
+        LocalDateTime StartTime = LocalDateTime.parse(newExamSlot.get("startTime"));
         double duration = Double.parseDouble(newExamSlot.get("duration"));
-        int numOfRooms = Integer.parseInt(newExamSlot.get("numOfRooms"));
+        int numOfRooms = Integer.parseInt(newExamSlot.get("numberOfRooms"));
         int assignedRooms = Integer.parseInt(newExamSlot.get("assignedRooms"));
-        int numInvigilator = Integer.parseInt(newExamSlot.get("numInvigilator"));
-    
-        /*Admin ID PUT IN A TRY CATCH */
-
-        // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        // User user = userDetails.getCurrentUser();
-
-        // UUID admin = user.getUUID();
+        int numInvigilator = Integer.parseInt(newExamSlot.get("numberOfInvigilators"));
+        
+        
+        String courseName = newExamSlot.get("courseID");
+        
 
         String status = newExamSlot.get("status");
         
@@ -60,10 +64,14 @@ public class examSlotController {
         // exam.setAdmin(admin);
         exam.setStatus(status);
         
+        CoursesSec CourseID = courseRepo.findByCourseName(courseName);
+        exam.setCourseID(CourseID);
+        
         examRepo.save(exam);
+
         response.setStatus(HttpServletResponse.SC_CREATED);
         
-        return "redirect:/adminExamSlot";
+        return "redirect:/examSlot/showAll";
     }
     
     @PostMapping("/examSlot/delete")
@@ -73,9 +81,18 @@ public class examSlotController {
             System.out.println("delete successful");
             examRepo.deleteById(id);
         }
-        return "redirect:/adminExamSlot";
+        return "redirect:/examSlot/showAll";
     }
 
+    @GetMapping("/examSlot/select")
+    public String selectExamSlot(@RequestParam("id") int id, Model model){
+        examSlot exam = examRepo.findById(id).orElse(null);
+        if(exam != null){
+            model.addAttribute("examSlot",exam);
+
+        }
+        return "redirect:/adminExamSlot";
+    }
 
 
     @PostMapping("examSlot/update")
