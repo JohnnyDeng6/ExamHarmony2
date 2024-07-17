@@ -1,39 +1,64 @@
 package ca.cmpt276.examharmony.Controllers;
 
+import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
+import ca.cmpt276.examharmony.Model.examRequest.ExamRequestRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+
+import ca.cmpt276.examharmony.Model.roles.RoleRepository;
+
 @Controller
 public class Admin {
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private ExamRequestRepository examRequestRepository;
+
     @GetMapping("/viewRequests")
     public String viewRequests(Model model) {
-        // Add any necessary attributes to the model
-        return "viewRequests"; // This should match the name of your HTML file in the templates folder
+        List<ExamRequest> examRequests = examRequestRepository.findAll();
+        model.addAttribute("examRequests", examRequests);
+        return "viewRequests"; 
     }
 
-    // @GetMapping("/viewInstructors")
-    // public String viewInstructors(Model model) {
-    //     List<User> instructors = UserRepository.findByRoleName("Instructor");
-    //     model.addAttribute("instructors", instructors);
-    //     return "viewInstructors";
-    // }
+    @PostMapping("/approveRequest")
+    public String approveRequest(@RequestParam("requestId") int requestId) {
+        ExamRequest request = examRequestRepository.findById(requestId).orElse(null);
+        if (request != null) {
+            request.setStatus("approved");
+            examRequestRepository.save(request);
+        }
+        return "redirect:/viewRequests";
+    }
+
     @GetMapping("/viewInstructors")
     public String viewInstructors(Model model) {
-        List<User> instructors = UserRepository.findByRoleName("Instructor");
+        List<User> instructors = userRepository.findByRoleName("INSTRUCTOR");
         model.addAttribute("instructors", instructors);
         return "viewInstructors";
     }
 
     @GetMapping("/viewInvigilators")
     public String viewInvigilators(Model model) {
-        // Add any necessary attributes to the model
-        // Example: model.addAttribute("invigilators", invigilatorService.getAllInvigilators());
-        return "viewInvigilators"; // This should match the name of your HTML file in the templates folder
+        List<User> invigilators = userRepository.findByRoleName("INVIGILATOR");
+        model.addAttribute("invigilators",invigilators);
+        return "viewInvigilators"; 
     }
 }
+
+
+

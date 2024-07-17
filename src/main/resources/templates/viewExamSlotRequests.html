@@ -205,6 +205,7 @@
                 throw new Error(errorMessage);
             } else {
                 let pageContent = await response.text();
+
                 const ExamRequestDisplayPage = window.open(`/instructor/examslots/${courseName.replace(/['"]+/g, '')}`, "_self");
                 ExamRequestDisplayPage.document.body.innerHTML = pageContent;
                 document.querySelector(".feedback").innerText = "Requests Successfully sent";

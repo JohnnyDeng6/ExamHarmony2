@@ -50,6 +50,13 @@ public class User {
         return roles;
     }
 
+    public String getHighestRole() {
+        for (Role role : roles) {
+            return role.getName().toLowerCase();
+        }
+        return "";
+    }
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
     @JoinTable(
             name = "instructor_exam_requests",
