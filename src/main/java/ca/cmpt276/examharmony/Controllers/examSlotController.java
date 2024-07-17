@@ -89,16 +89,57 @@ public class examSlotController {
         examSlot exam = examRepo.findById(id).orElse(null);
         if(exam != null){
             model.addAttribute("examSlot",exam);
-
+            return "redirect:/updateExamSlot";
         }
-        return "redirect:/adminExamSlot";
+        return "redirect:/examSlot/showAll";
     }
 
 
     @PostMapping("examSlot/update")
-    public String updateExamSlot(@ModelAttribute examSlot exam){
+    public String updateExamSlot(@RequestParam Map<String, String> updatedExamSlot,HttpServletResponse response){
+        examSlot exam = examRepo.findById(Integer.parseInt(updatedExamSlot.get("id"))).orElseThrow(()-> new IllegalArgumentException("Invalid exam slot ID"));
+        
+        
+    
+        if (updatedExamSlot.containsKey("startTime") && !updatedExamSlot.get("startTime").isEmpty()) {
+            LocalDateTime StartTime = LocalDateTime.parse(updatedExamSlot.get("startTime"));
+            exam.setStartTime(StartTime);
+        }
+    
+        if (updatedExamSlot.containsKey("duration") && !updatedExamSlot.get("duration").isEmpty()) {
+            double duration = Double.parseDouble(updatedExamSlot.get("duration"));
+            exam.setDuration(duration);
+        }
+    
+        if (updatedExamSlot.containsKey("numOfRooms") && !updatedExamSlot.get("numOfRooms").isEmpty()) {
+            int numOfRooms = Integer.parseInt(updatedExamSlot.get("numberOfRooms"));
+            exam.setNumOfRooms(numOfRooms);
+        }
+    
+        if (updatedExamSlot.containsKey("assignedRooms") && !updatedExamSlot.get("assignedRooms").isEmpty()) {
+            int assignedRooms = Integer.parseInt(updatedExamSlot.get("assignedRooms"));
+            exam.setAssignedRooms(assignedRooms);
+        }
+    
+        if (updatedExamSlot.containsKey("numInvigilator") && !updatedExamSlot.get("numInvigilator").isEmpty()) {
+            int numInvigilator = Integer.parseInt(updatedExamSlot.get("numberOfInvigilators"));
+            exam.setNumInvigilator(numInvigilator);
+        }
+
+        if(updatedExamSlot.containsKey("courseName") && !updatedExamSlot.get("courseName").isEmpty()){
+            String courseName = updatedExamSlot.get("courseID");
+            CoursesSec CourseID = courseRepo.findByCourseName(courseName);
+            exam.setCourseID(CourseID);
+        }
+    
+        if (updatedExamSlot.containsKey("status") && !updatedExamSlot.get("status").isEmpty()) {
+            String status = updatedExamSlot.get("status");
+            exam.setStatus(status);
+        }
+        
+
         examRepo.save(exam);
-        return "redirect:/adminExamSlot";
+        return "redirect:/examSlot/showAll";
     }
 
 }

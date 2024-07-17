@@ -17,7 +17,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>CourseID</th>
+                            <th>Course Name</th>
                             <th>StartTime</th>
                             <th>Duration</th>
                             <th>Number Of Rooms</th>
@@ -39,7 +39,7 @@
                                     </button>
                                 </form>
                             </td>
-                            <td th:text="${examSlot.CourseID.id}"></td>
+                            <td th:text="${examSlot.CourseID.courseName}"></td>
                             <td th:text="${examSlot.startTime}"></td>
                             <td th:text="${examSlot.duration}"></td>
                             <td th:text="${examSlot.numOfRooms}"></td>
