@@ -49,6 +49,6 @@ public class Admin {
 
     @GetMapping("/viewInvigilators")
     public String viewInvigilators(Model model) {
-        return "viewInvigilators"; // This should match the name of your HTML file in the templates folder
+        return "viewInvigilators"; 
     }
 }
