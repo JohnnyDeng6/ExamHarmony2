@@ -66,6 +66,21 @@ public class InstructorController {
             return "redirect:/login";
         }
     }
+    @GetMapping("/instructor/examslots/{courseName}")
+    public String InstructorRequests(Model model, @PathVariable("courseName") String courseName) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+        User instructor = userRepo.findByUsername(userDetails.getUsername());
+        List<ExamRequest> examRequests = requestRepo.findExamRequestsByCourseName(courseName);
+        model.addAttribute("examRequests", examRequests);
+        model.addAttribute("instructor", instructor);
+        model.addAttribute("courseName", courseName);
+        return "viewExamSlotRequests";
+    } else {
+        return "redirect:/login";
+    }
+}
+
 
     @PostMapping("/instructor/examslots/edit/{courseName}")
     public String submitData(@RequestBody List<ExamRequestDTO> examRequestDTOList, Model model, @PathVariable("courseName") String courseName) {
@@ -146,20 +161,20 @@ public class InstructorController {
 
     }
 
-    @GetMapping("/instructor/examslots/{courseName}")
-    public String InstructorRequests(Model model, @PathVariable("courseName") String courseName) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-            User instructor = userRepo.findByUsername(userDetails.getUsername());
-            System.out.println(instructor.findRequestsByCourse(courseName));
-            model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
-            model.addAttribute("instructor", instructor);
-            model.addAttribute("courseName", courseName);
-            return "viewExamSlotRequests";
-        } else {
-            return "redirect:/login";
-        }
-    }
+    // @GetMapping("/instructor/examslots/{courseName}")
+    // public String InstructorRequests(Model model, @PathVariable("courseName") String courseName) {
+    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //     if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+    //         User instructor = userRepo.findByUsername(userDetails.getUsername());
+    //         System.out.println(instructor.findRequestsByCourse(courseName));
+    //         model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
+    //         model.addAttribute("instructor", instructor);
+    //         model.addAttribute("courseName", courseName);
+    //         return "viewExamSlotRequests";
+    //     } else {
+    //         return "redirect:/login";
+    //     }
+    // }
 
     @DeleteMapping("/instructor/examslots/delete/{courseName}/{preference}")
     public String deleteRequest(Model model, @PathVariable("courseName") String courseName

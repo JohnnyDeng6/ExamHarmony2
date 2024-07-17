@@ -53,16 +53,13 @@
                 <thead>
                     <tr>
                         <th>Instructor Name</th>
-                        <th>Department</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Example row, replace with dynamic data -->
-                    <tr>
-                        <td>John Doe</td>
-                        <td>Computer Science</td>
+                    <!-- Iterate over instructors and display dynamically -->
+                    <tr th:each="instructor : ${instructors}">
+                        <td th:text="${instructor.username}"></td>
                     </tr>
-                    <!-- Additional rows go here -->
                 </tbody>
             </table>
         </div>
