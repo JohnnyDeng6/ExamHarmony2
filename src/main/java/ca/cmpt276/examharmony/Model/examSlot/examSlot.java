@@ -14,7 +14,7 @@ public class examSlot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private CoursesSec CourseID;
 

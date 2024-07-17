@@ -86,10 +86,12 @@ public class examSlotController {
 
     @GetMapping("/examSlot/select")
     public String selectExamSlot(@RequestParam("id") int id, Model model){
+        System.out.print("SELECTION PRINT");
+
         examSlot exam = examRepo.findById(id).orElse(null);
         if(exam != null){
             model.addAttribute("examSlot",exam);
-            return "redirect:/updateExamSlot";
+            return "/updateExamSlot";
         }
         return "redirect:/examSlot/showAll";
     }
@@ -112,7 +114,7 @@ public class examSlotController {
         }
     
         if (updatedExamSlot.containsKey("numOfRooms") && !updatedExamSlot.get("numOfRooms").isEmpty()) {
-            int numOfRooms = Integer.parseInt(updatedExamSlot.get("numberOfRooms"));
+            int numOfRooms = Integer.parseInt(updatedExamSlot.get("numOfRooms"));
             exam.setNumOfRooms(numOfRooms);
         }
     
@@ -122,12 +124,12 @@ public class examSlotController {
         }
     
         if (updatedExamSlot.containsKey("numInvigilator") && !updatedExamSlot.get("numInvigilator").isEmpty()) {
-            int numInvigilator = Integer.parseInt(updatedExamSlot.get("numberOfInvigilators"));
+            int numInvigilator = Integer.parseInt(updatedExamSlot.get("numInvigilator"));
             exam.setNumInvigilator(numInvigilator);
         }
 
         if(updatedExamSlot.containsKey("courseName") && !updatedExamSlot.get("courseName").isEmpty()){
-            String courseName = updatedExamSlot.get("courseID");
+            String courseName = updatedExamSlot.get("courseName");
             CoursesSec CourseID = courseRepo.findByCourseName(courseName);
             exam.setCourseID(CourseID);
         }
@@ -139,6 +141,7 @@ public class examSlotController {
         
 
         examRepo.save(exam);
+        
         return "redirect:/examSlot/showAll";
     }
 

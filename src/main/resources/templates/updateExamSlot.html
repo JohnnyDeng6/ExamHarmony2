@@ -20,7 +20,7 @@
                     <input type="text" id="courseName" name="courseName" th:value="${examSlot.CourseID.courseName}"><br>
                     
                     <label for="startTime">StartTime:</label><br>
-                    <input type="text" id="startTime" name="startTime" th:value="${examSlot.startTime}"><br>
+                    <input type="datetime-local" id="startTime" name="startTime" th:value="${examSlot.startTime}"><br>
                     
                     <label for="duration">Duration:</label><br>
                     <input type="number" id="duration" name="duration" th:value="${examSlot.duration}"><br>
