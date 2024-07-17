@@ -227,7 +227,7 @@
 
     async function fetchDepartments(semester) {
         // Fetch departments from the external API
-        const response = await fetch(`http://www.sfu.ca/bin/wcm/course-outlines?${new Date().getFullYear()}/${semester}`);
+        const response = await fetch(`https://www.sfu.ca/bin/wcm/course-outlines?${new Date().getFullYear()}/${semester}`);
         if (!response.ok) {
             throw new Error(await response.text());
         }
@@ -273,7 +273,7 @@
 
     async function fetchCourses(departmentName, semester, courseList) {
         try {
-            const response = await fetch(`http://www.sfu.ca/bin/wcm/course-outlines?${new Date().getFullYear()}/${semester}/${departmentName.toLowerCase()}`);
+            const response = await fetch(`https://www.sfu.ca/bin/wcm/course-outlines?${new Date().getFullYear()}/${semester}/${departmentName.toLowerCase()}`);
             if (!response.ok) {
                 throw new Error(await response.text());
             }
