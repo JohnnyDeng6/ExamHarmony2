@@ -212,8 +212,7 @@
             }
 
         } catch (err){
-            document.querySelector(".feedback").innerText = err.message.split("\tat ca.cmpt276.examharmony.Controllers.InstructorController.submitData(InstructorController.java:134)")[0];
-            console.log(err.message.split("\tat ca.cmpt276.examharmony.Controllers.InstructorController.submitData(InstructorController.java:134)")[0]);
+            document.querySelector(".feedback").innerText = err.message.split("at ca.cmpt276.examharmony")[0];
         }
 
     });
