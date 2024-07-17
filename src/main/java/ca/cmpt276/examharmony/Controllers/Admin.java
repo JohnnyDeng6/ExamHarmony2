@@ -14,11 +14,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+import ca.cmpt276.examharmony.Model.roles.RoleRepository;
+
 @Controller
 public class Admin {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private ExamRequestRepository examRequestRepository;
@@ -42,13 +47,18 @@ public class Admin {
 
     @GetMapping("/viewInstructors")
     public String viewInstructors(Model model) {
-        List<User> instructors = userRepository.findByRoleName("instructor");
+        List<User> instructors = userRepository.findByRoleName("INSTRUCTOR");
         model.addAttribute("instructors", instructors);
         return "viewInstructors";
     }
 
     @GetMapping("/viewInvigilators")
     public String viewInvigilators(Model model) {
+        List<User> invigilators = userRepository.findByRoleName("INVIGILATOR");
+        model.addAttribute("invigilators",invigilators);
         return "viewInvigilators"; 
     }
 }
+
+
+
