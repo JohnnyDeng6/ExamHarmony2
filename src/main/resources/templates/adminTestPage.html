@@ -53,7 +53,7 @@
 <header th:insert="fragments/header :: header"></header>
     <main id="mainpart">
 
-        <h1 class="display-1">Admin Home Page</h1>
+        <h1 class="display-3" th:text="'Welcome, ' + ${admin.getUsername()}"></h1>
 
         <div class="container pt-3">
             <div class="admin-container">
@@ -80,6 +80,7 @@
                 <button class="btn btn-lg btn-primary" onclick="location.href='/viewInstructors'">View Instructors</button>
                 <button class="btn btn-lg btn-primary" onclick="location.href='/viewInvigilators'">View Invigilators</button>
                 <button class="btn btn-lg btn-primary" onclick="addUser()">Add new User</button>
+
             </div>
         </div>
         <header th:insert="fragments/footer :: footer"></header>

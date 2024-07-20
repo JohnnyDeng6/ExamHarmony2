@@ -66,6 +66,7 @@ public class InstructorController {
             return "redirect:/login";
         }
     }
+
     @GetMapping("/instructor/examslots/{courseName}")
     public String InstructorRequests(Model model, @PathVariable("courseName") String courseName) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
