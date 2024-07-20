@@ -297,24 +297,26 @@
 
     async function addCourseToUser(event) {
         const courseButton = event.target;
-        alert(`Course added: ${courseButton.innerText}`);
-        const courseName = courseButton.innerText.split(", ")[0].trim();
-        const department = courseButton.innerText.split(", ")[0].trim().replace(/[0-9]/g, '');
-        const course = { "courseName": courseName, "department": department };
+        if(confirm("You are about to add this course to your schedule")){
+            alert(`Course added: ${courseButton.innerText}`);
+            const courseName = courseButton.innerText.split(", ")[0].trim();
+            const department = courseButton.innerText.split(", ")[0].trim().replace(/[0-9]/g, '');
+            const course = { "courseName": courseName, "department": department };
 
-        try {
-            const response = await fetch("/instructor/view/add/course", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(course)
-            });
-            if (!response.ok) {
-                throw new Error(await response.text());
+            try {
+                const response = await fetch("/instructor/view/add/course", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(course)
+                });
+                if (!response.ok) {
+                    throw new Error(await response.text());
+                }
+            } catch (err) {
+                feedbackContainer.innerText = err.message;
             }
-        } catch (err) {
-            feedbackContainer.innerText = err.message;
         }
     }
 </script>
