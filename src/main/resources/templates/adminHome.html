@@ -86,10 +86,10 @@
                                     <button type="submit">Send Request</button>
                                 </form>
                             </div>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/viewRequests'">View Requests</button>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/viewInstructors'">View Instructors</button>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/viewInvigilators'">View Invigilators</button>
-                            <button class="btn btn-lg btn-primary" onclick="addUser()">Add new User</button>
+                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewRequests'">View Requests</button>
+                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewInstructors'">View Instructors</button>
+                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewInvigilators'">View Invigilators</button>
+                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/register'">Add new User</button>
 
                         </div>
                     </div>
@@ -180,10 +180,6 @@
     </script>
 
     <script>
-        function addUser() {
-            location.href = "/admin/register";
-        }
-
         function toggleRequestForm() {
             let form = document.querySelector('.request-form');
             form.style.display = form.style.display === 'block' ? 'none' : 'block';
