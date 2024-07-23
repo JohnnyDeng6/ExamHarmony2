@@ -1,6 +1,5 @@
 package ca.cmpt276.examharmony.Controllers;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,6 +42,6 @@ public class AdminRequestController {
     @GetMapping("/adminTestPage")
     public String adminTestPage(Model model) {
         // Logic to fetch and display requests for admins
-        return "adminTestPage";
+        return "adminHome";
     }
 }
