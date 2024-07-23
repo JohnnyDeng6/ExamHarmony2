@@ -173,12 +173,11 @@
                         <div id="departments-container"></div>
 
                         <div id="pagination-controls">
+
                             <button id="prev-page" disabled>Previous</button>
                             <span id="page-info"></span>
                             <button id="next-page">Next</button>
-                            <div class="topnav">
-                                <button class="home-button btn btn-primary"> Homepage</button>
-                            </div>
+
                         </div>
 
                         <div class="feedback lead fw-normal mb-0"></div>
@@ -203,28 +202,6 @@
     let departments = [];
     let homeButton = document.querySelector(".home-button");
 
-    homeButton.addEventListener("click", async ()=>{
-            try{
-                const response = await fetch("/instructor/home");
-                if(!response.ok){
-                    throw new Error("Error: Could not go back to homepage");
-                }
-                let pageContent = await response.text();
-                const ExamRequestDisplayPage = window.open(`/instructor/home`, "_self");
-                ExamRequestDisplayPage.document.body.innerHTML = pageContent;
-
-            } catch (err){
-                try{
-                    const response = await fetch("/logout");
-                    if(!response.ok){
-                        throw new Error("Error: Could not log out");
-                    }
-                    window.location.reload();
-                } catch (err){
-                    console.log(err);
-                }
-            }
-    })
 
     document.addEventListener("DOMContentLoaded", async () => {
         const semester = '[[${semester}]]'.replace(/['"]+/g, '');
