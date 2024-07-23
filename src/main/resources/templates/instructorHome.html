@@ -17,6 +17,7 @@
             min-height: auto;
             max-height: 600px;
             overflow: scroll;
+            margin: 30px
         }
 
         .container {
@@ -55,7 +56,7 @@
             <div class="card border-0 shadow rounded-3 overflow-hidden">
                 <div class="card-body p-0">
 
-                    <div class="course-display" style="margin: 60px" th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
+                    <div class="course-display" th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
                         <table class="table" >
                             <thead class="thead-dark">
                             <tr>
@@ -108,7 +109,11 @@
             <div class="row gx-5">
                 <div class="col-xl-8">
                     <h2 class="fw-bolder fs-5 mb-4"> Notifications </h2>
-                    <!-- News item-->
+
+                    <!-- Add calendar view here-->
+
+
+                    <!-- Replace all of this -->
                     <div class="mb-4">
                         <div class="small text-muted">May 12, 2023</div>
                         <a class="link-dark" href="#!"><h3>Start Bootstrap releases Bootstrap 5 updates for templates and themes</h3></a>
