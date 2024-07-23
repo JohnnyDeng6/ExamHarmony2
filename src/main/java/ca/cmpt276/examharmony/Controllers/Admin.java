@@ -34,7 +34,7 @@ public class Admin {
     public String viewRequests(Model model) {
         List<ExamRequest> examRequests = examRequestRepository.findAll();
         model.addAttribute("examRequests", examRequests);
-        return "/viewRequests";
+        return "viewRequests";
     }
 
     @PostMapping("/approveRequest")
@@ -51,14 +51,14 @@ public class Admin {
     public String viewInstructors(Model model) {
         List<User> instructors = userRepository.findByRoleName("INSTRUCTOR");
         model.addAttribute("instructors", instructors);
-        return "/viewInstructors";
+        return "viewInstructors";
     }
 
     @GetMapping("/viewInvigilators")
     public String viewInvigilators(Model model) {
         List<User> invigilators = userRepository.findByRoleName("INVIGILATOR");
         model.addAttribute("invigilators",invigilators);
-        return "/viewInvigilators";
+        return "viewInvigilators";
     }
 }
 
