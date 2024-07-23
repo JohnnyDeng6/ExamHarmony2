@@ -4,7 +4,7 @@ import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import jakarta.persistence.*;
 
 import java.util.UUID;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "exam_Slot")
@@ -12,13 +12,13 @@ public class examSlot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ID;
+    private int id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private CoursesSec CourseID;
 
-    private LocalDate StartTime;
+    private LocalDateTime StartTime;
     private double duration;
     private int numOfRooms;
     private int assignedRooms;
@@ -33,12 +33,12 @@ public class examSlot {
 
     
 
-    public int getID() {
-        return this.ID;
+    public int getId() {
+        return this.id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int ID) {
+        this.id = ID;
     }
 
     public CoursesSec getCourseID() {
@@ -49,11 +49,11 @@ public class examSlot {
         this.CourseID = CourseID;
     }
 
-    public LocalDate getStartTime() {
+    public LocalDateTime getStartTime() {
         return this.StartTime;
     }
 
-    public void setStartTime(LocalDate StartTime) {
+    public void setStartTime(LocalDateTime StartTime) {
         this.StartTime = StartTime;
     }
 
