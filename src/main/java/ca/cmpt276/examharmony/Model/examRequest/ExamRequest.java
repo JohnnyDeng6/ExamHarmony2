@@ -29,6 +29,17 @@ public class ExamRequest implements Comparable<ExamRequest>{
     @Column(name = "course_name")
     private String courseName;
 
+    public ExamRequest(int examCode, LocalDateTime examDate, double examDuration, String courseName, int preferenceStatus) {
+        this.examCode = examCode;
+        this.examDate = examDate;
+        this.examDuration = examDuration;
+        this.courseName = courseName;
+        this.preferenceStatus = preferenceStatus;
+    }
+
+    public ExamRequest() {
+
+    }
 
     public String getCourseName() {
         return courseName;

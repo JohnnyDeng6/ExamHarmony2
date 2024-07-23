@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Home Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/scripts.js" defer></script>
+    <style>
+
+        h1 {
+            text-align: center;
+            font-weight: bold;
+            font-size: 75px;
+            margin-top: 10%;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        .admin-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .btn-lg {
+            width: 400px;
+            height: 50px;
+            margin: 10px 0;
+        }
+        .request-form {
+            display: none;
+        }
+
+        .welcome {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px;
+        }
+
+        .main-container{
+            min-width: 500px;
+            min-height: 300px;
+            max-height: 800px;
+        }
+    </style>
+
+
+
+</head>
+<body>
+
+<main class="flex-shrink-0">
+
+    <header th:insert="fragments/header :: header"></header>
+
+    <!-- Page Content-->
+    <section class="py-5">
+        <header class="fw-bolder fs-5 mb-4 welcome" th:text="'Welcome, ' + ${admin.getUsername()}"> Welcome back </header>
+
+        <div class="container px-5">
+            <div class="card border-0 shadow rounded-3 overflow-hidden main-container">
+                <div class="card-body p-0">
+                    <div class="container pt-3">
+                        <div class="admin-container">
+                            <button class="btn btn-lg btn-primary dropdown-toggle" onclick="toggleRequestForm()">Send Request</button>
+                            <div class="request-form">
+                                <form action="/admin/sendRequest" method="post">
+                                    <label for="username">Username:</label>
+                                    <input type="text" id="username" name="username" required>
+                                    <label for="email">Email:</label>
+                                    <input type="email" id="email" name="email" required>
+                                    <label for="examCode">Exam Code :</label>
+                                    <input type="text" id="examCode" name="examCode" required>
+                                    <label for="examDate">Exam Date (yyyy-MM-ddTHH:mm):</label>
+                                    <input type="datetime-local" id="examDate" name="examDate" required>
+                                    <label for="status">Status:</label>
+                                    <select id="status" name="status" required>
+                                        <option value="pending">Pending</option>
+                                        <option value="approved">Approved</option>
+                                    </select>
+                                    <button type="submit">Send Request</button>
+                                </form>
+                            </div>
+                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewRequests'">View Requests</button>
+                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewInstructors'">View Instructors</button>
+                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewInvigilators'">View Invigilators</button>
+                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/register'">Add new User</button>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-5 bg-light" style="margin-bottom: 80px">
+        <div class="container px-5">
+            <div class="row gx-5">
+                <div class="col-xl-8">
+                    <h2 class="fw-bolder fs-5 mb-4"> Notifications </h2>
+
+                    <!-- Add calendar view here-->
+
+                    <!-- Replace all of this -->
+                    <div class="mb-4">
+                        <div class="small text-muted">May 12, 2023</div>
+                        <a class="link-dark" href="#!"><h3>Start Bootstrap releases Bootstrap 5 updates for templates and themes</h3></a>
+                    </div>
+                    <!-- News item-->
+                    <div class="mb-5">
+                        <div class="small text-muted">May 5, 2023</div>
+                        <a class="link-dark" href="#!"><h3>Bootstrap 5 has officially landed</h3></a>
+                    </div>
+                    <!-- News item-->
+                    <div class="mb-5">
+                        <div class="small text-muted">Apr 21, 2023</div>
+                        <a class="link-dark" href="#!"><h3>This is another news article headline, but this one is a little bit longer</h3></a>
+                    </div>
+                    <div class="text-end mb-5 mb-xl-0">
+                        <a class="text-decoration-none" href="#!">
+                            More news
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <header th:insert="fragments/footer :: footer"></header>
+
+</main>
+
+
+
+<!--<header th:insert="fragments/header :: header"></header>-->
+<!--    <main id="mainpart">-->
+
+<!--        <h1 class="display-3" th:text="'Welcome, ' + ${admin.getUsername()}"></h1>-->
+
+<!--        <div class="container pt-3">-->
+<!--            <div class="admin-container">-->
+<!--                <button class="btn btn-lg btn-primary dropdown-toggle" onclick="toggleRequestForm()">Send Request</button>-->
+<!--                <div class="request-form">-->
+<!--                    <form action="/admin/sendRequest" method="post">-->
+<!--                        <label for="username">Username:</label>-->
+<!--                        <input type="text" id="username" name="username" required>-->
+<!--                        <label for="email">Email:</label>-->
+<!--                        <input type="email" id="email" name="email" required>-->
+<!--                        <label for="examCode">Exam Code :</label>-->
+<!--                        <input type="text" id="examCode" name="examCode" required>-->
+<!--                        <label for="examDate">Exam Date (yyyy-MM-ddTHH:mm):</label>-->
+<!--                        <input type="datetime-local" id="examDate" name="examDate" required>-->
+<!--                        <label for="status">Status:</label>-->
+<!--                        <select id="status" name="status" required>-->
+<!--                            <option value="pending">Pending</option>-->
+<!--                            <option value="approved">Approved</option>-->
+<!--                        </select>-->
+<!--                        <button type="submit">Send Request</button>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--                <button class="btn btn-lg btn-primary" onclick="location.href='/viewRequests'">View Requests</button>-->
+<!--                <button class="btn btn-lg btn-primary" onclick="location.href='/viewInstructors'">View Instructors</button>-->
+<!--                <button class="btn btn-lg btn-primary" onclick="location.href='/viewInvigilators'">View Invigilators</button>-->
+<!--                <button class="btn btn-lg btn-primary" onclick="addUser()">Add new User</button>-->
+
+<!--            </div>-->
+<!--        </div>-->
+<!--        <header th:insert="fragments/footer :: footer"></header>-->
+<!--    </main>-->
+
+    <script th:if="${alertMessage != null}" th:inline="javascript">
+        window.alert([['${alertMessage}']]);
+    </script>
+
+    <script>
+        function toggleRequestForm() {
+            let form = document.querySelector('.request-form');
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>

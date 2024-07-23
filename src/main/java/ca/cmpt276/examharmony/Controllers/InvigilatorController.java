@@ -30,6 +30,7 @@ public class InvigilatorController {
     public String showHomePage(Model model, Principal principal) {
         String username = principal.getName();
         List<InvigilatorRequest> requests = invigilatorRequestService.getRequests(username);
+        model.addAttribute("invigilatorName", username);
         model.addAttribute("requests", requests);
         return "invigilatorTestPage";
     }

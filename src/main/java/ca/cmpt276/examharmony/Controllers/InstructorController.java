@@ -53,7 +53,7 @@ public class InstructorController {
     @Autowired
     private InstructorExamSlotRepository instructorExamSlotRepo;
 
-    private List<DepartmentDTO> departments = Collections.synchronizedList(new ArrayList<>());;
+    private List<DepartmentDTO> departments = Collections.synchronizedList(new ArrayList<>());
 
     @GetMapping("/instructor/home")
     public String InstructorInfo(Model model) {
@@ -61,11 +61,12 @@ public class InstructorController {
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             User instructor = userRepo.findByUsername(userDetails.getUsername());
             model.addAttribute("instructor", instructor);
-            return "instructorTestPage";
+            return "instructorHome";
         } else {
             return "redirect:/login";
         }
     }
+
     @GetMapping("/instructor/examslots/{courseName}")
     public String InstructorRequests(Model model, @PathVariable("courseName") String courseName) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -87,7 +88,7 @@ public class InstructorController {
         if (examRequestDTOList.isEmpty()) {
             return "redirect:/instructor/examslots/" + courseName;
         }
-
+        System.out.println("Requests sent");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
             return "redirect:/login";
@@ -145,13 +146,6 @@ public class InstructorController {
             }
         }
 
-        for(ExamRequest t: instructor.findRequestsByCourse(courseName)){
-            System.out.println(t.getExamDuration());
-            System.out.println(t.getExamDate());
-            System.out.println(t.getPreferenceStatus());
-            System.out.println(t.getExamCode());
-
-        }
         userRepo.save(instructor);
 
         model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
@@ -161,21 +155,6 @@ public class InstructorController {
 
     }
 
-    // @GetMapping("/instructor/examslots/{courseName}")
-    // public String InstructorRequests(Model model, @PathVariable("courseName") String courseName) {
-    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //     if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-    //         User instructor = userRepo.findByUsername(userDetails.getUsername());
-    //         System.out.println(instructor.findRequestsByCourse(courseName));
-    //         model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
-    //         model.addAttribute("instructor", instructor);
-    //         model.addAttribute("courseName", courseName);
-    //         return "viewExamSlotRequests";
-    //     } else {
-    //         return "redirect:/login";
-    //     }
-    // }
-
     @DeleteMapping("/instructor/examslots/delete/{courseName}/{preference}")
     public String deleteRequest(Model model, @PathVariable("courseName") String courseName
             , @PathVariable("preference") int preference){
@@ -184,6 +163,7 @@ public class InstructorController {
             User instructor = userRepo.findByUsername(userDetails.getUsername());
             List<ExamRequest> examRequestList = instructor.findRequestsByCourse(courseName);
             Iterator<ExamRequest> iterator = examRequestList.iterator();
+            //Find request to delete
             while (iterator.hasNext()) {
                 ExamRequest request = iterator.next();
                 if (request.getPreferenceStatus() == preference) {
@@ -191,11 +171,13 @@ public class InstructorController {
                     instructor.deleteExamRequest(request);
                     requestRepo.delete(request);
                     iterator.remove();
+                    //Fix all succeeding request's preference status
                     while(iterator.hasNext()){
                         ExamRequest nextRequest = iterator.next();
                         nextRequest.setPreferenceStatus(nextRequest.getPreferenceStatus()-1);
                         requestRepo.save(nextRequest);
                     }
+
                     model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
                     model.addAttribute("instructor", instructor);
                     model.addAttribute("courseName", courseName);
@@ -234,7 +216,7 @@ public class InstructorController {
             currentUser.addCourse(course);
             userRepo.save(currentUser);
             model.addAttribute("instructor", currentUser);
-            return "instructorTestPage";
+            return "instructorHome";
         } else {
             return "redirect:/login";
         }
