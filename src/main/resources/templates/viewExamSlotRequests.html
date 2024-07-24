@@ -41,6 +41,7 @@
 <header th:insert="fragments/header :: header"></header>
 
 <main class="flex-shrink-0">
+
     <section class="py-5">
         <div class="row gx-5 justify-content-center">
             <div class="col-lg-6">
@@ -48,8 +49,9 @@
                     <header class="display-4" th:text="'Exam Slot Requests for ' + ${courseName}"> Exam Slots </header>
                 </div>
             </div>
+
         </div>
-        <div class="container px-5 my-5">
+        <div class="container px-5 my-5 lead fw-normal mb-0">
             <div class="row gx-5 display">
                 <div th:if="${#lists.isEmpty(examRequests)}">
                     <p> No exam slot requests have been made </p>
@@ -80,11 +82,11 @@
             </div>
         </div>
     </section>
-    <div class="container">
+    <div class="container lead fw-normal mb-0">
         <h2 th:if="${ not #lists.isEmpty(examRequests) }"> Edit or Create Exam Slots </h2>
         <h2 th:if="${#lists.isEmpty(examRequests)}"> Create Exam Slots </h2>
         <form class="form-container">
-            <table class="table lead fw-normal mb-0 ">
+            <table class="table">
                 <tr>
                     <td>Enter exam code:</td>
                     <td><input type="text" class="form-control code" name="code"></td>
