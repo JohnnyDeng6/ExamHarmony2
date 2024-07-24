@@ -34,6 +34,9 @@
         .feedback{
             color: #a82e2e;
         }
+
+        .hidden { display: none; }
+
     </style>
 </head>
 <body class="d-flex flex-column h-100">
@@ -82,9 +85,25 @@
             </div>
         </div>
     </section>
-    <div class="container lead fw-normal mb-0">
-        <h2 th:if="${ not #lists.isEmpty(examRequests) }"> Edit or Create Exam Slots </h2>
+
+
+    <section class="py-5 container">
+        <div class="fw-bolder lead mb-0"> Current Date:
+            <span class="current-date"> </span>
+        </div>
+        <div style="margin: 5px" class="lead fw-bold mb-0">
+        Editing Period: <span class="startDate" th:text="${interval.getEndTime()}"> </span> -
+        <span class="endDate" style="margin: 5px"> </span>
+        </div>
+    </section>
+
+    <div class="container">
+        <h2 th:if="${ not #lists.isEmpty(examRequests)}"> Edit or Create Exam Slots </h2>
         <h2 th:if="${#lists.isEmpty(examRequests)}"> Create Exam Slots </h2>
+
+        <p class="outside-interval-message lead fw-bolder mb-0" style="margin: 20px"> You cannot edit/create exam slots anymore,
+            the editing period has passed </p>
+
         <form class="form-container">
             <table class="table">
                 <tr>
@@ -113,11 +132,41 @@
                 <button type="submit" class="btn btn-dark">Submit Requests</button>
             </div>
         </form>
+
         <div class="feedback lead fw-normal mb-0"></div>
+
+
     </div>
     <header th:insert="fragments/footer :: footer"></header>
 </main>
 <script th:inline="javascript">
+
+    //const startDate = new Date(document.querySelector('.startDate').innerText);
+    //const endDate = new Date(document.querySelector('.endDate').innerText);
+
+    const startDate = Date.parse("2024-06-15 13:00");
+    const endDate = Date.parse("2024-10-12 12:00");
+
+    function checkTime() {
+        const currentDate = new Date();
+
+        const dateContainer = document.querySelector(".current-date");
+        dateContainer.innerText = currentDate;
+
+        // Check if the current date is within the interval
+        if (currentDate >= startDate && currentDate <= endDate) {
+            document.querySelector('.form-container').classList.remove('hidden');
+            document.querySelector('.outside-interval-message').classList.add('hidden');
+        } else {
+            document.querySelector('.form-container').classList.add('hidden');
+            document.querySelector('.outside-interval-message').classList.remove('hidden');
+        }
+    }
+
+    // Call the function on page load
+    checkTime();
+    setInterval(checkTime, 1000); // Check every minute
+
     document.addEventListener("DOMContentLoaded", (e) => {
         let requestContainer = Array.from(document.getElementsByClassName("request"));
         requestContainer.forEach(element => {
@@ -142,7 +191,11 @@
                 }
             });
         });
+
+
+
     });
+
     document.querySelector(".form-container").addEventListener("submit", async (e) => {
         e.preventDefault();
         const examCode = document.querySelector('.code').value;

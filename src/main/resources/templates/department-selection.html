@@ -320,8 +320,10 @@
                 if (!response.ok) {
                     throw new Error(await response.text());
                 }
+                feedbackContainer.innerText = courseName + "has been added to your schedule";
+
             } catch (err) {
-                feedbackContainer.innerText = err.message;
+                feedbackContainer.innerText = err.message.split("at ca.cmpt276.examharmony")[0];
             }
         }
     }
