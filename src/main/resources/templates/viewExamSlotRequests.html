@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/scripts.js" defer></script>
     <link href="css/styles.css" rel="stylesheet"/>
+
     <style>
         .container {
             text-align: center;
@@ -38,7 +39,9 @@
         .hidden { display: none; }
 
     </style>
+
 </head>
+
 <body class="d-flex flex-column h-100">
 
 <header th:insert="fragments/header :: header"></header>
@@ -88,10 +91,10 @@
         <div class="fw-bolder lead mb-0"> Current Date:
             <span class="current-date"> </span>
         </div>
-        <div style="margin: 5px" class="lead fw-bold mb-0">
-        Editing Period: <span class="startDate" th:text="${interval.getEndTime()}"> </span> -
-        <span class="endDate" style="margin: 5px"> </span>
-        </div>
+<!--        <div style="margin: 5px" class="lead fw-bold mb-0">-->
+<!--        Editing Period: <span class="startDate" th:text="${interval.getEndTime()}"> </span> - -->
+<!--        <span class="endDate" style="margin: 5px"> </span>-->
+<!--        </div>-->
     </section>
 
     <div class="container">
@@ -136,13 +139,14 @@
     </div>
     <header th:insert="fragments/footer :: footer"></header>
 </main>
+
 <script th:inline="javascript">
 
     //const startDate = new Date(document.querySelector('.startDate').innerText);
     //const endDate = new Date(document.querySelector('.endDate').innerText);
 
     const startDate = Date.parse("2024-06-15 13:00");
-    const endDate = Date.parse("2024-10-12 12:00");
+    const endDate = Date.parse("2024-11-12 12:00");
 
     function checkTime() {
         const currentDate = new Date();
