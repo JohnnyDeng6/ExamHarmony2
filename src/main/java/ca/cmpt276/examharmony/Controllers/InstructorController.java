@@ -4,6 +4,8 @@ import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSecDTO;
+import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
+import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
 import ca.cmpt276.examharmony.Model.DTOs.DepartmentDTO;
 import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.util.Collections.sort;
@@ -53,6 +57,9 @@ public class InstructorController {
     @Autowired
     private InstructorExamSlotRepository instructorExamSlotRepo;
 
+    @Autowired
+    private IntervalRepository intervalRepo;
+
     private List<DepartmentDTO> departments = Collections.synchronizedList(new ArrayList<>());
 
     @GetMapping("/instructor/home")
@@ -73,6 +80,9 @@ public class InstructorController {
     if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
         User instructor = userRepo.findByUsername(userDetails.getUsername());
         List<ExamRequest> examRequests = requestRepo.findExamRequestsByCourseName(courseName);
+        EditInterval editTime = intervalRepo.findById(0);
+
+        model.addAttribute("interval", editTime);
         model.addAttribute("examRequests", examRequests);
         model.addAttribute("instructor", instructor);
         model.addAttribute("courseName", courseName);
@@ -212,6 +222,12 @@ public class InstructorController {
         if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails){
             User currentUser = userRepo.findByUsername(userDetails.getUsername());
             CoursesSec course = CoursesSec.CreateNewCourse(newCourse.department, newCourse.courseName);
+            Set<CoursesSec> instructorCourses = currentUser.getInstructorCourses();
+            for(CoursesSec currentCourse: instructorCourses){
+                if(currentCourse.getCourseName().equals(course.getCourseName())){
+                    throw new BadRequest("You already have this Course");
+                }
+            }
             courseRepo.save(course);
             currentUser.addCourse(course);
             userRepo.save(currentUser);
