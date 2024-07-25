@@ -47,6 +47,7 @@
 <header th:insert="fragments/header :: header"></header>
 
 <main class="flex-shrink-0">
+
     <section class="py-5">
         <div class="row gx-5 justify-content-center">
             <div class="col-lg-6">
@@ -54,8 +55,9 @@
                     <header class="display-4" th:text="'Exam Slot Requests for ' + ${courseName}"> Exam Slots </header>
                 </div>
             </div>
+
         </div>
-        <div class="container px-5 my-5">
+        <div class="container px-5 my-5 lead fw-normal mb-0">
             <div class="row gx-5 display">
                 <div th:if="${#lists.isEmpty(examSlotRequests)}">
                     <p> No exam slot requests have been made </p>
@@ -87,13 +89,14 @@
         </div>
     </section>
 
+
     <section class="py-5 container">
         <div class="fw-bolder lead mb-0"> Current Date:
             <span class="current-date"> </span>
         </div>
 <!--        <div style="margin: 5px" class="lead fw-bold mb-0">-->
-<!--        Editing Period: <span class="startDate" th:text="${interval.getEndTime()}"> </span> - -->
-<!--        <span class="endDate" style="margin: 5px"> </span>-->
+<!--            Editing Period: <span class="startDate" th:text="${interval.getStartTime()}"> </span> - -->
+<!--            <span class="endDate" style="margin: 5px" th:text="${interval.getEndTime()}"> </span>-->
 <!--        </div>-->
     </section>
 
@@ -105,7 +108,7 @@
             the editing period has passed </p>
 
         <form class="form-container">
-            <table class="table lead fw-normal mb-0 ">
+            <table class="table">
                 <tr>
                     <td>Enter exam code:</td>
                     <td><input type="text" class="form-control code" name="code"></td>
@@ -142,33 +145,41 @@
 
 <script th:inline="javascript">
 
-    //const startDate = new Date(document.querySelector('.startDate').innerText);
-    //const endDate = new Date(document.querySelector('.endDate').innerText);
-
-    const startDate = Date.parse("2024-06-15 13:00");
-    const endDate = Date.parse("2024-11-12 12:00");
-
-    function checkTime() {
-        const currentDate = new Date();
-
-        const dateContainer = document.querySelector(".current-date");
-        dateContainer.innerText = currentDate;
-
-        // Check if the current date is within the interval
-        if (currentDate >= startDate && currentDate <= endDate) {
-            document.querySelector('.form-container').classList.remove('hidden');
-            document.querySelector('.outside-interval-message').classList.add('hidden');
-        } else {
-            document.querySelector('.form-container').classList.add('hidden');
-            document.querySelector('.outside-interval-message').classList.remove('hidden');
-        }
-    }
-
-    // Call the function on page load
-    checkTime();
-    setInterval(checkTime, 1000); // Check every minute
-
     document.addEventListener("DOMContentLoaded", (e) => {
+
+        //const startDate = new Date(document.querySelector('.startDate').innerText);
+        //const endDate = new Date(document.querySelector('.endDate').innerText);
+
+        const startDate = Date.parse("2024-06-15 13:00");
+        const endDate = Date.parse("2024-10-12 12:00");
+
+        function checkTime() {
+            let i;
+            const currentDate = new Date();
+
+            const dateContainer = document.querySelector(".current-date");
+            dateContainer.innerText = currentDate;
+            let deleteButtons = document.getElementsByClassName('delete-request');
+            // Check if the current date is within the interval
+            if (currentDate >= startDate && currentDate <= endDate) {
+                document.querySelector('.form-container').classList.remove('hidden');
+                document.querySelector('.outside-interval-message').classList.add('hidden');
+                for(i = 0; i < deleteButtons.length; i++){
+                    deleteButtons[i].classList.remove('hidden');
+                }
+            } else {
+                document.querySelector('.form-container').classList.add('hidden');
+                document.querySelector('.outside-interval-message').classList.remove('hidden');
+                for(i = 0; i < deleteButtons.length; i++){
+                    deleteButtons[i].classList.add('hidden');
+                }
+            }
+        }
+
+        // Call the function on page load
+        checkTime();
+        setInterval(checkTime, 1000); // Check every minute
+
         let requestContainer = Array.from(document.getElementsByClassName("request"));
         requestContainer.forEach(element => {
             let deleteButton = element.querySelector(".delete-request");
