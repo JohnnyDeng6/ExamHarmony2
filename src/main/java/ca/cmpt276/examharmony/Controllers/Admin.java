@@ -42,8 +42,14 @@ public class Admin {
         ExamSlotRequest request = examRequestRepository.findById(requestId).orElse(null);
         if (request != null) {
             request.setStatus("approved");
+
+            User owner = userRepository.findByUsername(request.getInstructorName());
+            owner.deleteUnApprovedRequests(request.getCourseName(), requestId);
             examRequestRepository.save(request);
+            userRepository.save(owner);
+
         }
+
         return "redirect:/admin/viewRequests";
     }
 

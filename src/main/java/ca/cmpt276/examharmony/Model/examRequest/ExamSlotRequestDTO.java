@@ -8,6 +8,8 @@ public class ExamSlotRequestDTO implements Comparable<ExamSlotRequestDTO>{
     public double examDuration;
     public String courseName;
 
+    public String instructorName;
+
     @Override
     public int compareTo(ExamSlotRequestDTO o) {
         return (this.preferenceStatus - o.preferenceStatus);

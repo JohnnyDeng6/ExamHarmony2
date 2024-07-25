@@ -4,10 +4,12 @@ import java.util.*;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
+import ca.cmpt276.examharmony.utils.InstructorExamSlotRepository;
 import jakarta.persistence.*;
 
 import ca.cmpt276.examharmony.Model.roles.Role;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 //User of the website
 @Entity
@@ -201,6 +203,18 @@ public class User {
     }
     public void setPasswordResetTokenExpiry(LocalDateTime passwordResetTokenExpiry) {
         this.passwordResetTokenExpiry = passwordResetTokenExpiry;
+    }
+
+    public void deleteUnApprovedRequests(String courseName, int ID){
+        InstructorExamSlotRepository instructorExamRepo = new InstructorExamSlotRepository();
+        Iterator<ExamSlotRequest> iterator = examSlotRequests.iterator();
+        while (iterator.hasNext()){
+            ExamSlotRequest currentRequest = iterator.next();
+            if(currentRequest.getCourseName().equals(courseName) && currentRequest.getID() != ID){
+                instructorExamRepo.removeUserExamRequestAssociation(this.uuid, currentRequest.getID());
+                iterator.remove();
+            }
+        }
     }
 
     @Transactional

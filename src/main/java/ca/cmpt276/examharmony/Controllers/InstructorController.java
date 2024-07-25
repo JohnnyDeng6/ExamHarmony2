@@ -126,6 +126,7 @@ public class InstructorController {
                         previousRequest.setExamCode(newRequest.examCode);
                         previousRequest.setExamDuration(newRequest.examDuration);
                         previousRequest.setExamDate(newRequest.examDate);
+                        previousRequest.setInstructorName(newRequest.instructorName);
                         instructor.updateExamRequest(previousRequest, newRequest.examDate);
                         requestRepo.save(previousRequest);
                         iterator.remove();
@@ -135,8 +136,8 @@ public class InstructorController {
                 }
             }
             preferenceStatus++;
-        }
-        // Add new exam requests
+       }
+       // Add new exam requests
         for (ExamSlotRequestDTO newRequestDTO : examSlotRequestDTOList) {
             try {
                 ExamSlotRequest newRequest = new ExamSlotRequest();
@@ -146,6 +147,7 @@ public class InstructorController {
                 newRequest.setCourseName(courseName);
                 newRequest.setStatus("PENDING");
                 newRequest.setPreferenceStatus(preferenceStatus);
+                newRequest.setInstructorName(newRequestDTO.instructorName);
                 requestRepo.save(newRequest);
                 instructor.addNewExamRequest(newRequest);
                 preferenceStatus++;
@@ -153,7 +155,6 @@ public class InstructorController {
                 throw new BadRequest(invalidParameter.getMessage());
             }
         }
-
         userRepo.save(instructor);
 
         model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
