@@ -52,7 +52,7 @@
         <div class="container px-5 my-5">
             <div class="row gx-5 display">
                 <div th:if="${#lists.isEmpty(examRequests)}">
-                    <p> No exam slot requests have been made </p>
+                    <p class="lead fw-bolder mb-0"> No exam slot requests have been made </p>
                 </div>
                 <div th:if="${ not #lists.isEmpty(examRequests) }" style="margin: 40px">
                     <table class="table">
@@ -80,7 +80,7 @@
             </div>
         </div>
     </section>
-    <div class="container">
+    <div class="container lead fw-normal mb-0">
         <h2 th:if="${ not #lists.isEmpty(examRequests) }"> Edit or Create Exam Slots </h2>
         <h2 th:if="${#lists.isEmpty(examRequests)}"> Create Exam Slots </h2>
         <form class="form-container">
