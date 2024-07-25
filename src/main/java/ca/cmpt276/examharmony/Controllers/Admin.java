@@ -1,7 +1,7 @@
 package ca.cmpt276.examharmony.Controllers;
 
-import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
-import ca.cmpt276.examharmony.Model.examRequest.ExamRequestRepository;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 
@@ -28,18 +28,18 @@ public class Admin {
     private RoleRepository roleRepository;
 
     @Autowired
-    private ExamRequestRepository examRequestRepository;
+    private ExamSlotRequestRepository examRequestRepository;
 
     @GetMapping("/viewRequests")
     public String viewRequests(Model model) {
-        List<ExamRequest> examRequests = examRequestRepository.findAll();
-        model.addAttribute("examRequests", examRequests);
+        List<ExamSlotRequest> examSlotRequests = examRequestRepository.findAll();
+        model.addAttribute("examRequests", examSlotRequests);
         return "viewRequests";
     }
 
     @PostMapping("/approveRequest")
     public String approveRequest(@RequestParam("requestId") int requestId) {
-        ExamRequest request = examRequestRepository.findById(requestId).orElse(null);
+        ExamSlotRequest request = examRequestRepository.findById(requestId).orElse(null);
         if (request != null) {
             request.setStatus("approved");
             examRequestRepository.save(request);

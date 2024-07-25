@@ -57,10 +57,10 @@
         </div>
         <div class="container px-5 my-5">
             <div class="row gx-5 display">
-                <div th:if="${#lists.isEmpty(examRequests)}">
+                <div th:if="${#lists.isEmpty(examSlotRequests)}">
                     <p> No exam slot requests have been made </p>
                 </div>
-                <div th:if="${ not #lists.isEmpty(examRequests) }" style="margin: 40px">
+                <div th:if="${ not #lists.isEmpty(examSlotRequests) }" style="margin: 40px">
                     <table class="table">
                         <thead class="thead-dark">
                         <tr>
@@ -72,12 +72,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="request" th:each="examRequest: ${examRequests}">
-                            <td class="preference" th:text="${examRequest.getPreferenceStatus()}"></td>
-                            <td th:text="${examRequest.getExamCode()}"></td>
-                            <td th:text="${examRequest.getExamDuration()}"> </td>
-                            <td th:text="${examRequest.getExamDate()}"> </td>
-                            <td th:text="${examRequest.getStatus()}"> </td>
+                        <tr class="request" th:each="examSlotRequest: ${examSlotRequests}">
+                            <td class="preference" th:text="${examSlotRequest.getPreferenceStatus()}"></td>
+                            <td th:text="${examSlotRequest.getExamCode()}"></td>
+                            <td th:text="${examSlotRequest.getExamDuration()}"> </td>
+                            <td th:text="${examSlotRequest.getExamDate()}"> </td>
+                            <td th:text="${examSlotRequest.getStatus()}"> </td>
                             <td><button class="delete-request btn-danger"> Delete Request</button></td>
                         </tr>
                         </tbody>
@@ -98,8 +98,8 @@
     </section>
 
     <div class="container">
-        <h2 th:if="${ not #lists.isEmpty(examRequests)}"> Edit or Create Exam Slots </h2>
-        <h2 th:if="${#lists.isEmpty(examRequests)}"> Create Exam Slots </h2>
+        <h2 th:if="${ not #lists.isEmpty(examSlotRequests)}"> Edit or Create Exam Slots </h2>
+        <h2 th:if="${#lists.isEmpty(examSlotRequests)}"> Create Exam Slots </h2>
 
         <p class="outside-interval-message lead fw-bolder mb-0" style="margin: 20px"> You cannot edit/create exam slots anymore,
             the editing period has passed </p>

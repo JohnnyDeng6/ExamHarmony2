@@ -6,11 +6,11 @@ import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSecDTO;
 import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
 import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
 import ca.cmpt276.examharmony.Model.DTOs.DepartmentDTO;
-import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
-import ca.cmpt276.examharmony.Model.examRequest.ExamRequestDTO;
-import ca.cmpt276.examharmony.Model.examRequest.ExamRequestRepository;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestDTO;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import ca.cmpt276.examharmony.utils.InstructorExamSlotRepository;
@@ -22,8 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.util.Collections.sort;
@@ -52,7 +50,7 @@ public class InstructorController {
     private CourseRepository courseRepo;
 
     @Autowired
-    private ExamRequestRepository requestRepo;
+    private ExamSlotRequestRepository requestRepo;
 
     @Autowired
     private InstructorExamSlotRepository instructorExamSlotRepo;
@@ -79,11 +77,11 @@ public class InstructorController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
         User instructor = userRepo.findByUsername(userDetails.getUsername());
-        List<ExamRequest> examRequests = requestRepo.findExamRequestsByCourseName(courseName);
+        List<ExamSlotRequest> examSlotRequests = requestRepo.findExamRequestsByCourseName(courseName);
         EditInterval editTime = intervalRepo.findById(0);
 
         model.addAttribute("interval", editTime);
-        model.addAttribute("examRequests", examRequests);
+        model.addAttribute("examRequests", examSlotRequests);
         model.addAttribute("instructor", instructor);
         model.addAttribute("courseName", courseName);
         return "viewExamSlotRequests";
@@ -94,8 +92,8 @@ public class InstructorController {
 
 
     @PostMapping("/instructor/examslots/edit/{courseName}")
-    public String submitData(@RequestBody List<ExamRequestDTO> examRequestDTOList, Model model, @PathVariable("courseName") String courseName) {
-        if (examRequestDTOList.isEmpty()) {
+    public String submitData(@RequestBody List<ExamSlotRequestDTO> examSlotRequestDTOList, Model model, @PathVariable("courseName") String courseName) {
+        if (examSlotRequestDTOList.isEmpty()) {
             return "redirect:/instructor/examslots/" + courseName;
         }
         System.out.println("Requests sent");
@@ -109,20 +107,20 @@ public class InstructorController {
             return "redirect:/login";
         }
 
-        List<ExamRequest> previousRequests = requestRepo.findExamRequestsByCourseName(courseName);
+        List<ExamSlotRequest> previousRequests = requestRepo.findExamRequestsByCourseName(courseName);
 
-        sort(examRequestDTOList);
+        sort(examSlotRequestDTOList);
         sort(previousRequests);
-        Iterator<ExamRequest> examRequestIterator = previousRequests.iterator();
+        Iterator<ExamSlotRequest> examRequestIterator = previousRequests.iterator();
         int preferenceStatus = 1;
         // Update already-existing exam requests
        while(examRequestIterator.hasNext()) {
-           ExamRequest previousRequest = examRequestIterator.next();
+           ExamSlotRequest previousRequest = examRequestIterator.next();
             //Find a new request which has the same preference and update the old request
-            Iterator<ExamRequestDTO> iterator = examRequestDTOList.iterator();
+            Iterator<ExamSlotRequestDTO> iterator = examSlotRequestDTOList.iterator();
 
             while (iterator.hasNext()){
-                ExamRequestDTO newRequest = iterator.next();
+                ExamSlotRequestDTO newRequest = iterator.next();
                 if(newRequest.preferenceStatus == previousRequest.getPreferenceStatus()){
                     try{
                         previousRequest.setExamCode(newRequest.examCode);
@@ -139,9 +137,9 @@ public class InstructorController {
             preferenceStatus++;
         }
         // Add new exam requests
-        for (ExamRequestDTO newRequestDTO : examRequestDTOList) {
+        for (ExamSlotRequestDTO newRequestDTO : examSlotRequestDTOList) {
             try {
-                ExamRequest newRequest = new ExamRequest();
+                ExamSlotRequest newRequest = new ExamSlotRequest();
                 newRequest.setExamCode(newRequestDTO.examCode);
                 newRequest.setExamDuration(newRequestDTO.examDuration);
                 newRequest.setExamDate(newRequestDTO.examDate);
@@ -171,11 +169,11 @@ public class InstructorController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails){
             User instructor = userRepo.findByUsername(userDetails.getUsername());
-            List<ExamRequest> examRequestList = instructor.findRequestsByCourse(courseName);
-            Iterator<ExamRequest> iterator = examRequestList.iterator();
+            List<ExamSlotRequest> examSlotRequestList = instructor.findRequestsByCourse(courseName);
+            Iterator<ExamSlotRequest> iterator = examSlotRequestList.iterator();
             //Find request to delete
             while (iterator.hasNext()) {
-                ExamRequest request = iterator.next();
+                ExamSlotRequest request = iterator.next();
                 if (request.getPreferenceStatus() == preference) {
                     instructorExamSlotRepo.removeUserExamRequestAssociation(instructor.getUuid(), request.getID());
                     instructor.deleteExamRequest(request);
@@ -183,7 +181,7 @@ public class InstructorController {
                     iterator.remove();
                     //Fix all succeeding request's preference status
                     while(iterator.hasNext()){
-                        ExamRequest nextRequest = iterator.next();
+                        ExamSlotRequest nextRequest = iterator.next();
                         nextRequest.setPreferenceStatus(nextRequest.getPreferenceStatus()-1);
                         requestRepo.save(nextRequest);
                     }
