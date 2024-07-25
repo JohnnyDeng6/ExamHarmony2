@@ -22,7 +22,6 @@
 
         .container {
             text-align: center;
-            font-family: DejaVu, Sans Mono, monospace,sans-serif;
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -54,9 +53,10 @@
         <div class="container px-5">
             <h1 class="fw-bolder fs-5 mb-4"> Your Courses </h1>
             <div class="card border-0 shadow rounded-3 overflow-hidden">
-                <div class="card-body p-0">
+                <div class="card-body p-0 ">
 
-                    <div th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }">
+                    <div th:if="${ not #lists.isEmpty(instructor.getInstructorCourses()) }" class="lead fw-normal mb-0">
+
                         <table class="table" >
                             <thead class="thead-dark">
                             <tr>
@@ -81,7 +81,6 @@
                     </div>
 
                     <div style="margin: 60px" th:if="${#lists.isEmpty(instructor.getInstructorCourses()) }"> You are not teaching any courses this semester </div>
-
 
                     <div class="errorContainer"> </div>
 
