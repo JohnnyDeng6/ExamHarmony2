@@ -141,33 +141,41 @@
 </main>
 <script th:inline="javascript">
 
-    //const startDate = new Date(document.querySelector('.startDate').innerText);
-    //const endDate = new Date(document.querySelector('.endDate').innerText);
-
-    const startDate = Date.parse("2024-06-15 13:00");
-    const endDate = Date.parse("2024-10-12 12:00");
-
-    function checkTime() {
-        const currentDate = new Date();
-
-        const dateContainer = document.querySelector(".current-date");
-        dateContainer.innerText = currentDate;
-
-        // Check if the current date is within the interval
-        if (currentDate >= startDate && currentDate <= endDate) {
-            document.querySelector('.form-container').classList.remove('hidden');
-            document.querySelector('.outside-interval-message').classList.add('hidden');
-        } else {
-            document.querySelector('.form-container').classList.add('hidden');
-            document.querySelector('.outside-interval-message').classList.remove('hidden');
-        }
-    }
-
-    // Call the function on page load
-    checkTime();
-    setInterval(checkTime, 1000); // Check every minute
-
     document.addEventListener("DOMContentLoaded", (e) => {
+
+        //const startDate = new Date(document.querySelector('.startDate').innerText);
+        //const endDate = new Date(document.querySelector('.endDate').innerText);
+
+        const startDate = Date.parse("2024-06-15 13:00");
+        const endDate = Date.parse("2024-10-12 12:00");
+
+        function checkTime() {
+            let i;
+            const currentDate = new Date();
+
+            const dateContainer = document.querySelector(".current-date");
+            dateContainer.innerText = currentDate;
+            let deleteButtons = document.getElementsByClassName('delete-request');
+            // Check if the current date is within the interval
+            if (currentDate >= startDate && currentDate <= endDate) {
+                document.querySelector('.form-container').classList.remove('hidden');
+                document.querySelector('.outside-interval-message').classList.add('hidden');
+                for(i = 0; i < deleteButtons.length; i++){
+                    deleteButtons[i].classList.remove('hidden');
+                }
+            } else {
+                document.querySelector('.form-container').classList.add('hidden');
+                document.querySelector('.outside-interval-message').classList.remove('hidden');
+                for(i = 0; i < deleteButtons.length; i++){
+                    deleteButtons[i].classList.add('hidden');
+                }
+            }
+        }
+
+        // Call the function on page load
+        checkTime();
+        setInterval(checkTime, 1000); // Check every minute
+
         let requestContainer = Array.from(document.getElementsByClassName("request"));
         requestContainer.forEach(element => {
             let deleteButton = element.querySelector(".delete-request");
