@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/scripts.js" defer></script>
     <script th:if="${alertMessage != null}" th:inline="javascript">
-        window.alert([['${alertMessage}']]);
+        window.alert('[[${alertMessage}]]');
     </script>
   <script>
 
