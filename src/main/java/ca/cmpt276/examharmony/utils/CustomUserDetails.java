@@ -45,7 +45,7 @@ public class CustomUserDetails implements UserDetails {
         return currentUser.getUsername();
     }
 
-    public UUID getPasswordResetToken() {
+    public String getPasswordResetToken() {
         return currentUser.getPasswordResetToken();
     }
     public String getName() {
