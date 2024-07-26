@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
+
 // When an admin creates an account, assume they know the person’s email
     // and create a temporary password, role(s), and username for them,
     // then they are sent the email with their account,
@@ -39,24 +42,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
         @PostMapping("/admin/registration")
         public String registerUserAccount(@ModelAttribute("user") UserRegistrationDto registrationDto, RedirectAttributes redirectAttributes, HttpSession session, Errors errors) {
             try {
-                userService.registerNewUser(registrationDto);
+                UUID prtUUID = userService.registerNewUser(registrationDto);
                 redirectAttributes.addFlashAttribute("alertMessage", "New user registered successfully, a link has been sent to the email. Return home");
                 String toEmail = registrationDto.getEmail();
                 String subject = "Registration Confirmation";
-                String body = buildWelcomeEmailBody(registrationDto);
+                String body = buildWelcomeEmailBody(registrationDto, prtUUID);
                 emailService.sendHtmlEmail(toEmail, subject, body);
 
             } catch (UserAlreadyExistException uaeEx) {
                 redirectAttributes.addFlashAttribute("alertMessage", "Account already exists, please choose another email or username");
                 return "redirect:/admin/register";
-            } catch (MessagingException e) {
+            } catch (MessagingException | NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
             return "redirect:/admin/home";
         }
 
-        private String buildWelcomeEmailBody(UserRegistrationDto registrationDto) {
-            String link = "https://examharmony.onrender.com/reset-password?passwordResetToken=" + registrationDto.getResetPasswordToken();
+        private String buildWelcomeEmailBody(UserRegistrationDto registrationDto, UUID prtUUID) {
+            String link = "https://examharmony.onrender.com/reset-password?passwordResetToken=" + prtUUID;
             return "<p>Dear " + registrationDto.getName() + ",</p>"
                     + "<p>Welcome to ExamHarmony! We are thrilled to have you on board.</p>"
                     + "<p>Your unique username is: " + registrationDto.getUsername() + ",</p>"

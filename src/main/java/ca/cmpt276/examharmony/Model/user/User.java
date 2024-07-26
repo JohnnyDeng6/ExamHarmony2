@@ -29,7 +29,7 @@ public class User {
     @Column(nullable = false)
     private String password;
     @Column(name = "prt")
-    private UUID passwordResetToken;
+    private String passwordResetToken;
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -92,7 +92,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.emailAddress = emailAddress;
-        this.passwordResetToken = UUID.randomUUID();
+//        this.passwordResetToken = UUID.randomUUID();
     }
     public User() {}
 
@@ -140,10 +140,10 @@ public class User {
         return name;
     }
 
-    public void setPasswordResetToken(UUID passwordResetToken) {
+    public void setPasswordResetToken(String passwordResetToken) {
         this.passwordResetToken = passwordResetToken;
     }
-    public UUID getPasswordResetToken() {
+    public String getPasswordResetToken() {
         return passwordResetToken;
     }
 
@@ -152,7 +152,7 @@ public class User {
     }
 
     public boolean isPasswordResetTokenValid() {
-        return passwordResetToken != null && !passwordResetToken.equals(UUID.fromString("00000000-0000-0000-0000-000000000000")) && passwordResetTokenExpiry != null && passwordResetTokenExpiry.isAfter(LocalDateTime.now());
+        return passwordResetToken != null && !passwordResetToken.equals("DNE") && passwordResetTokenExpiry != null && passwordResetTokenExpiry.isAfter(LocalDateTime.now());
     }
 
     public List<ExamRequest> findRequestsByCourse(String courseName){

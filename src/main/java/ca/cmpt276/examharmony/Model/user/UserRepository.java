@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     User findByUsername(String username);
     User findByEmailAddress(String emailAddress);
-    User findByPasswordResetToken(UUID passwordResetToken);
+    User findByPasswordResetToken(String passwordResetToken);
 
     // Custom query to find users by role name
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")

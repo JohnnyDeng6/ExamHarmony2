@@ -5,6 +5,7 @@ import ca.cmpt276.examharmony.Model.emailSender.EmailService;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import ca.cmpt276.examharmony.Model.user.UserService;
+import ca.cmpt276.examharmony.utils.HashUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +14,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.UUID;
 
 @Controller
@@ -30,8 +36,10 @@ public class PasswordResetController {
 
 
     @GetMapping("/reset-password")
-    public String showSetPasswordForm(@RequestParam("passwordResetToken") UUID passwordResetToken, Model model) {
-        User user = userService.findByPasswordResetToken(passwordResetToken);
+    public String showSetPasswordForm(@RequestParam("passwordResetToken") UUID passwordResetToken, Model model) throws NoSuchAlgorithmException {
+        //verify the prtUUID
+        HashUtils hashUtils = new HashUtils();
+        User user = userService.findByPasswordResetToken(hashUtils.SHA256(passwordResetToken));
 
         if (user == null || !user.isPasswordResetTokenValid()) {
             model.addAttribute("error", "This link does not exist");
@@ -49,14 +57,17 @@ public class PasswordResetController {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             User user = userDetails.getCurrentUser();
 
-            UUID token = UUID.randomUUID();
-            user.setPasswordResetToken(token);
+            SecureRandom secureRandom = new SecureRandom();
+            UUID prtUUID = new UUID(secureRandom.nextLong(), secureRandom.nextLong());
+            HashUtils hashUtils = new HashUtils();
+            user.setPasswordResetToken(hashUtils.SHA256(prtUUID));
+
             user.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(24));
             userRepository.save(user);
 
             String toEmail = userDetails.getEmail();
             String subject = "Password Reset Confirmation";
-            String body = buildPasswordResetEmailBody(userDetails);
+            String body = buildPasswordResetEmailBody(userDetails, prtUUID);
             emailService.sendHtmlEmail(toEmail, subject, body);
 
             return "success";
@@ -71,8 +82,9 @@ public class PasswordResetController {
     public String handleResetPassword(@RequestParam("passwordResetToken") UUID passwordResetToken,
                                       @RequestParam("password") String newPassword,
                                       @RequestParam("confirmPassword") String confirmPassword,
-                                      Model model) {
-        User user = userService.findByPasswordResetToken(passwordResetToken);
+                                      Model model) throws NoSuchAlgorithmException {
+        HashUtils hashUtils = new HashUtils();
+        User user = userService.findByPasswordResetToken(hashUtils.SHA256(passwordResetToken));
         if (user == null || !user.isPasswordResetTokenValid()) {
             model.addAttribute("error", "This link does not exist.");
             return "reset-password-error";
@@ -91,8 +103,8 @@ public class PasswordResetController {
         return "redirect:/login";
     }
 
-    private String buildPasswordResetEmailBody(CustomUserDetails userDetails) {
-        String link = "https://examharmony.onrender.com/reset-password?passwordResetToken=" + userDetails.getPasswordResetToken();
+    private String buildPasswordResetEmailBody(CustomUserDetails userDetails, UUID prtUUID) {
+        String link = "https://examharmony.onrender.com/reset-password?passwordResetToken=" + prtUUID;
         return "<p>Dear " + userDetails.getName() + ",</p>"
                 + "<p>You have requested a password reset.</p>"
                 + "<p>To get started, please set your password by clicking the link below:</p>"

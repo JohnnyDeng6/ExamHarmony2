@@ -9,7 +9,7 @@ public class UserRegistrationDto {
     private String email;
     private String password;
     private UUID id;
-    private UUID resetPasswordToken;
+    private String resetPasswordToken;
     private Set<String> role;
 
 
@@ -32,10 +32,10 @@ public class UserRegistrationDto {
         return id;
     }
 
-    public void setResetPasswordToken(UUID resetPasswordToken) {
+    public void setResetPasswordToken(String resetPasswordToken) {
         this.resetPasswordToken = resetPasswordToken;
     }
-    public UUID getResetPasswordToken() {
+    public String getResetPasswordToken() {
         return resetPasswordToken;
     }
 
