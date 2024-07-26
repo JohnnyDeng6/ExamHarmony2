@@ -55,11 +55,9 @@ logOut.addEventListener("click", async ()=>{
         }
     }
 });
-
 function goHome() {
-    const url = /*[[@{/home}]]*/ '/home';
-    window.location.href = url;
-    // const currentPath = window.location.pathname;
-    // const basePath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-    // location.replace(basePath + "/home");
+    const currentUrl = window.location.href;
+    const urlParts = currentUrl.split('/');
+    const role = urlParts[3];
+    window.location.href = window.location.origin + '/' + role + '/home';
 }
