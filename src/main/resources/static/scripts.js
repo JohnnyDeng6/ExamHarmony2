@@ -61,6 +61,5 @@ function goHome() {
     window.location.href = url;
     // const currentPath = window.location.pathname;
     // const basePath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-
     // location.replace(basePath + "/home");
 }

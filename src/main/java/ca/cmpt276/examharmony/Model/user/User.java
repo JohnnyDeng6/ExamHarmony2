@@ -16,7 +16,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "uuid", columnDefinition = "CHAR(36)")
+    @Column(name = "uuid", columnDefinition = "UUID")
     private UUID uuid;
     @Column(nullable = false, unique = true)
     private String username;
