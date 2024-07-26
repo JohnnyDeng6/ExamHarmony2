@@ -18,17 +18,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "uuid", columnDefinition = "CHAR(36)")
     private UUID uuid;
-    @Column(nullable = false, unique = true)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
-
-
     @Column(nullable = false, unique = true)
     private String emailAddress;
     @Column(name = "prtExpiry", unique = true)
     private LocalDateTime passwordResetTokenExpiry;
     @Column(nullable = false)
     private String password;
-    @Column(name = "prt")
+    @Column(name = "prt", columnDefinition = "CHAR(36)")
     private UUID passwordResetToken;
     private String name;
 
@@ -143,6 +141,7 @@ public class User {
     public void setPasswordResetToken(UUID passwordResetToken) {
         this.passwordResetToken = passwordResetToken;
     }
+
     public UUID getPasswordResetToken() {
         return passwordResetToken;
     }

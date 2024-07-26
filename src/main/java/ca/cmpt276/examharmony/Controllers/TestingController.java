@@ -71,4 +71,12 @@ public class TestingController {
         newUser.setRoles(roleSet);
         userRepo.save(newUser);
     }
+
+    @GetMapping("/test/get/user")
+    public void getTestInstructor(){
+        User user = userRepo.findByEmailAddress("jzydeng@gmail.com");
+        System.out.println(user.getEmailAddress());
+        System.out.println(user.getUUID());
+        System.out.println(user.getUsername());
+    }
 }
