@@ -6,6 +6,7 @@ import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import ca.cmpt276.examharmony.Model.user.UserService;
 import ca.cmpt276.examharmony.utils.HashUtils;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -57,17 +58,11 @@ public class PasswordResetController {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             User user = userDetails.getCurrentUser();
 
-            SecureRandom secureRandom = new SecureRandom();
-            UUID prtUUID = new UUID(secureRandom.nextLong(), secureRandom.nextLong());
-            HashUtils hashUtils = new HashUtils();
-            user.setPasswordResetToken(hashUtils.SHA256(prtUUID));
-
-            user.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(24));
-            userRepository.save(user);
+            UUID prtUUID = getNewPrt(user);
 
             String toEmail = userDetails.getEmail();
             String subject = "Password Reset Confirmation";
-            String body = buildPasswordResetEmailBody(userDetails, prtUUID);
+            String body = buildPasswordResetEmailBody(userDetails.getName(), prtUUID);
             emailService.sendHtmlEmail(toEmail, subject, body);
 
             return "success";
@@ -75,6 +70,41 @@ public class PasswordResetController {
             e.printStackTrace();
             return "redirect:/login";
         }
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPasswordForm() {
+        return "forgot-password-form";
+    }
+    @PostMapping("/forgot-password")
+    public String getUserForm(@RequestParam("email") String email, @RequestParam("username") String username, Model model) {
+        User user = userService.findByUsername(username);
+        if (user != null && user.getEmailAddress().equals(email)) {
+            try {
+                UUID prtUUID = getNewPrt(user);
+                String subject = "Password Reset Confirmation";
+                String body = buildPasswordResetEmailBody(user.getName(), prtUUID);
+                emailService.sendHtmlEmail(email, subject, body);
+                return "redirect:/login";
+
+            } catch (MessagingException | NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            model.addAttribute("error", "User not found.");
+            return "/forgot-password-form";
+        }
+    }
+
+    private UUID getNewPrt(User user) throws NoSuchAlgorithmException {
+        SecureRandom secureRandom = new SecureRandom();
+        UUID prtUUID = new UUID(secureRandom.nextLong(), secureRandom.nextLong());
+        HashUtils hashUtils = new HashUtils();
+        user.setPasswordResetToken(hashUtils.SHA256(prtUUID));
+
+        user.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(24));
+        userRepository.save(user);
+        return prtUUID;
     }
 
 
@@ -103,9 +133,9 @@ public class PasswordResetController {
         return "redirect:/login";
     }
 
-    private String buildPasswordResetEmailBody(CustomUserDetails userDetails, UUID prtUUID) {
+    private String buildPasswordResetEmailBody(String name, UUID prtUUID) {
         String link = "https://examharmony.onrender.com/reset-password?passwordResetToken=" + prtUUID;
-        return "<p>Dear " + userDetails.getName() + ",</p>"
+        return "<p>Dear " + name + ",</p>"
                 + "<p>You have requested a password reset.</p>"
                 + "<p>To get started, please set your password by clicking the link below:</p>"
                 + "<p><a href=\"" + link + "\">Set Your Password</a></p>"
