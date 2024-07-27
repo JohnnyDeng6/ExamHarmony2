@@ -53,9 +53,10 @@ public class Admin {
         ExamSlotRequest request = examRequestRepository.findById(requestId).orElse(null);
         if (request != null) {
             request.setStatus("APPROVED");
-            System.out.println(request.getInstructorName());
+            request.setPreferenceStatus(1);
             User owner = userRepository.findByUsername(request.getInstructorName());
             Iterator<ExamSlotRequest> iterator = owner.getExamSlotRequests().iterator();
+            examRequestRepository.save(request);
             while (iterator.hasNext()){
                 ExamSlotRequest currentRequest = iterator.next();
                 if(currentRequest.getCourseName().equals(request.getCourseName()) && currentRequest.getID() != request.getID()){
