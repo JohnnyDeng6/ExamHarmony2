@@ -2,6 +2,7 @@ package ca.cmpt276.examharmony.Controllers;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
+import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.roles.Role;
 import ca.cmpt276.examharmony.Model.roles.RoleRepository;
 import ca.cmpt276.examharmony.Model.user.User;
@@ -29,6 +30,9 @@ public class TestingController {
     @Autowired
     private PasswordEncoder pwEncorder;
 
+    @Autowired
+    private IntervalRepository intervalRepository;
+
     @GetMapping("/adminExamSlot")
     public String showAdminExamSlotPage() {
         return "adminExamSlot"; // This returns the template named "adminExamSlot.html"
@@ -41,7 +45,7 @@ public class TestingController {
 
     @GetMapping("/invTest")
     public String showInvigilator() {
-        return "invigilatorTestPage"; // This returns the template named "adminExamSlot.html"
+        return "invigilatorHome"; // This returns the template named "adminExamSlot.html"
     }
 
     @GetMapping("/test/add_test_course")
@@ -71,4 +75,13 @@ public class TestingController {
         newUser.setRoles(roleSet);
         userRepo.save(newUser);
     }
+
+    @GetMapping("/test/get/user")
+    public void getTestInstructor(){
+        User user = userRepo.findByEmailAddress("jzydeng@gmail.com");
+        System.out.println(user.getEmailAddress());
+        System.out.println(user.getUUID());
+        System.out.println(user.getUsername());
+    }
+
 }

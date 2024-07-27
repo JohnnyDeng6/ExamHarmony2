@@ -1,9 +1,11 @@
 package ca.cmpt276.examharmony.Controllers;
 
+import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
+import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequest;
 import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService; 
 import java.security.Principal;
-import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
-import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequest;
 
 @Controller
 @RequestMapping("/invigilator")
@@ -26,13 +26,18 @@ public class InvigilatorController {
         this.invigilatorRequestService = invigilatorRequestService;
     }
 
+    @Autowired
+    private IntervalRepository intervalRepository;
+
     @GetMapping("/home")
     public String showHomePage(Model model, Principal principal) {
         String username = principal.getName();
         List<InvigilatorRequest> requests = invigilatorRequestService.getRequests(username);
+        EditInterval interval = intervalRepository.findById(1);
+        model.addAttribute("interval", interval);
         model.addAttribute("invigilatorName", username);
         model.addAttribute("requests", requests);
-        return "invigilatorTestPage";
+        return "invigilatorHome";
     }
 
 

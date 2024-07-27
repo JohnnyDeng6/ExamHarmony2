@@ -11,7 +11,9 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
+    @Query(value = "SELECT * FROM users WHERE username = :username", nativeQuery = true)
     User findByUsername(String username);
+    @Query(value = "SELECT * FROM users WHERE email_address = :emailAddress", nativeQuery = true)
     User findByEmailAddress(String emailAddress);
     User findByPasswordResetToken(String passwordResetToken);
 

@@ -28,8 +28,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="request : ${examRequests}">
-            <td th:text="${request.ID}"></td>
+        <tr th:each="request : ${examSlotRequests}" class="exam-slot">
+            <td th:text="${request.ID}" class="ID"></td>
             <td th:text="${request.courseName}"></td>
             <td th:text="${request.examCode}"></td>
             <td th:text="${#temporals.format(request.examDate, 'yyyy-MM-dd HH:mm')}"></td>
@@ -38,7 +38,8 @@
             <td>
                 <form th:action="@{/admin/approveRequest}" method="post" style="display:inline;">
                     <input type="hidden" name="requestId" th:value="${request.ID}"/>
-                    <button class="btn btn-success" type="submit" th:disabled="${request.status == 'APPROVED'}">Approve</button>
+                    <button class="btn btn-success approve-button"
+                            type="submit" th:disabled="${request.status == 'APPROVED'}">Approve</button>
                 </form>
             </td>
         </tr>
@@ -46,4 +47,44 @@
     </table>
 </div>
 </body>
+
+<script>
+
+    // document.addEventListener("DOMContentLoaded", (e)=>{
+    //     e.preventDefault()
+    //
+    //     let table = document.querySelector('.table');
+    //     let tableRows = table.getElementsByClassName('exam-slot');
+    //
+    //     for(let i = 0; i < tableRows.length; i++){
+    //         let currentRow = tableRows[i];
+    //
+    //         let approveButton = currentRow.querySelector('.approve-button');
+    //
+    //         approveButton.addEventListener("click", async (e)=>{
+    //             e.preventDefault();
+    //             let requestID = currentRow.querySelector('.ID').innerText;
+    //             try {
+    //
+    //                 requestBody = {requestId: requestID}
+    //                 const response = await fetch("/admin/approveRequest",{
+    //                     body: JSON.stringify(requestBody)
+    //                 });
+    //
+    //                 if(!response.ok){
+    //                     const errorData = await response.json();
+    //                     const errorMessage = errorData.trace;
+    //                     throw new Error(errorMessage);
+    //                 }
+    //
+    //             } catch (err){
+    //                 document.querySelector(".feedback").innerText = err.message.split("at ca.cmpt276.examharmony")[0];
+    //             }
+    //         });
+    //     }
+    //
+    // })
+
+</script>
+
 </html>

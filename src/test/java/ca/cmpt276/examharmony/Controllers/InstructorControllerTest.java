@@ -1,24 +1,21 @@
 package ca.cmpt276.examharmony.Controllers;
 
 import ca.cmpt276.examharmony.Model.DTOs.DepartmentDTO;
-import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
-import ca.cmpt276.examharmony.Model.examRequest.ExamRequestRepository;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.ui.Model;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -27,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -46,7 +41,7 @@ class InstructorControllerTest {
     private UserRepository userRepo;
 
     @MockBean
-    private ExamRequestRepository requestRepo;
+    private ExamSlotRequestRepository requestRepo;
 
     @Test
     @WithMockUser(username = "John", roles = {"INSTRUCTOR"})
@@ -78,13 +73,13 @@ class InstructorControllerTest {
         mockInstructor.setEmailAddress("Test@example.ca");
         mockInstructor.setPassword("123456");
 
-        List<ExamRequest> mockExamRequests = Arrays.asList(
-                new ExamRequest(1, LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT354",1),
-                new ExamRequest(1, LocalDateTime.parse("2024-04-16 10:30", formatter), 4, "CMPT354", 2)
+        List<ExamSlotRequest> mockExamSlotRequests = Arrays.asList(
+                new ExamSlotRequest(1, LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT354",1),
+                new ExamSlotRequest(1, LocalDateTime.parse("2024-04-16 10:30", formatter), 4, "CMPT354", 2)
         );
 
         when(userRepo.findByUsername("Alex")).thenReturn(mockInstructor);
-        when(requestRepo.findExamRequestsByCourseName("CMPT354")).thenReturn(mockExamRequests);
+        when(requestRepo.findExamRequestsByCourseName("CMPT354")).thenReturn(mockExamSlotRequests);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/instructor/examslots/CMPT354"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -101,9 +96,9 @@ class InstructorControllerTest {
         mockInstructor.setEmailAddress("Test@example.ca");
         mockInstructor.setPassword("123456");
 
-        List<ExamRequest> badList = Arrays.asList(
-                new ExamRequest(1, LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT373", 5),
-                new ExamRequest(1,  LocalDateTime.parse("2024-04-16 01:00", formatter), -5, "CMPT373", 2)
+        List<ExamSlotRequest> badList = Arrays.asList(
+                new ExamSlotRequest(1, LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT373", 5),
+                new ExamSlotRequest(1,  LocalDateTime.parse("2024-04-16 01:00", formatter), -5, "CMPT373", 2)
         );
 
         when(userRepo.findByUsername("instructor")).thenReturn(mockInstructor);
@@ -120,10 +115,10 @@ class InstructorControllerTest {
         mockInstructor.setName("Alex");
         mockInstructor.setEmailAddress("Test@example.ca");
         mockInstructor.setPassword("123456");
-        ExamRequest testRequest = new ExamRequest(1, LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT354", 1);
-        List<ExamRequest> mockExamRequests = Arrays.asList(
+        ExamSlotRequest testRequest = new ExamSlotRequest(1, LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT354", 1);
+        List<ExamSlotRequest> mockExamSlotRequests = Arrays.asList(
                 testRequest,
-                new ExamRequest(1,  LocalDateTime.parse("2024-04-16 10:00", formatter), 4, "CMPT354", 3)
+                new ExamSlotRequest(1,  LocalDateTime.parse("2024-04-16 10:00", formatter), 4, "CMPT354", 3)
         );
 
     }

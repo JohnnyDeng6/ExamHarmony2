@@ -20,7 +20,7 @@
         }
         .container {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             justify-content: center;
         }
         .admin-container {
@@ -33,7 +33,7 @@
             height: 50px;
             margin: 10px 0;
         }
-        .request-form {
+        .request-form, .period-form {
             display: none;
         }
 
@@ -68,7 +68,7 @@
                 <div class="card-body p-0">
                     <div class="container pt-3">
                         <div class="admin-container">
-                            <button class="btn btn-lg btn-primary dropdown-toggle" onclick="toggleRequestForm()">Send Request</button>
+                            <button class="btn btn-lg btn-info dropdown-toggle" onclick="toggleRequestForm()">Send Request</button>
                             <div class="request-form">
                                 <form action="/admin/sendRequest" method="post">
                                     <label for="username">Username:</label>
@@ -84,15 +84,29 @@
                                         <option value="pending">Pending</option>
                                         <option value="approved">Approved</option>
                                     </select>
-                                    <button type="submit">Send Request</button>
+                                    <button type="submit" class="btn btn-success">Send Request</button>
                                 </form>
                             </div>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewRequests'">View Requests</button>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewInstructors'">View Instructors</button>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewInvigilators'">View Invigilators</button>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/register'">Add new User</button>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewRequests'">View Requests</button>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewInstructors'">View Instructors</button>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewInvigilators'">View Invigilators</button>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/register'">Add new User</button>
+                            <button class="btn btn-lg btn-info dropdown-toggle" onclick="togglePeriodForm()">Set Editing period</button>
+                            <div class="period-form-container">
+                                <form class="period-form">
 
+                                    <label for="startDate">Start Date (yyyy-MM-dd HH:mm):</label>
+                                    <input type="datetime-local" id="startDate" name="startDate" required>
+
+                                    <label for="endDate">End Date (yyyy-MM-dd HH:mm):</label>
+                                    <input type="datetime-local" id="endDate" name="endDate" required>
+
+                                    <button type="submit" class="btn btn-success">Send Request</button>
+                                </form>
+                            </div>
                         </div>
+
+                        <p class="feedback"> </p>
                     </div>
 
                 </div>
@@ -185,6 +199,41 @@
             let form = document.querySelector('.request-form');
             form.style.display = form.style.display === 'block' ? 'none' : 'block';
         }
+
+        function togglePeriodForm(){
+            let periodForm = document.querySelector('.period-form')
+            periodForm.style.display = periodForm.style.display === 'block' ? 'none' : 'block';
+        }
+
+        let periodForm = document.querySelector('.period-form');
+
+        periodForm.addEventListener('submit', async (e)=>{
+            e.preventDefault()
+            let startDate = periodForm.querySelector('#startDate').value;
+            let endDate = periodForm.querySelector('#endDate').value;
+
+            let interval = {startDate: startDate, endDate: endDate};
+
+            try{
+                const response = await fetch("add/interval", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(interval)
+                })
+
+                if(!response.ok){
+                    const errorData = await response.json();
+                    const errorMessage = errorData.trace;
+                    throw new Error(errorMessage);
+                }else {
+                    location.href = `/admin/home`;
+                    document.querySelector(".feedback").innerText = "Interval Successfully set";
+                }
+            } catch (err){
+                document.querySelector(".feedback").innerText = err.message.split("at")[0];
+            }
+
+        });
     </script>
 </body>
 </html>
