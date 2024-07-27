@@ -113,9 +113,11 @@ public class InstructorController {
         sort(previousRequests);
         Iterator<ExamSlotRequest> examRequestIterator = previousRequests.iterator();
         int preferenceStatus = 1;
+
         // Update already-existing exam requests
        while(examRequestIterator.hasNext()) {
            ExamSlotRequest previousRequest = examRequestIterator.next();
+
             //Find a new request which has the same preference and update the old request
             Iterator<ExamSlotRequestDTO> iterator = examSlotRequestDTOList.iterator();
 

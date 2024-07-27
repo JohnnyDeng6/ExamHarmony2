@@ -9,6 +9,7 @@ import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
+import ca.cmpt276.examharmony.utils.InstructorExamSlotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Iterator;
 import java.util.List;
 
 import ca.cmpt276.examharmony.Model.roles.RoleRepository;
@@ -36,6 +38,9 @@ public class Admin {
     @Autowired
     private IntervalRepository intervalRepository;
 
+    @Autowired
+    private  InstructorExamSlotRepository instructorExamRepo;
+
     @GetMapping("/viewRequests")
     public String viewRequests(Model model) {
         List<ExamSlotRequest> examSlotRequests = examRequestRepository.findAll();
@@ -47,12 +52,18 @@ public class Admin {
     public String approveRequest(@RequestParam("requestId") int requestId) {
         ExamSlotRequest request = examRequestRepository.findById(requestId).orElse(null);
         if (request != null) {
-            request.setStatus("approved");
-
+            request.setStatus("APPROVED");
+            System.out.println(request.getInstructorName());
             User owner = userRepository.findByUsername(request.getInstructorName());
-            owner.deleteUnApprovedRequests(request.getCourseName(), requestId);
-            examRequestRepository.save(request);
-            userRepository.save(owner);
+            Iterator<ExamSlotRequest> iterator = owner.getExamSlotRequests().iterator();
+            while (iterator.hasNext()){
+                ExamSlotRequest currentRequest = iterator.next();
+                if(currentRequest.getCourseName().equals(request.getCourseName()) && currentRequest.getID() != request.getID()){
+                    instructorExamRepo.removeUserExamRequestAssociation(owner.getUUID(), currentRequest.getID());
+                    examRequestRepository.delete(currentRequest);
+                    iterator.remove();
+                }
+            }
 
         }
 

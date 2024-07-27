@@ -204,18 +204,6 @@ public class User {
         this.passwordResetTokenExpiry = passwordResetTokenExpiry;
     }
 
-    public void deleteUnApprovedRequests(String courseName, int ID){
-        InstructorExamSlotRepository instructorExamRepo = new InstructorExamSlotRepository();
-        Iterator<ExamSlotRequest> iterator = examSlotRequests.iterator();
-        while (iterator.hasNext()){
-            ExamSlotRequest currentRequest = iterator.next();
-            if(currentRequest.getCourseName().equals(courseName) && currentRequest.getID() != ID){
-                instructorExamRepo.removeUserExamRequestAssociation(this.uuid, currentRequest.getID());
-                iterator.remove();
-            }
-        }
-    }
-
     @Transactional
     public void deleteExamRequest(ExamSlotRequest examSlotRequest) {
         this.examSlotRequests.remove(examSlotRequest);
