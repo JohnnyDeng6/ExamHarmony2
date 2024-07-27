@@ -39,7 +39,7 @@ public class Admin {
     @GetMapping("/viewRequests")
     public String viewRequests(Model model) {
         List<ExamSlotRequest> examSlotRequests = examRequestRepository.findAll();
-        model.addAttribute("examRequests", examSlotRequests);
+        model.addAttribute("examSlotRequests", examSlotRequests);
         return "viewRequests";
     }
 
@@ -80,8 +80,7 @@ public class Admin {
             EditInterval interval = intervalRepository.findById(1);
             try{
 
-                interval.setStartTime(intervalDTO.startDate);
-                interval.setEndTime(intervalDTO.endDate);
+                interval.setTimes(intervalDTO.startDate, intervalDTO.endDate);
                 User admin = userRepository.findByUsername(userDetails.getUsername());
                 model.addAttribute("admin", admin);
                 intervalRepository.save(interval);

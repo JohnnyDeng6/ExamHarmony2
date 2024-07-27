@@ -14,7 +14,6 @@
 
         .container {
             text-align: center;
-            font-family: DejaVu, Sans Mono, monospace, sans-serif;
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -22,6 +21,7 @@
             max-width: 800px;
             width: 100%;
         }
+
         .submit {
             margin-top: 20px;
         }
@@ -35,6 +35,10 @@
             margin: 20px;
         }
 
+        #calendarSection, #requestsSection{
+            margin: 80px;
+        }
+
     </style>
 </head>
 <body>
@@ -42,23 +46,38 @@
 
     <header th:insert="fragments/header :: header"></header>
 
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+       <span class="notification"> </span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
     <!-- Page Content-->
     <section class="py-5">
 
         <header style="margin: 20px" class="header" th:text=" 'Welcome, ' +${invigilatorName} " >Welcome Invigilator</header>
 
         <div class="container px-5">
-
+            <div class="card border-0 shadow rounded-3 overflow-hidden main-container" style="margin-bottom: 50px">
+                <div class="fw-bolder lead mb-0"> Current Date:
+                    <span class="current-date"> </span>
+                </div>
+                <div style="margin: 5px" class="lead fw-normal mb-0">
+                    Editing Period: <span class="startDate" th:text="${interval.getStartTime()}"> </span> -
+                    <span class="endDate" style="margin: 5px" th:text="${interval.getEndTime()}"> </span>
+                </div>
+            </div>
             <div class="card border-0 shadow rounded-3 overflow-hidden main-container">
                 <div class="card-body p-0">
                     <div class="container pt-3 ">
 
-                        <button class="btn btn-primary calendar">Give Availability</button>
-                        <button class="btn btn-primary requests">View Requests</button>
+                        <button class="btn btn-info calendar">Give Availability</button>
+                        <button class="btn btn-info requests">View Requests</button>
 
                         <!-- Google Calendar Section -->
                         <div id="calendarSection" class="hidden">
-                            <h2>Invigilator Calendar</h2>
+                            <h2>Calendar</h2>
                             <form action="/invigilator/home" method="get">
                                 <div class="embed-responsive embed-responsive-16by9">
                                     <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=America%2FVancouver&bgcolor=%23ffffff&src=YzBiODQyYTFlYzkxNGFkYjM0NjEyZmM2NTI3NDk4OGZkZjZmNTNmZWM1MTY3ZTYxZDM5NmUzMGJkM2EyYWE0ZkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%238E24AA" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>
@@ -71,7 +90,7 @@
 
                         <!-- Requests Section -->
                         <div id="requestsSection" class="hidden">
-                            <h2>Invigilator Requests</h2>
+                            <h2>Your Requests</h2>
                             <div id="requestsList">
                                 <div th:each="request : ${requests}">
                                     <div class="card mb-3" th:id="${'request-' + request.id}">
@@ -128,8 +147,9 @@
             </div>
         </div>
     </section>
+</main>
 
-    <header th:insert="fragments/footer :: footer"></header>
+<header th:insert="fragments/footer :: footer"></header>
 
 
 <!--    <header th:insert="fragments/header :: header"></header>-->
@@ -175,6 +195,37 @@
 <!--        </div>-->
 <!--    </div>-->
     <script>
+
+
+
+        function checkTime() {
+            let i;
+            const currentDate = new Date();
+
+            const startDate = new Date(document.querySelector('.startDate').innerText);
+            const endDate = new Date(document.querySelector('.endDate').innerText);
+
+            const dateContainer = document.querySelector(".current-date");
+            dateContainer.innerText = currentDate;
+
+            if (currentDate >= startDate && currentDate <= endDate) {
+                document.querySelector('.calendar').removeAttribute('disabled');
+                document.querySelector('.alert').classList.add('hidden');
+            } else {
+                document.querySelector('.calendar').setAttribute('disabled', '');
+                document.querySelector('.alert').classList.remove('hidden');
+                if(currentDate > endDate){
+                    document.querySelector('.notification').innerHTML = "The editing period has passed, your availability has been finalized";
+                } else if (currentDate < startDate){
+                    document.querySelector('.notification').innerHTML = "The editing period hasn't started yet, you cannot give your availability yet";
+                }
+            }
+        }
+
+        // Call the function on page load
+        checkTime();
+        setInterval(checkTime, 1000); // Check every minute
+
         document.addEventListener("DOMContentLoaded", function() {
             let calendarButton = document.querySelector(".calendar");
             let requestsButton = document.querySelector(".requests");

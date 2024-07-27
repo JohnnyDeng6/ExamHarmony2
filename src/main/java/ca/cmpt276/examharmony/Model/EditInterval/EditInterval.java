@@ -24,6 +24,32 @@ public class EditInterval {
         return startTime;
     }
 
+    public void setTimes(String startTime, String endTime){
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        LocalDateTime newStartDate = LocalDateTime.parse(startTime, formatter);
+        LocalDateTime newEndDate = LocalDateTime.parse(endTime, formatter);
+
+        if(newStartDate.equals(newEndDate)){
+            throw new RuntimeException("Start and end times cannot be equal");
+        }
+
+        if(newEndDate.isBefore(newStartDate)){
+            throw new RuntimeException("Invalid end date");
+        }
+
+        try{
+
+            this.startTime = newStartDate;
+            this.endTime = newEndDate;
+
+        } catch (DateTimeParseException err){
+            throw new RuntimeException("Date could not be parsed, check format and make sure it contains valid characters");
+        }
+
+    }
+
+
     public void setStartTime(String startTime) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");

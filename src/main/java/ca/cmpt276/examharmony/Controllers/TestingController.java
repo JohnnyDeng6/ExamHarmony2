@@ -2,7 +2,6 @@ package ca.cmpt276.examharmony.Controllers;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
-import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
 import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.roles.Role;
 import ca.cmpt276.examharmony.Model.roles.RoleRepository;
@@ -46,7 +45,7 @@ public class TestingController {
 
     @GetMapping("/invTest")
     public String showInvigilator() {
-        return "invigilatorTestPage"; // This returns the template named "adminExamSlot.html"
+        return "invigilatorHome"; // This returns the template named "adminExamSlot.html"
     }
 
     @GetMapping("/test/add_test_course")

@@ -46,6 +46,13 @@
 
 <header th:insert="fragments/header :: header"></header>
 
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    <span class="notification"> </span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
 <main class="flex-shrink-0">
 
     <section class="py-5">
@@ -104,8 +111,7 @@
         <h2 th:if="${ not #lists.isEmpty(examRequests)}"> Edit or Create Exam Slots </h2>
         <h2 th:if="${#lists.isEmpty(examRequests)}"> Create Exam Slots </h2>
 
-        <p class="outside-interval-message lead fw-bolder mb-0" style="margin: 20px"> You cannot edit/create exam slots anymore,
-            the editing period has passed </p>
+        <p class="outside-interval-message lead fw-bolder mb-0" style="margin: 20px">  </p>
 
         <form class="form-container">
             <table class="table">
@@ -162,15 +168,26 @@
             if (currentDate >= startDate && currentDate <= endDate) {
                 document.querySelector('.form-container').classList.remove('hidden');
                 document.querySelector('.outside-interval-message').classList.add('hidden');
+                document.querySelector('.alert').classList.add('hidden');
                 for(i = 0; i < deleteButtons.length; i++){
                     deleteButtons[i].classList.remove('hidden');
                 }
             } else {
+                if(currentDate > endDate){
+                    document.querySelector('.notification').innerHTML = "The editing period has passed, your requests have been finalized";
+                    document.querySelector('.alert').classList.remove('hidden');
+                    document.querySelector('.outside-interval-message').innerHTML = "You cannot edit/create exam slots anymore, the editing period has passed";
+                } else if (currentDate < startDate){
+                    document.querySelector('.alert').classList.add('hidden');
+                    document.querySelector('.outside-interval-message').innerHTML = "The editing period hasn't started, you cannot edit/create exam slots";
+                }
                 document.querySelector('.form-container').classList.add('hidden');
                 document.querySelector('.outside-interval-message').classList.remove('hidden');
                 for(i = 0; i < deleteButtons.length; i++){
                     deleteButtons[i].classList.add('hidden');
                 }
+
+
             }
         }
 

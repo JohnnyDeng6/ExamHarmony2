@@ -20,7 +20,7 @@
         }
         .container {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             justify-content: center;
         }
         .admin-container {
@@ -68,7 +68,7 @@
                 <div class="card-body p-0">
                     <div class="container pt-3">
                         <div class="admin-container">
-                            <button class="btn btn-lg btn-primary dropdown-toggle" onclick="toggleRequestForm()">Send Request</button>
+                            <button class="btn btn-lg btn-info dropdown-toggle" onclick="toggleRequestForm()">Send Request</button>
                             <div class="request-form">
                                 <form action="/admin/sendRequest" method="post">
                                     <label for="username">Username:</label>
@@ -87,11 +87,11 @@
                                     <button type="submit" class="btn btn-success">Send Request</button>
                                 </form>
                             </div>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewRequests'">View Requests</button>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewInstructors'">View Instructors</button>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/viewInvigilators'">View Invigilators</button>
-                            <button class="btn btn-lg btn-primary" onclick="location.href='/admin/register'">Add new User</button>
-                            <button class="btn btn-lg btn-primary dropdown-toggle" onclick="togglePeriodForm()">Set Editing period</button>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewRequests'">View Requests</button>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewInstructors'">View Instructors</button>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewInvigilators'">View Invigilators</button>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/register'">Add new User</button>
+                            <button class="btn btn-lg btn-info dropdown-toggle" onclick="togglePeriodForm()">Set Editing period</button>
                             <div class="period-form-container">
                                 <form class="period-form">
 
@@ -230,7 +230,7 @@
                     document.querySelector(".feedback").innerText = "Interval Successfully set";
                 }
             } catch (err){
-                console.log(err);
+                document.querySelector(".feedback").innerText = err.message.split("at")[0];
             }
 
         });
