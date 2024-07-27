@@ -1,17 +1,20 @@
 package ca.cmpt276.examharmony.Controllers;
 
-import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
-import ca.cmpt276.examharmony.Model.examRequest.ExamRequestRepository;
+import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
+import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
+import ca.cmpt276.examharmony.Model.EditInterval.EditIntervalDTO;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 
+import ca.cmpt276.examharmony.utils.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,22 +31,31 @@ public class Admin {
     private RoleRepository roleRepository;
 
     @Autowired
-    private ExamRequestRepository examRequestRepository;
+    private ExamSlotRequestRepository examRequestRepository;
+
+    @Autowired
+    private IntervalRepository intervalRepository;
 
     @GetMapping("/viewRequests")
     public String viewRequests(Model model) {
-        List<ExamRequest> examRequests = examRequestRepository.findAll();
-        model.addAttribute("examRequests", examRequests);
+        List<ExamSlotRequest> examSlotRequests = examRequestRepository.findAll();
+        model.addAttribute("examRequests", examSlotRequests);
         return "viewRequests";
     }
 
     @PostMapping("/approveRequest")
     public String approveRequest(@RequestParam("requestId") int requestId) {
-        ExamRequest request = examRequestRepository.findById(requestId).orElse(null);
+        ExamSlotRequest request = examRequestRepository.findById(requestId).orElse(null);
         if (request != null) {
             request.setStatus("approved");
+
+            User owner = userRepository.findByUsername(request.getInstructorName());
+            owner.deleteUnApprovedRequests(request.getCourseName(), requestId);
             examRequestRepository.save(request);
+            userRepository.save(owner);
+
         }
+
         return "redirect:/admin/viewRequests";
     }
 
@@ -59,6 +71,28 @@ public class Admin {
         List<User> invigilators = userRepository.findByRoleName("INVIGILATOR");
         model.addAttribute("invigilators",invigilators);
         return "viewInvigilators";
+    }
+
+    @PostMapping("/add/interval")
+    public String setInterval(@RequestBody EditIntervalDTO intervalDTO, Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails){
+            EditInterval interval = intervalRepository.findById(1);
+            try{
+
+                interval.setStartTime(intervalDTO.startDate);
+                interval.setEndTime(intervalDTO.endDate);
+                User admin = userRepository.findByUsername(userDetails.getUsername());
+                model.addAttribute("admin", admin);
+                intervalRepository.save(interval);
+                return "adminHome";
+
+            } catch (RuntimeException err){
+                throw new InstructorController.BadRequest(err.getMessage());
+            }
+        }
+
+        return "redirect:/login";
     }
 }
 

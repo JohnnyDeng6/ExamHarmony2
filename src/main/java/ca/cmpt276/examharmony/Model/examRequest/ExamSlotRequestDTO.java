@@ -1,6 +1,6 @@
 package ca.cmpt276.examharmony.Model.examRequest;
 
-public class ExamRequestDTO implements Comparable<ExamRequestDTO>{
+public class ExamSlotRequestDTO implements Comparable<ExamSlotRequestDTO>{
 
     public int preferenceStatus;
     public int examCode;
@@ -8,8 +8,10 @@ public class ExamRequestDTO implements Comparable<ExamRequestDTO>{
     public double examDuration;
     public String courseName;
 
+    public String instructorName;
+
     @Override
-    public int compareTo(ExamRequestDTO o) {
+    public int compareTo(ExamSlotRequestDTO o) {
         return (this.preferenceStatus - o.preferenceStatus);
     }
 }

@@ -15,10 +15,10 @@ public class EditInterval {
     private int id;
 
     @Column(nullable = false, name = "start_time")
-    private LocalDateTime startTime;
+    private LocalDateTime startTime = LocalDateTime.now();
 
     @Column(nullable = false, name = "end_time")
-    private LocalDateTime endTime;
+    private LocalDateTime endTime = LocalDateTime.now();
 
     public LocalDateTime getStartTime() {
         return startTime;
@@ -26,7 +26,7 @@ public class EditInterval {
 
     public void setStartTime(String startTime) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         LocalDateTime newDate = LocalDateTime.parse(startTime, formatter);
 
         if(newDate.equals(endTime)){
@@ -40,6 +40,7 @@ public class EditInterval {
         try{
 
             this.startTime = LocalDateTime.parse(startTime, formatter);
+
         } catch (DateTimeParseException err){
             throw new RuntimeException("Date could not be parsed, check format and make sure it contains valid characters");
         }
@@ -52,7 +53,7 @@ public class EditInterval {
 
     public void setEndTime(String endTime) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         LocalDateTime newDate = LocalDateTime.parse(endTime, formatter);
 
         if(newDate.equals(this.startTime)){

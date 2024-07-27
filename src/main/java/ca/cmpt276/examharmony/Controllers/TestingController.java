@@ -2,6 +2,8 @@ package ca.cmpt276.examharmony.Controllers;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
+import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
+import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.roles.Role;
 import ca.cmpt276.examharmony.Model.roles.RoleRepository;
 import ca.cmpt276.examharmony.Model.user.User;
@@ -28,6 +30,9 @@ public class TestingController {
 
     @Autowired
     private PasswordEncoder pwEncorder;
+
+    @Autowired
+    private IntervalRepository intervalRepository;
 
     @GetMapping("/adminExamSlot")
     public String showAdminExamSlotPage() {
@@ -79,4 +84,5 @@ public class TestingController {
         System.out.println(user.getUUID());
         System.out.println(user.getUsername());
     }
+
 }

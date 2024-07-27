@@ -3,11 +3,13 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
-import ca.cmpt276.examharmony.Model.examRequest.ExamRequest;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
+import ca.cmpt276.examharmony.utils.InstructorExamSlotRepository;
 import jakarta.persistence.*;
 
 import ca.cmpt276.examharmony.Model.roles.Role;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 //User of the website
 @Entity
@@ -26,8 +28,8 @@ public class User {
     private LocalDateTime passwordResetTokenExpiry;
     @Column(nullable = false)
     private String password;
-    @Column(name = "prt", columnDefinition = "CHAR(36)")
-    private UUID passwordResetToken;
+    @Column(name = "prt")
+    private String passwordResetToken;
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -60,13 +62,13 @@ public class User {
             name = "instructor_exam_requests",
             joinColumns = @JoinColumn(name = "userID"),
             inverseJoinColumns = @JoinColumn(name = "exam_requestID"))
-    private List<ExamRequest> examSlotRequests = new ArrayList<>();
+    private List<ExamSlotRequest> examSlotRequests = new ArrayList<>();
 
-    public List<ExamRequest> getExamSlotRequests() {
+    public List<ExamSlotRequest> getExamSlotRequests() {
         return examSlotRequests;
     }
 
-    public void setExamSlotRequests(List<ExamRequest> examSlotRequests) {
+    public void setExamSlotRequests(List<ExamSlotRequest> examSlotRequests) {
         this.examSlotRequests = examSlotRequests;
     }
 
@@ -90,7 +92,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.emailAddress = emailAddress;
-        this.passwordResetToken = UUID.randomUUID();
+//        this.passwordResetToken = UUID.randomUUID();
     }
     public User() {}
 
@@ -138,11 +140,11 @@ public class User {
         return name;
     }
 
-    public void setPasswordResetToken(UUID passwordResetToken) {
+    public void setPasswordResetToken(String passwordResetToken) {
         this.passwordResetToken = passwordResetToken;
     }
 
-    public UUID getPasswordResetToken() {
+    public String getPasswordResetToken() {
         return passwordResetToken;
     }
 
@@ -151,33 +153,33 @@ public class User {
     }
 
     public boolean isPasswordResetTokenValid() {
-        return passwordResetToken != null && !passwordResetToken.equals(UUID.fromString("00000000-0000-0000-0000-000000000000")) && passwordResetTokenExpiry != null && passwordResetTokenExpiry.isAfter(LocalDateTime.now());
+        return passwordResetToken != null && !passwordResetToken.equals("DNE") && passwordResetTokenExpiry != null && passwordResetTokenExpiry.isAfter(LocalDateTime.now());
     }
 
-    public List<ExamRequest> findRequestsByCourse(String courseName){
-        List<ExamRequest> examRequests = new ArrayList<>();
-        Iterator<ExamRequest> examRequestIterator = this.examSlotRequests.iterator();
+    public List<ExamSlotRequest> findRequestsByCourse(String courseName){
+        List<ExamSlotRequest> examSlotRequests = new ArrayList<>();
+        Iterator<ExamSlotRequest> examRequestIterator = this.examSlotRequests.iterator();
         while (examRequestIterator.hasNext()){
-            ExamRequest exam = examRequestIterator.next();
+            ExamSlotRequest exam = examRequestIterator.next();
             if(exam.getCourseName().equals(courseName)){
-                examRequests.add(exam);
+                examSlotRequests.add(exam);
             }
         }
-        return examRequests;
+        return examSlotRequests;
     }
 
-    public void addNewExamRequest(ExamRequest request){
+    public void addNewExamRequest(ExamSlotRequest request){
 
         examSlotRequests.add(request);
     }
 
-    public void updateExamRequest(ExamRequest request, String newDate){
-        for(ExamRequest examRequest: this.examSlotRequests){
-            if(examRequest.getPreferenceStatus() == request.getPreferenceStatus() && examRequest.getCourseName().equals(request.getCourseName())){
-                examRequest.setExamCode(request.getExamCode());
-                examRequest.setExamDate(newDate);
-                examRequest.setExamDuration(request.getExamDuration());
-                examRequest.setStatus(request.getStatus());
+    public void updateExamRequest(ExamSlotRequest request, String newDate){
+        for(ExamSlotRequest examSlotRequest : this.examSlotRequests){
+            if(examSlotRequest.getPreferenceStatus() == request.getPreferenceStatus() && examSlotRequest.getCourseName().equals(request.getCourseName())){
+                examSlotRequest.setExamCode(request.getExamCode());
+                examSlotRequest.setExamDate(newDate);
+                examSlotRequest.setExamDuration(request.getExamDuration());
+                examSlotRequest.setStatus(request.getStatus());
                 return;
             }
         }
@@ -202,9 +204,21 @@ public class User {
         this.passwordResetTokenExpiry = passwordResetTokenExpiry;
     }
 
+    public void deleteUnApprovedRequests(String courseName, int ID){
+        InstructorExamSlotRepository instructorExamRepo = new InstructorExamSlotRepository();
+        Iterator<ExamSlotRequest> iterator = examSlotRequests.iterator();
+        while (iterator.hasNext()){
+            ExamSlotRequest currentRequest = iterator.next();
+            if(currentRequest.getCourseName().equals(courseName) && currentRequest.getID() != ID){
+                instructorExamRepo.removeUserExamRequestAssociation(this.uuid, currentRequest.getID());
+                iterator.remove();
+            }
+        }
+    }
+
     @Transactional
-    public void deleteExamRequest(ExamRequest examRequest) {
-        this.examSlotRequests.remove(examRequest);
+    public void deleteExamRequest(ExamSlotRequest examSlotRequest) {
+        this.examSlotRequests.remove(examSlotRequest);
     }
 
 }
