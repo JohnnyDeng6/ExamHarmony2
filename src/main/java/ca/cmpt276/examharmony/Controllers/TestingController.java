@@ -77,12 +77,5 @@ public class TestingController {
         userRepo.save(newUser);
     }
 
-    @GetMapping("/test/add/interval")
-    public void addEditInterval(){
-        EditInterval test = new EditInterval();
-        test.setStartTime("2024-06-15 13:00");
-        test.setEndTime("2028-06-15 13:00");
-        intervalRepository.save(test);
-    }
 
 }

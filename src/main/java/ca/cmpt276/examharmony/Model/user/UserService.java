@@ -1,5 +1,6 @@
 package ca.cmpt276.examharmony.Model.user;
 
+import ca.cmpt276.examharmony.utils.HashUtils;
 import ca.cmpt276.examharmony.utils.UserAlreadyExistException;
 import ca.cmpt276.examharmony.Model.roles.Role;
 import ca.cmpt276.examharmony.Model.roles.RoleRepository;
@@ -9,7 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.HashSet;
 
 import java.util.Set;
@@ -27,7 +33,7 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public void registerNewUser(UserRegistrationDto registrationDto) {
+    public UUID registerNewUser(UserRegistrationDto registrationDto) throws NoSuchAlgorithmException {
         if (emailExists(registrationDto.getEmail())) {
             throw new UserAlreadyExistException("There is an account with that email address: " + registrationDto.getEmail());
         } else if (findByUsername(registrationDto.getUsername()) != null) {
@@ -49,12 +55,18 @@ public class UserService {
             }
         }
 
-        user.setPasswordResetToken(UUID.randomUUID());
+        SecureRandom secureRandom = new SecureRandom();
+        UUID prtUUID = new UUID(secureRandom.nextLong(), secureRandom.nextLong());
+        HashUtils hashUtils = new HashUtils();
+        user.setPasswordResetToken(hashUtils.SHA256(prtUUID));
+
         user.setPasswordResetTokenExpiry(LocalDateTime.now().plusDays(7)); //password reset for 7 days
         user.setRoles(roles);
         userRepository.save(user);
         registrationDto.setResetPasswordToken(user.getPasswordResetToken());
         registrationDto.setUUID(user.getUUID());
+
+        return prtUUID;
     }
     public User findByUUID(UUID userId) {
         return userRepository.findById(userId).orElse(null);
@@ -71,7 +83,7 @@ public class UserService {
     public void invalidatePasswordResetToken(UUID userId) {
         User user = findByUUID(userId);
         if (user != null) {
-            user.setPasswordResetToken(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+            user.setPasswordResetToken("DNE");
             user.setPasswordResetTokenExpiry(null);
             userRepository.save(user);
         }
@@ -85,7 +97,7 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public User findByPasswordResetToken(UUID passwordResetToken) {
+    public User findByPasswordResetToken(String passwordResetToken) {
         return userRepository.findByPasswordResetToken(passwordResetToken);
     }
 }

@@ -78,7 +78,7 @@ public class InstructorController {
     if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
         User instructor = userRepo.findByUsername(userDetails.getUsername());
         List<ExamSlotRequest> examSlotRequests = requestRepo.findExamRequestsByCourseName(courseName);
-        EditInterval editTime = intervalRepo.findById(0);
+        EditInterval editTime = intervalRepo.findById(1);
 
         model.addAttribute("interval", editTime);
         model.addAttribute("examRequests", examSlotRequests);
@@ -157,6 +157,8 @@ public class InstructorController {
         }
         userRepo.save(instructor);
 
+        EditInterval editTime = intervalRepo.findById(1);
+        model.addAttribute("interval", editTime);
         model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
         model.addAttribute("instructor", instructor);
         model.addAttribute("courseName", courseName);
@@ -186,7 +188,9 @@ public class InstructorController {
                         nextRequest.setPreferenceStatus(nextRequest.getPreferenceStatus()-1);
                         requestRepo.save(nextRequest);
                     }
+                    EditInterval editTime = intervalRepo.findById(1);
 
+                    model.addAttribute("interval", editTime);
                     model.addAttribute("examRequests", instructor.findRequestsByCourse(courseName));
                     model.addAttribute("instructor", instructor);
                     model.addAttribute("courseName", courseName);

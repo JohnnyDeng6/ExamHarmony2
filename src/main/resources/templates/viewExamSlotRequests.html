@@ -59,10 +59,10 @@
         </div>
         <div class="container px-5 my-5 lead fw-normal mb-0">
             <div class="row gx-5 display">
-                <div th:if="${#lists.isEmpty(examSlotRequests)}">
+                <div th:if="${#lists.isEmpty(examRequests)}">
                     <p> No exam slot requests have been made </p>
                 </div>
-                <div th:if="${ not #lists.isEmpty(examSlotRequests) }" style="margin: 40px">
+                <div th:if="${ not #lists.isEmpty(examRequests) }" style="margin: 40px">
                     <table class="table">
                         <thead class="thead-dark">
                         <tr>
@@ -74,7 +74,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="request" th:each="examSlotRequest: ${examSlotRequests}">
+                        <tr class="request" th:each="examSlotRequest: ${examRequests}">
                             <td class="preference" th:text="${examSlotRequest.getPreferenceStatus()}"></td>
                             <td th:text="${examSlotRequest.getExamCode()}"></td>
                             <td th:text="${examSlotRequest.getExamDuration()}"> </td>
@@ -94,15 +94,15 @@
         <div class="fw-bolder lead mb-0"> Current Date:
             <span class="current-date"> </span>
         </div>
-<!--        <div style="margin: 5px" class="lead fw-bold mb-0">-->
-<!--            Editing Period: <span class="startDate" th:text="${interval.getStartTime()}"> </span> - -->
-<!--            <span class="endDate" style="margin: 5px" th:text="${interval.getEndTime()}"> </span>-->
-<!--        </div>-->
+        <div style="margin: 5px" class="lead fw-bold mb-0">
+            Editing Period: <span class="startDate" th:text="${interval.getStartTime()}"> </span> -
+            <span class="endDate" style="margin: 5px" th:text="${interval.getEndTime()}"> </span>
+        </div>
     </section>
 
     <div class="container">
-        <h2 th:if="${ not #lists.isEmpty(examSlotRequests)}"> Edit or Create Exam Slots </h2>
-        <h2 th:if="${#lists.isEmpty(examSlotRequests)}"> Create Exam Slots </h2>
+        <h2 th:if="${ not #lists.isEmpty(examRequests)}"> Edit or Create Exam Slots </h2>
+        <h2 th:if="${#lists.isEmpty(examRequests)}"> Create Exam Slots </h2>
 
         <p class="outside-interval-message lead fw-bolder mb-0" style="margin: 20px"> You cannot edit/create exam slots anymore,
             the editing period has passed </p>
@@ -147,11 +147,9 @@
 
     document.addEventListener("DOMContentLoaded", (e) => {
 
-        //const startDate = new Date(document.querySelector('.startDate').innerText);
-        //const endDate = new Date(document.querySelector('.endDate').innerText);
+        const startDate = new Date(document.querySelector('.startDate').innerText);
+        const endDate = new Date(document.querySelector('.endDate').innerText);
 
-        const startDate = Date.parse("2024-06-15 13:00");
-        const endDate = Date.parse("2024-10-12 12:00");
 
         function checkTime() {
             let i;
