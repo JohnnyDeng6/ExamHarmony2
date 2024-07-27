@@ -17,3 +17,13 @@
     display: none;
 }
 
+/*for footer fragment*/
+.footer {
+    background-color: rgba(0, 0, 0, 0.05);
+    text-align: center;
+    padding: 1rem;
+}
+
+.min-vh-100 {
+    min-height: 100vh;
+}
