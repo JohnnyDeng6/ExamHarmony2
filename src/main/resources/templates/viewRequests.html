@@ -11,9 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/scripts.js" defer></script>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <header th:insert="fragments/header :: header"></header>
-<div class="container mt-5">
+<div class="container mt-5 flex-grow-1">
     <h1 class="text-center">Exam Requests</h1>
     <table class="table table-hover ">
         <thead>
@@ -46,6 +46,7 @@
         </tbody>
     </table>
 </div>
+<header th:insert="fragments/footer :: footer"></header>
 </body>
 
 <script>
