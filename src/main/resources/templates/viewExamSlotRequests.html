@@ -67,7 +67,7 @@
         <div class="container px-5 my-5 lead fw-normal mb-0">
             <div class="row gx-5 display">
                 <div th:if="${#lists.isEmpty(examRequests)}">
-                    <p> No exam slot requests have been made </p>
+                    <p class="lead fw-bolder mb-0"> No exam slot requests have been made </p>
                 </div>
                 <div th:if="${ not #lists.isEmpty(examRequests) }" style="margin: 40px">
                     <table class="table">
@@ -96,7 +96,6 @@
         </div>
     </section>
 
-
     <section class="py-5 container">
         <div class="fw-bolder lead mb-0"> Current Date:
             <span class="current-date"> </span>
@@ -109,6 +108,7 @@
 
     <div class="container">
         <h2 th:if="${ not #lists.isEmpty(examRequests)}"> Edit or Create Exam Slots </h2>
+
         <h2 th:if="${#lists.isEmpty(examRequests)}"> Create Exam Slots </h2>
 
         <p class="outside-interval-message lead fw-bolder mb-0" style="margin: 20px">  </p>
