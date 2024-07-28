@@ -1,10 +1,15 @@
 package ca.cmpt276.examharmony.Controllers;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
+import java.util.UUID;
+
 import ca.cmpt276.examharmony.Model.user.User;
-import ca.cmpt276.examharmony.Model.user.UserRepository;
+import ca.cmpt276.examharmony.Model.user.UserService;
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
+import ca.cmpt276.examharmony.utils.UserAlreadyExistException;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +26,10 @@ import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService;
 @Controller
 @RequestMapping("/admin")
 public class AdminRequestController {
+
+    @Autowired
+    private UserService userService;
+
     private final InvigilatorRequestService invigilatorRequestService;
 
     @Autowired
@@ -41,18 +50,20 @@ public class AdminRequestController {
             @RequestParam String status,  // Use String to parse into LocalDateTime
             RedirectAttributes redirectAttributes,
             Model model) {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails){
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User currentUser = userDetails.getCurrentUser();
+        User user = userService.findByUsername(username);
+        if (user != null && user.getEmailAddress().equals(email)) {
             LocalDateTime parsedExamDate = LocalDateTime.parse(examDate);
             invigilatorRequestService.createRequest(username, email, examCode, parsedExamDate, status);
-            redirectAttributes.addFlashAttribute("message", "Request sent successfully!");
-            User admin = userRepo.findByUsername(userDetails.getUsername());
-            model.addAttribute("admin", admin);
-            return "adminHome";
+            redirectAttributes.addFlashAttribute("alertMessage", "Request sent successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("alertMessage", "These credentials do not exist");
         }
-        return "redirect:/login";
-
+        model.addAttribute("admin", currentUser);
+        return "redirect:/admin/home";
     }
 
     @GetMapping("/adminTestPage")
