@@ -19,7 +19,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <button class="dropdown-item" onclick="changePassword()">Change Password</button>
                         <div class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#">Change View</a>
+                            <a class="dropdown-item dropdown-toggle">Change View</a>
                             <div class="dropdown-menu">
                                 <div th:if="${#authentication}">
                                     <ul class="p-0 m-0">
@@ -36,21 +36,12 @@
                         <button class="dropdown-item" onclick="logout()">Log out</button>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
-                </li>
             </ul>
-
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
 
             <div style="margin-left: 5px">
                 <a href="https://github.com/JohnnyDeng6/ExamHarmony/tree/main">View the Project</a>
             </div>
         </div>
     </nav>
-</header></body>
-
-</html>
+</header>
+</body>
