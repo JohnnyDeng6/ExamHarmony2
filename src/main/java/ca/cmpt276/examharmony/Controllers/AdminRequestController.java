@@ -1,7 +1,13 @@
 package ca.cmpt276.examharmony.Controllers;
 
 import java.time.LocalDateTime;
+
+import ca.cmpt276.examharmony.Model.user.User;
+import ca.cmpt276.examharmony.Model.user.UserRepository;
+import ca.cmpt276.examharmony.utils.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +28,9 @@ public class AdminRequestController {
         this.invigilatorRequestService = invigilatorRequestService;
     }
 
+    @Autowired
+    private UserRepository userRepo;
+
     @PostMapping("/sendRequest")
     public String sendRequest(
             @RequestParam String username,
@@ -30,13 +39,20 @@ public class AdminRequestController {
             @RequestParam String examCode,
             @RequestParam String examDate,
             @RequestParam String status,  // Use String to parse into LocalDateTime
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            Model model) {
 
-        LocalDateTime parsedExamDate = LocalDateTime.parse(examDate);
-        invigilatorRequestService.createRequest(username, email, examCode, parsedExamDate, status);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails){
+            LocalDateTime parsedExamDate = LocalDateTime.parse(examDate);
+            invigilatorRequestService.createRequest(username, email, examCode, parsedExamDate, status);
+            redirectAttributes.addFlashAttribute("message", "Request sent successfully!");
+            User admin = userRepo.findByUsername(userDetails.getUsername());
+            model.addAttribute("admin", admin);
+            return "adminHome";
+        }
+        return "redirect:/login";
 
-        redirectAttributes.addFlashAttribute("message", "Request sent successfully!");
-        return "adminHome";
     }
 
     @GetMapping("/adminTestPage")
