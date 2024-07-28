@@ -37,8 +37,6 @@ public class AdminRequestController {
         this.invigilatorRequestService = invigilatorRequestService;
     }
 
-    @Autowired
-    private UserRepository userRepo;
 
     @PostMapping("/sendRequest")
     public String sendRequest(
