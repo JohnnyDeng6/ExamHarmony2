@@ -125,7 +125,7 @@ public class InstructorController {
                 ExamSlotRequestDTO newRequest = iterator.next();
                 if(newRequest.preferenceStatus == previousRequest.getPreferenceStatus()){
                     try{
-                        previousRequest.setExamCode(newRequest.examCode);
+//                        previousRequest.setExamCode(newRequest.examCode);
                         previousRequest.setExamDuration(newRequest.examDuration);
                         previousRequest.setExamDate(newRequest.examDate);
                         previousRequest.setInstructorName(newRequest.instructorName);
@@ -143,7 +143,7 @@ public class InstructorController {
         for (ExamSlotRequestDTO newRequestDTO : examSlotRequestDTOList) {
             try {
                 ExamSlotRequest newRequest = new ExamSlotRequest();
-                newRequest.setExamCode(newRequestDTO.examCode);
+//                newRequest.setExamCode(newRequestDTO.examCode);
                 newRequest.setExamDuration(newRequestDTO.examDuration);
                 newRequest.setExamDate(newRequestDTO.examDate);
                 newRequest.setCourseName(courseName);

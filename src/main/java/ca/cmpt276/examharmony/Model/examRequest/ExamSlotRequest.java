@@ -17,8 +17,8 @@ public class ExamSlotRequest implements Comparable<ExamSlotRequest>{
     //1st, 2nd, or 3rd preference
     @Column(name = "preference")
     private int preferenceStatus;
-    @Column(name = "exam_code")
-    private int examCode;
+//    @Column(name = "exam_code")
+//    private int examCode;
 
     @Column(name = "exam_date")
     private LocalDateTime examDate;
@@ -39,8 +39,8 @@ public class ExamSlotRequest implements Comparable<ExamSlotRequest>{
         this.instructorName = instructorName;
     }
 
-    public ExamSlotRequest(int examCode, LocalDateTime examDate, double examDuration, String courseName, int preferenceStatus) {
-        this.examCode = examCode;
+    public ExamSlotRequest(LocalDateTime examDate, double examDuration, String courseName, int preferenceStatus) {
+        //this.examCode = examCode;
         this.examDate = examDate;
         this.examDuration = examDuration;
         this.courseName = courseName;
@@ -55,13 +55,13 @@ public class ExamSlotRequest implements Comparable<ExamSlotRequest>{
         return courseName;
     }
 
-    public int getExamCode() {
-        return examCode;
-    }
+//    public int getExamCode() {
+//        return examCode;
+//    }
 
-    public void setExamCode(int examCode) {
-        this.examCode = examCode;
-    }
+//    public void setExamCode(int examCode) {
+//        this.examCode = examCode;
+//    }
     public void setCourseName(String courseName) {
         this.courseName = courseName;
     }

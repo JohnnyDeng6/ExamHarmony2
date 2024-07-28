@@ -37,6 +37,18 @@
             display: none;
         }
 
+        .period-form-container, .request-form-container{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .input-container{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
         .welcome {
             font-size: 24px;
             font-weight: bold;
@@ -68,23 +80,35 @@
                 <div class="card-body p-0">
                     <div class="container pt-3">
                         <div class="admin-container">
-                            <button class="btn btn-lg btn-info dropdown-toggle" onclick="toggleRequestForm()">Send Request</button>
-                            <div class="request-form">
-                                <form action="/admin/sendRequest" method="post">
-                                    <label for="username">Username:</label>
-                                    <input type="text" id="username" name="username" required>
-                                    <label for="email">Email:</label>
-                                    <input type="email" id="email" name="email" required>
-                                    <label for="examCode">Exam Code :</label>
-                                    <input type="text" id="examCode" name="examCode" required>
-                                    <label for="examDate">Exam Date (yyyy-MM-ddTHH:mm):</label>
-                                    <input type="datetime-local" id="examDate" name="examDate" required>
-                                    <label for="status">Status:</label>
-                                    <select id="status" name="status" required>
-                                        <option value="pending">Pending</option>
-                                        <option value="approved">Approved</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-success">Send Request</button>
+                            <button class="btn btn-lg btn-info dropdown-toggle" onclick="toggleRequestForm()">Send Request to Invigilator</button>
+                            <div class="request-form-container">
+                                <form class="request-form" action="/admin/sendRequest" method="post">
+                                    <div class="input-container">
+                                        <label for="username">Username:</label>
+                                        <input type="text" id="username" name="username" required>
+                                    </div>
+                                    <div class="input-container">
+                                        <label for="email">Email:</label>
+                                        <input type="email" id="email" name="email" required>
+                                    </div>
+                                    <div class="input-container">
+                                        <label for="examCode">Exam Code :</label>
+                                        <input type="text" id="examCode" name="examCode" required>
+                                    </div>
+                                    <div class="input-container">
+                                        <label for="examDate">Exam Date (yyyy-MM-ddTHH:mm):</label>
+                                        <input type="datetime-local" id="examDate" name="examDate" required>
+                                    </div>
+                                   <div class="input-container">
+                                       <label for="status">Status:</label>
+                                       <select id="status" name="status" required>
+                                           <option value="pending">Pending</option>
+                                           <option value="approved">Approved</option>
+                                       </select>
+                                   </div>
+                                    <div class="input-container">
+                                        <button type="submit" class="btn btn-success">Send Request</button>
+                                    </div>
                                 </form>
                             </div>
                             <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewRequests'">View Requests</button>
@@ -94,14 +118,17 @@
                             <button class="btn btn-lg btn-info dropdown-toggle" onclick="togglePeriodForm()">Set Editing period</button>
                             <div class="period-form-container">
                                 <form class="period-form">
-
-                                    <label for="startDate">Start Date (yyyy-MM-dd HH:mm):</label>
-                                    <input type="datetime-local" id="startDate" name="startDate" required>
-
-                                    <label for="endDate">End Date (yyyy-MM-dd HH:mm):</label>
-                                    <input type="datetime-local" id="endDate" name="endDate" required>
-
-                                    <button type="submit" class="btn btn-success">Send Request</button>
+                                    <div class="input-container">
+                                        <label for="startDate">Start Date (yyyy-MM-dd HH:mm):</label>
+                                        <input type="datetime-local" id="startDate" name="startDate" required>
+                                    </div>
+                                    <div class="input-container">
+                                        <label for="endDate">End Date (yyyy-MM-dd HH:mm):</label>
+                                        <input type="datetime-local" id="endDate" name="endDate" required>
+                                    </div>
+                                    <div class="input-container">
+                                        <button type="submit" class="btn btn-success">Send Request</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
