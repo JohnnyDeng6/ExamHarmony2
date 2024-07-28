@@ -63,6 +63,9 @@
     </style>
 
 
+    <script th:if="${alertMessage != null}" th:inline="javascript">
+        window.alert('[[${alertMessage}]]');
+    </script>
 
 </head>
 <body>
@@ -217,9 +220,6 @@
 <!--        <header th:insert="fragments/footer :: footer"></header>-->
 <!--    </main>-->
 
-    <script th:if="${alertMessage != null}" th:inline="javascript">
-        window.alert([['${alertMessage}']]);
-    </script>
 
     <script>
         function toggleRequestForm() {
