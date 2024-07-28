@@ -74,8 +74,8 @@ class InstructorControllerTest {
         mockInstructor.setPassword("123456");
 
         List<ExamSlotRequest> mockExamSlotRequests = Arrays.asList(
-                new ExamSlotRequest(1, LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT354",1),
-                new ExamSlotRequest(1, LocalDateTime.parse("2024-04-16 10:30", formatter), 4, "CMPT354", 2)
+                new ExamSlotRequest(LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT354",1),
+                new ExamSlotRequest(LocalDateTime.parse("2024-04-16 10:30", formatter), 4, "CMPT354", 2)
         );
 
         when(userRepo.findByUsername("Alex")).thenReturn(mockInstructor);
@@ -97,8 +97,8 @@ class InstructorControllerTest {
         mockInstructor.setPassword("123456");
 
         List<ExamSlotRequest> badList = Arrays.asList(
-                new ExamSlotRequest(1, LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT373", 5),
-                new ExamSlotRequest(1,  LocalDateTime.parse("2024-04-16 01:00", formatter), -5, "CMPT373", 2)
+                new ExamSlotRequest(LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT373", 5),
+                new ExamSlotRequest(LocalDateTime.parse("2024-04-16 01:00", formatter), -5, "CMPT373", 2)
         );
 
         when(userRepo.findByUsername("instructor")).thenReturn(mockInstructor);
@@ -115,10 +115,10 @@ class InstructorControllerTest {
         mockInstructor.setName("Alex");
         mockInstructor.setEmailAddress("Test@example.ca");
         mockInstructor.setPassword("123456");
-        ExamSlotRequest testRequest = new ExamSlotRequest(1, LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT354", 1);
+        ExamSlotRequest testRequest = new ExamSlotRequest(LocalDateTime.parse("2024-04-12 12:48", formatter), 3, "CMPT354", 1);
         List<ExamSlotRequest> mockExamSlotRequests = Arrays.asList(
                 testRequest,
-                new ExamSlotRequest(1,  LocalDateTime.parse("2024-04-16 10:00", formatter), 4, "CMPT354", 3)
+                new ExamSlotRequest(LocalDateTime.parse("2024-04-16 10:00", formatter), 4, "CMPT354", 3)
         );
 
     }

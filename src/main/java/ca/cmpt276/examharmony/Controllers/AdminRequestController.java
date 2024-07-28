@@ -36,7 +36,7 @@ public class AdminRequestController {
         invigilatorRequestService.createRequest(username, email, examCode, parsedExamDate, status);
 
         redirectAttributes.addFlashAttribute("message", "Request sent successfully!");
-        return "redirect:/admin/adminTestPage";
+        return "adminHome";
     }
 
     @GetMapping("/adminTestPage")

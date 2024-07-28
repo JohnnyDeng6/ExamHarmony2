@@ -176,7 +176,7 @@ public class User {
     public void updateExamRequest(ExamSlotRequest request, String newDate){
         for(ExamSlotRequest examSlotRequest : this.examSlotRequests){
             if(examSlotRequest.getPreferenceStatus() == request.getPreferenceStatus() && examSlotRequest.getCourseName().equals(request.getCourseName())){
-                examSlotRequest.setExamCode(request.getExamCode());
+//                examSlotRequest.setExamCode(request.getExamCode());
                 examSlotRequest.setExamDate(newDate);
                 examSlotRequest.setExamDuration(request.getExamDuration());
                 examSlotRequest.setStatus(request.getStatus());
