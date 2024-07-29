@@ -48,14 +48,13 @@ public class AdminRequestController {
             redirectAttributes.addFlashAttribute("alertMessage", "Request sent successfully!");
             if(referer == null){
                 model.addAttribute("admin", currentUser);
-                return "redirect:/adminHome";
+                return "adminHome";
             } else {
                 return "redirect:" + referer;
             }
-
         } else {
             redirectAttributes.addFlashAttribute("alertMessage", "These credentials do not exist");
-            return "redirect:/login";
+            return "redirect:/admin/home";
         }
     }
 
