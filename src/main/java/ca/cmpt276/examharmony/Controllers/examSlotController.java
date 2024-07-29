@@ -28,6 +28,14 @@ public class examSlotController {
     @Autowired
     private CourseRepository courseRepo;
 
+    @GetMapping("examSlot/Add")
+    public String getAllCoursesSec(Model model){
+        System.out.println("examSlotAdd called");
+
+        List<CoursesSec> courseSec = courseRepo.findAll();
+        model.addAttribute("CoursesSec", courseSec);
+        return "adminExamSlot";
+    }
 
 
     @GetMapping("/examSlot/showAll")
@@ -45,7 +53,7 @@ public class examSlotController {
         LocalDateTime StartTime = LocalDateTime.parse(newExamSlot.get("startTime"));
         double duration = Double.parseDouble(newExamSlot.get("duration"));
         int numOfRooms = Integer.parseInt(newExamSlot.get("numberOfRooms"));
-        int assignedRooms = Integer.parseInt(newExamSlot.get("assignedRooms"));
+        String assignedRooms = newExamSlot.get("assignedRooms");
         int numInvigilator = Integer.parseInt(newExamSlot.get("numberOfInvigilators"));
         
         
@@ -119,7 +127,7 @@ public class examSlotController {
         }
     
         if (updatedExamSlot.containsKey("assignedRooms") && !updatedExamSlot.get("assignedRooms").isEmpty()) {
-            int assignedRooms = Integer.parseInt(updatedExamSlot.get("assignedRooms"));
+            String assignedRooms = updatedExamSlot.get("assignedRooms");
             exam.setAssignedRooms(assignedRooms);
         }
     
