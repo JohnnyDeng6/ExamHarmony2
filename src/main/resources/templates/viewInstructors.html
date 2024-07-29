@@ -12,13 +12,11 @@
     <script src="/scripts.js" defer></script>
 
     <style>
-
         html, body {
             width: 100%;
             height: 100%;
             margin: 0;
         }
-
         h1 {
             text-align: center;
             font-weight: bold;
@@ -35,13 +33,18 @@
             background-color: lightblue;
             cursor: pointer;
         }
+        .instructor-info {
+            display: none;
+        }
+        .instructor-info.visible {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
 
 <main class="flex-shrink-0 d-flex flex-column min-vh-100">
-
     <header th:insert="fragments/header :: header"></header>
 
     <!-- Page Content-->
@@ -61,15 +64,20 @@
                                 </thead>
                                 <tbody>
                                 <!-- Iterate over instructors and display dynamically -->
-                                <tr th:each="instructor : ${instructors}">
+                                <tr th:each="instructor : ${instructors}" class="instructor-row" th:data-username="${instructor.username}">
                                     <td th:text="${instructor.username}"></td>
                                 </tr>
                                 </tbody>
                             </table>
+                            <div id="instructor-info" class="instructor-info">
+                                <h3 id="instructor-name"></h3>
+                                <p><strong>Email:</strong> <span id="instructor-email"></span></p>
+                                <p><strong>Subject:</strong> <span id="instructor-subject"></span></p>
+                                <p><strong>Exam Slot Requests:</strong></p>
+                                <ul id="exam-slot-requests"></ul>
+                            </div>
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </div>
@@ -77,24 +85,38 @@
 
     <header th:insert="fragments/footer :: footer"></header>
 </main>
-<!--    <main id="mainpart">-->
-<!--        <h1 class="display-4">Instructors</h1>-->
+<script>
+    $(document).ready(function () {
+        $('.instructor-row').click(function () {
+            const instructorUsername = $(this).data('username');
+            $.ajax({
+                url: `/admin/instructor/${instructorUsername}`,
+                method: 'GET',
+                success: function (data) {
+                    // Clear previous data
+                    $('#instructor-name').text(data.username || 'N/A');
+                    $('#instructor-email').text(data.email || 'N/A');
+                    $('#instructor-subject').text(data.subject || 'N/A');
+                    $('#exam-slot-requests').empty();
 
-<!--        <div class="container pt-3">-->
-<!--            <table class="table table-hover">-->
-<!--                <thead>-->
-<!--                    <tr>-->
-<!--                        <th>Instructor Name</th>-->
-<!--                    </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                    &lt;!&ndash; Iterate over instructors and display dynamically &ndash;&gt;-->
-<!--                    <tr th:each="instructor : ${instructors}">-->
-<!--                        <td th:text="${instructor.username}"></td>-->
-<!--                    </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-<!--    </main>-->
+                    // Append new exam slot requests
+                    if (data.examSlotRequests && data.examSlotRequests.length > 0) {
+                        data.examSlotRequests.forEach(function (request) {
+                            $('#exam-slot-requests').append(`<li>${request.courseName} on ${request.examDate}</li>`);
+                        });
+                    } else {
+                        $('#exam-slot-requests').append('<li>No exam slot requests found</li>');
+                    }
+
+                    // Show the instructor info section
+                    $('#instructor-info').addClass('visible');
+                },
+                error: function (err) {
+                    console.error('AJAX Error:', err);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

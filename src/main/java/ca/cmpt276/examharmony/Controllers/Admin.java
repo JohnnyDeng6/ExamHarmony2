@@ -17,8 +17,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import ca.cmpt276.examharmony.Model.roles.RoleRepository;
 
@@ -104,6 +107,21 @@ public class Admin {
         }
 
         return "redirect:/login";
+    }
+    @GetMapping("/admin/instructor/{username}")
+    @ResponseBody
+    public Map<String, Object> getInstructorDetails(@PathVariable("username") String username) {
+        User instructor = userRepository.findByUsername("username");
+        if (instructor != null) {
+            List<ExamSlotRequest> examSlotRequests = examRequestRepository.findByInstructorName("instructorName");
+            Map<String, Object> response = new HashMap<>();
+            response.put("username", instructor.getUsername());
+            response.put("email", instructor.getEmailAddress()); // Ensure this field is available in your User model
+            response.put("subject", instructor.getInstructorCourses()); // Ensure this field is available in your User model
+            response.put("examSlotRequests", examSlotRequests);
+            return response;
+        }
+        return null;
     }
 }
 
