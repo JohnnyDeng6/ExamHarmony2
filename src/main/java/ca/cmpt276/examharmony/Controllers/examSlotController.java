@@ -45,7 +45,7 @@ public class examSlotController {
         LocalDateTime StartTime = LocalDateTime.parse(newExamSlot.get("startTime"));
         double duration = Double.parseDouble(newExamSlot.get("duration"));
         int numOfRooms = Integer.parseInt(newExamSlot.get("numberOfRooms"));
-        int assignedRooms = Integer.parseInt(newExamSlot.get("assignedRooms"));
+        String assignedRooms = newExamSlot.get("assignedRooms");
         int numInvigilator = Integer.parseInt(newExamSlot.get("numberOfInvigilators"));
         
         
@@ -119,7 +119,7 @@ public class examSlotController {
         }
     
         if (updatedExamSlot.containsKey("assignedRooms") && !updatedExamSlot.get("assignedRooms").isEmpty()) {
-            int assignedRooms = Integer.parseInt(updatedExamSlot.get("assignedRooms"));
+            String assignedRooms = updatedExamSlot.get("assignedRooms");
             exam.setAssignedRooms(assignedRooms);
         }
     

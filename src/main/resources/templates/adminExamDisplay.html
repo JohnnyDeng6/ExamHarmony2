@@ -2,62 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    
-</head>
-<body>
-    <main class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <h1>Exam Slots</h1>
-                <table id="examSlots" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Course Name</th>
-                            <th>StartTime</th>
-                            <th>Duration</th>
-                            <th>Number Of Rooms</th>
-                            <th>assignedRooms</th>
-                            <th>NumberOfInvigilators</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="examSlot : ${examSlots}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Exam Slot </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/scripts.js" defer></script>
 
-                            <td> 
-                                <form th:action="@{/examSlot/select}" method="get" class="edit-form">
-                                    <input type="hidden" name="id" th:value="${examSlot.id}" />
-                                    <button type="submit" style="border: none; background: none;">
-                                        <div>
-                                            <div th:text="${examSlot.id}" style="margin-bottom: 0;"></div>
-                                        </div>
-                                    </button>
-                                </form>
-                            </td>
-                            <td th:text="${examSlot.CourseID.courseName}"></td>
-                            <td th:text="${examSlot.startTime}"></td>
-                            <td th:text="${examSlot.duration}"></td>
-                            <td th:text="${examSlot.numOfRooms}"></td>
-                            <td th:text="${examSlot.assignedRooms}"></td>
-                            <td th:text="${examSlot.numInvigilator}"></td>
-                            <td th:text="${examSlot.status}"></td>
-                            <td>
-                                <form th:action="@{/examSlot/delete}" method="post" class="delete-form">
-                                    <input type="hidden" name="id" th:value="${examSlot.id}">
-                                    <button type="submit">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <a href="/adminExamSlot.html" class="btn btn-primary btn-sm">Add</a>
-            </div>
+    <style>
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            width: 100%;
+        }
+        .submit {
+            margin-top: 20px;
+        }
+        .display {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .container {
+            margin-bottom: 90px;
+        }
+        .feedback{
+            color: #a82e2e;
+        }
+
+        .hidden { display: none; }
+
+    </style>
+</head>
+<body class = "d-flex flex-column h-100">
+<header th:insert="fragments/header :: header"></header>
+
+    <main class="main-container container-fluid">
+        <div class="table-container">
+            <h1>Exam Slots</h1>
+            <table id="examSlots" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Course Name</th>
+                        <th>Start Time</th>
+                        <th>Duration</th>
+                        <th>Number Of Rooms</th>
+                        <th>Assigned Rooms</th>
+                        <th>Number Of Invigilators</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="examSlot : ${examSlots}">
+                        <td>
+                            <form th:action="@{/examSlot/select}" method="get" class="edit-form">
+                                <input type="hidden" name="id" th:value="${examSlot.id}" />
+                                <button type="submit" style="border: none; background: none; cursor: pointer;">
+                                    <span th:text="${examSlot.id}"></span>
+                                </button>
+                            </form>
+                        </td>
+                        <td th:text="${examSlot.CourseID.courseName}"></td>
+                        <td th:text="${examSlot.startTime}"></td>
+                        <td th:text="${examSlot.duration}"></td>
+                        <td th:text="${examSlot.numOfRooms}"></td>
+                        <td th:text="${examSlot.assignedRooms}"></td>
+                        <td th:text="${examSlot.numInvigilator}"></td>
+                        <td th:text="${examSlot.status}"></td>
+                        <td>
+                            <form th:action="@{/examSlot/delete}" method="post" class="delete-form">
+                                <input type="hidden" name="id" th:value="${examSlot.id}">
+                                <button type="submit" class="delete-button">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="/adminExamSlot.html" class="btn btn-primary btn-sm">Add</a>
         </div>
+        <header th:insert="fragments/footer :: footer"></header>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76A2z5WJrTiqLqd8s0D5yK2zYKEJ2v6JNe9JpY4eZUOm9IHQmM+9CZea2Fve82D" crossorigin="anonymous"></script>
 </body>
 </html>

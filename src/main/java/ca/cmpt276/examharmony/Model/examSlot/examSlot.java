@@ -21,7 +21,7 @@ public class examSlot {
     private LocalDateTime StartTime;
     private double duration;
     private int numOfRooms;
-    private int assignedRooms;
+    private String assignedRooms;
     private int numInvigilator;
     
     // @ManyToOne
@@ -73,11 +73,11 @@ public class examSlot {
         this.numOfRooms = numOfRooms;
     }
 
-    public int getAssignedRooms() {
+    public String getAssignedRooms() {
         return this.assignedRooms;
     }
 
-    public void setAssignedRooms(int assignedRooms) {
+    public void setAssignedRooms(String assignedRooms) {
         this.assignedRooms = assignedRooms;
     }
     
