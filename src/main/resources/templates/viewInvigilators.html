@@ -37,10 +37,6 @@
             min-height: 400px;
         }
 
-        .hidden{
-            display: none;
-        }
-
         .request-form {
             display: none;
         }
@@ -97,10 +93,16 @@
 
                                         </ul>
 
-                                        <button class="btn btn-lg btn-info dropdown-toggle">Send Request to Invigilator</button>
+                                        <button class="btn btn-info dropdown-toggle btn-sm">Send Request to Invigilator</button>
 
                                         <div class="request-form-container">
-                                            <form class="request-form">
+                                            <form class="request-form" action="/admin/sendRequest" method="post">
+                                                <div class="input-container">
+                                                    <input type="hidden" id="username" name="username" th:value="${invigilator.getUsername()}">
+                                                </div>
+                                                <div class="input-container">
+                                                    <input type="hidden" id="email" name="email" th:value="${invigilator.getEmailAddress()}">
+                                                </div>
                                                 <div class="input-container">
                                                     <label for="examCode">Exam Code :</label>
                                                     <input type="text" id="examCode" name="examCode" required>
@@ -117,7 +119,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="input-container">
-                                                    <button type="submit" class="btn btn-success">Send Request</button>
+                                                    <button type="submit" class="btn btn-success btn-sm">Send Request</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -167,8 +169,7 @@
         form.style.display = form.style.display === 'block' ? 'none' : 'block';
     }
 
-    document.addEventListener("DOMContentLoaded", (e)=>{
-        e.preventDefault();
+    document.addEventListener("DOMContentLoaded", ()=>{
         let rows = document.getElementsByClassName('invigilator');
         for(let i = 0; i < rows.length; i++){
             rows[i].querySelector('.dropdown-toggle').addEventListener('click', ()=>{

@@ -15,10 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService;
@@ -39,7 +36,7 @@ public class AdminRequestController {
 
 
     @PostMapping("/sendRequest")
-    public String sendRequest(
+    public String sendRequest(@RequestHeader(value = "Referer", required = false) String referer,
             @RequestParam String username,
             @RequestParam String email,
            // @RequestParam int inv_id,
@@ -57,11 +54,17 @@ public class AdminRequestController {
             LocalDateTime parsedExamDate = LocalDateTime.parse(examDate);
             invigilatorRequestService.createRequest(username, email, examCode, parsedExamDate, status);
             redirectAttributes.addFlashAttribute("alertMessage", "Request sent successfully!");
+            if(referer == null){
+                model.addAttribute("admin", currentUser);
+                return "redirect:/adminHome";
+            } else {
+                return "redirect:" + referer;
+            }
+
         } else {
             redirectAttributes.addFlashAttribute("alertMessage", "These credentials do not exist");
+            return "redirect:/login";
         }
-        model.addAttribute("admin", currentUser);
-        return "redirect:/admin/home";
     }
 
     @GetMapping("/adminTestPage")
