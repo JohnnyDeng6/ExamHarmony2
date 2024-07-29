@@ -91,7 +91,6 @@ public class Admin {
         if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails){
             EditInterval interval = intervalRepository.findById(1);
             try{
-
                 interval.setTimes(intervalDTO.startDate, intervalDTO.endDate);
                 User admin = userRepository.findByUsername(userDetails.getUsername());
                 model.addAttribute("admin", admin);
@@ -104,6 +103,18 @@ public class Admin {
         }
 
         return "redirect:/login";
+    }
+
+    @PostMapping("/emailAll")
+    public String emailAll(Model model){
+        List<User> users = userRepository.findAll();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            User admin = userRepository.findByUsername(userDetails.getUsername());
+            model.addAttribute("admin", admin);
+        }
+        return "adminHome";
+
     }
 }
 
