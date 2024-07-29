@@ -17,7 +17,9 @@
                     <input type="hidden" id="id" name="id" th:value="${examSlot.id}">
 
                     <label for="courseName">Course Name:</label><br>
-                    <input type="text" id="courseName" name="courseName" th:value="${examSlot.CourseID.courseName}"><br>
+                    <select id="courseList" class="form-control form-control-lg" required>
+                        <option th:each="course : ${CoursesSec}" th:value="${course.courseName}" th:text="${course.courseName}"></option>
+                    </select>
                     
                     <label for="startTime">StartTime:</label><br>
                     <input type="datetime-local" id="startTime" name="startTime" th:value="${examSlot.startTime}"><br>

@@ -28,6 +28,14 @@ public class examSlotController {
     @Autowired
     private CourseRepository courseRepo;
 
+    @GetMapping("examSlot/Add")
+    public String getAllCoursesSec(Model model){
+        System.out.println("examSlotAdd called");
+
+        List<CoursesSec> courseSec = courseRepo.findAll();
+        model.addAttribute("CoursesSec", courseSec);
+        return "adminExamSlot";
+    }
 
 
     @GetMapping("/examSlot/showAll")

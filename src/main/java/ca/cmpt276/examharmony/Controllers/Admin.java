@@ -65,8 +65,9 @@ public class Admin {
                     iterator.remove();
                 }
             }
-
+            
         }
+
 
         return "redirect:/admin/viewRequests";
     }
