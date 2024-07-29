@@ -74,9 +74,12 @@
 
     <header th:insert="fragments/header :: header"></header>
 
+    <header class="fw-bolder fs-5 mb-4 welcome" th:text="'Welcome, ' + ${admin.getUsername()}"> Welcome back </header>
+
+
+
     <!-- Page Content-->
     <section class="py-5">
-        <header class="fw-bolder fs-5 mb-4 welcome" th:text="'Welcome, ' + ${admin.getUsername()}"> Welcome back </header>
 
         <div class="container px-5">
             <div class="card border-0 shadow rounded-3 overflow-hidden main-container">
@@ -102,13 +105,6 @@
                                         <label for="examDate">Exam Date (yyyy-MM-ddTHH:mm):</label>
                                         <input type="datetime-local" id="examDate" name="examDate" required>
                                     </div>
-                                   <div class="input-container">
-                                       <label for="status">Status:</label>
-                                       <select id="status" name="status" required>
-                                           <option value="pending">Pending</option>
-                                           <option value="approved">Approved</option>
-                                       </select>
-                                   </div>
                                     <div class="input-container">
                                         <button type="submit" class="btn btn-success">Send Request</button>
                                     </div>
@@ -241,23 +237,47 @@
 
             let interval = {startDate: startDate, endDate: endDate};
 
-            try{
-                const response = await fetch("add/interval", {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(interval)
-                })
+            let feedbackContainer = document.querySelector(".feedback");
 
-                if(!response.ok){
-                    const errorData = await response.json();
-                    const errorMessage = errorData.trace;
-                    throw new Error(errorMessage);
-                }else {
-                    location.href = `/admin/home`;
-                    document.querySelector(".feedback").innerText = "Interval Successfully set";
+            if (confirm("Updating editing period will send an email to all users. Press ok to proceed")) {
+                try{
+                    const response = await fetch("add/interval", {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(interval)
+                    })
+
+                    if(!response.ok){
+                        const errorData = await response.json();
+                        const errorMessage = errorData.trace;
+                        throw new Error(errorMessage);
+                    }else {
+                        feedbackContainer.style.color = "green";
+                        feedbackContainer.innerText = "Interval Successfully set";
+
+                        try{ //email all
+                            const response = await fetch("emailAll", {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify(interval)
+                            })
+                            if(!response.ok){
+                                const errorData = await response.json();
+                                const errorMessage = errorData.trace;
+                                throw new Error(errorMessage);
+                            }else {
+                                //worked fine
+                            }
+                        } catch (err) {
+
+                        }
+
+                    }
+                } catch (err){
+                    feedbackContainer.style.color = "red";
+                    feedbackContainer.innerText = "Invalid request, please choose another date"
+                    // feedbackContainer.innerText = err.message.split("at")[0];
                 }
-            } catch (err){
-                document.querySelector(".feedback").innerText = err.message.split("at")[0];
             }
 
         });
