@@ -51,10 +51,10 @@ public class InvigilatorController {
     @ResponseBody
     public ResponseEntity<?> updateRequestStatus(@RequestBody Map<String, String> body) {
         try {
-            String username = body.get("username");
-            String examCode = body.get("examCode");
             String status = body.get("status");
-            InvigilatorRequest updatedRequest = invigilatorRequestService.updateStatus(username, examCode, status);
+            String id = body.get("requestId");
+            System.out.println(id);
+            InvigilatorRequest updatedRequest = invigilatorRequestService.updateStatus(Integer.parseInt(id), status);
             return ResponseEntity.ok(updatedRequest);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating request status: " + e.getMessage());

@@ -9,4 +9,5 @@ public interface InvigilatorRequestRepository extends JpaRepository<InvigilatorR
     List<InvigilatorRequest> findByUsername(String username);
     List<InvigilatorRequest> findByEmail(String email);
     Optional<InvigilatorRequest> findByUsernameAndExamCode(String username, String examcode);
+    InvigilatorRequest findById(int id);
 }

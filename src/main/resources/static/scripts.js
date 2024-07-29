@@ -41,20 +41,6 @@ async function logout() {
     }
 
 }
-let logOut = document.querySelector(".log-out-button");
-logOut.addEventListener("click", async ()=>{
-    if(confirm("Are you sure you want to log out?")){
-        try{
-            const response = await fetch("/logout");
-            if(!response.ok){
-                throw new Error("Error: Could not log out");
-            }
-            window.location.reload();
-        } catch (err){
-            console.log(err);
-        }
-    }
-});
 function goHome() {
     const currentUrl = window.location.href;
     const urlParts = currentUrl.split('/');
