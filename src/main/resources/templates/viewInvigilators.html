@@ -37,6 +37,28 @@
             min-height: 400px;
         }
 
+        .hidden{
+            display: none;
+        }
+
+        .request-form {
+            display: none;
+        }
+
+        .request-form-container{
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+        }
+
+        .input-container{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
     </style>
 </head>
 
@@ -59,14 +81,50 @@
                                 <thead>
                                 <tr>
                                     <th>Invigilator Name</th>
-                                    <th>Department</th>
+                                    <th>Info</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <!-- Dynamic rows populated from server-side -->
-                                <tr th:each="invigilator : ${invigilators}">
-                                    <td th:text="${invigilator.username}">Invigilator Name</td>
+                                <tr class="invigilator" th:each="invigilator : ${invigilators}">
+                                    <td  th:text="${invigilator.username}">Invigilator Name</td>
+                                    <td class="invigilator-info">
+
+                                        <ul>
+
+                                            <li th:text="'Email: ' + ${invigilator.getEmailAddress()}">  </li>
+                                            <li th:text="'Name: ' + ${invigilator.getName()}">  </li>
+
+                                        </ul>
+
+                                        <button class="btn btn-lg btn-info dropdown-toggle">Send Request to Invigilator</button>
+
+                                        <div class="request-form-container">
+                                            <form class="request-form">
+                                                <div class="input-container">
+                                                    <label for="examCode">Exam Code :</label>
+                                                    <input type="text" id="examCode" name="examCode" required>
+                                                </div>
+                                                <div class="input-container">
+                                                    <label for="examDate">Exam Date (yyyy-MM-ddTHH:mm):</label>
+                                                    <input type="datetime-local" id="examDate" name="examDate" required>
+                                                </div>
+                                                <div class="input-container">
+                                                    <label for="status">Status:</label>
+                                                    <select id="status" name="status" required>
+                                                        <option value="pending">Pending</option>
+                                                        <option value="approved">Approved</option>
+                                                    </select>
+                                                </div>
+                                                <div class="input-container">
+                                                    <button type="submit" class="btn btn-success">Send Request</button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </td>
                                 </tr>
+
                                 </tbody>
                             </table>
                         </div>
@@ -102,4 +160,23 @@
 <!--        </div>-->
 <!--    </main>-->
 </body>
+
+<script>
+    function toggleRequestForm() {
+        let form = document.querySelector('.request-form');
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener("DOMContentLoaded", (e)=>{
+        e.preventDefault();
+        let rows = document.getElementsByClassName('invigilator');
+        for(let i = 0; i < rows.length; i++){
+            rows[i].querySelector('.dropdown-toggle').addEventListener('click', ()=>{
+                let container = rows[i].querySelector('.invigilator-info');
+                let form = container.querySelector('.request-form');
+                form.style.display = form.style.display === 'block' ? 'none' : 'block';
+            });
+        }
+    });
+</script>
 </html>
