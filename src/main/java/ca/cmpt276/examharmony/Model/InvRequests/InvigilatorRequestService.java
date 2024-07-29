@@ -13,7 +13,6 @@ public class InvigilatorRequestService {
 
     public List<InvigilatorRequest> getRequests(String username) {
         List<InvigilatorRequest> requests = invigilatorRequestRepository.findByUsername(username);
-        System.out.println("Fetched requests for username " + username + ": " + requests.size());
         return requests;
     }
 

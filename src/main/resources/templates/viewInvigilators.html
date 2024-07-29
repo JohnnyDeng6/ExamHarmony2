@@ -37,7 +37,7 @@
             min-height: 400px;
         }
 
-        .request-form {
+        .request-form, .request-container {
             display: none;
         }
 
@@ -78,12 +78,14 @@
                                 <tr>
                                     <th>Invigilator Name</th>
                                     <th>Info</th>
+                                    <th> Requests </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <!-- Dynamic rows populated from server-side -->
                                 <tr class="invigilator" th:each="invigilator : ${invigilators}">
                                     <td  th:text="${invigilator.username}">Invigilator Name</td>
+
                                     <td class="invigilator-info">
 
                                         <ul>
@@ -93,7 +95,7 @@
 
                                         </ul>
 
-                                        <button class="btn btn-info dropdown-toggle btn-sm">Send Request to Invigilator</button>
+                                        <button class="btn btn-info dropdown-toggle btn-sm send-request" >Send Request to Invigilator</button>
 
                                         <div class="request-form-container">
                                             <form class="request-form" action="/admin/sendRequest" method="post">
@@ -125,6 +127,35 @@
                                         </div>
 
                                     </td>
+
+                                    <td class="invigilator-requests">
+
+                                        <div th:if="${not #lists.isEmpty(invigilatorService.getRequests(invigilator.getUsername()))}">
+
+                                            <button class="btn btn-info dropdown-toggle btn-sm see-requests"> See Requests </button>
+
+                                            <div class="request-container">
+                                                <ul>
+                                                    <li th:each="request: ${invigilatorService.getRequests(invigilator.getUsername())}">
+                                                        <div>
+                                                            <p> <strong th:text=" 'Exam: ' + ${request.getExamCode()}"> </strong> </p>
+                                                            <p th:text=" 'Exam Date: ' + ${request.getExamDate()}"> </p>
+                                                            <p th:text=" 'Status: ' + ${request.getStatus()}"></p>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                        </div>
+
+                                        <div th:if="${#lists.isEmpty(invigilatorService.getRequests(invigilator.getUsername()))}">
+
+                                            <p> No requests have been made yet </p>
+
+                                        </div>
+
+                                    </td>
+
                                 </tr>
 
                                 </tbody>
@@ -164,6 +195,7 @@
 </body>
 
 <script>
+
     function toggleRequestForm() {
         let form = document.querySelector('.request-form');
         form.style.display = form.style.display === 'block' ? 'none' : 'block';
@@ -172,12 +204,35 @@
     document.addEventListener("DOMContentLoaded", ()=>{
         let rows = document.getElementsByClassName('invigilator');
         for(let i = 0; i < rows.length; i++){
-            rows[i].querySelector('.dropdown-toggle').addEventListener('click', ()=>{
+            console.log(rows[i]);
+
+            let row = rows[i];
+            row.querySelector('.send-request').addEventListener('click', ()=>{
                 let container = rows[i].querySelector('.invigilator-info');
                 let form = container.querySelector('.request-form');
                 form.style.display = form.style.display === 'block' ? 'none' : 'block';
-            });
+            })
+
+            // rows[i].querySelector('.see-requests').addEventListener('click',()=>{
+            //     let requestContainer = rows[i].querySelector('.invigilator-requests');
+            //     let list = requestContainer.querySelector('.request-container');
+            //     list.style.display = list.style.display === 'block' ? 'none' : 'block';
+            // });
+        }
+        for(let i = 0; i < rows.length; i++) {
+            console.log(rows[i]);
+            let button =  rows[i].querySelector('.see-requests');
+            if(button !== null){
+                button.addEventListener('click',()=>{
+                    console.log("Hello");
+                    let requestContainer = rows[i].querySelector('.invigilator-requests');
+                    let list = requestContainer.querySelector('.request-container');
+                    list.style.display = list.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+
         }
     });
+
 </script>
 </html>

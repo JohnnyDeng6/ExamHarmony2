@@ -3,6 +3,7 @@ package ca.cmpt276.examharmony.Controllers;
 import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
 import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.EditInterval.EditIntervalDTO;
+import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService;
 import ca.cmpt276.examharmony.Model.emailSender.EmailService;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestRepository;
@@ -50,6 +51,9 @@ public class Admin {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private InvigilatorRequestService invService;
+
     @GetMapping("/viewRequests")
     public String viewRequests(Model model) {
         List<ExamSlotRequest> examSlotRequests = examRequestRepository.findAll();
@@ -91,6 +95,7 @@ public class Admin {
     public String viewInvigilators(Model model) {
         List<User> invigilators = userRepository.findByRoleName("INVIGILATOR");
         model.addAttribute("invigilators",invigilators);
+        model.addAttribute("invigilatorService", invService);
         return "viewInvigilators";
     }
 
