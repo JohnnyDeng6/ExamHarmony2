@@ -13,7 +13,7 @@ public class InvigilatorRequest {
     private int id;
     private String username;
     private String email;
-    private int inv_id;
+//    private int inv_id;
     private String examCode;
     private LocalDateTime examDate;
     private String status;
@@ -60,12 +60,12 @@ public class InvigilatorRequest {
     public void setEmail(String email) {
         this.email = email;
     }
-    public int getInv_id() {
-        return inv_id;
-    }
-    public void setInv_id(int inv_id) {
-        this.inv_id = inv_id;
-    }
+//    public int getInv_id() {
+//        return inv_id;
+//    }
+//    public void setInv_id(int inv_id) {
+//        this.inv_id = inv_id;
+//    }
     
     public int getId() {
         return id;

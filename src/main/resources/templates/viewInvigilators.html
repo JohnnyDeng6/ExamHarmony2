@@ -201,20 +201,36 @@
         form.style.display = form.style.display === 'block' ? 'none' : 'block';
     }
 
-    document.addEventListener("DOMContentLoaded", (e)=>{
-        e.preventDefault();
+    document.addEventListener("DOMContentLoaded", ()=>{
         let rows = document.getElementsByClassName('invigilator');
         for(let i = 0; i < rows.length; i++){
-            rows[i].querySelector('.send-request').addEventListener('click', ()=>{
+            console.log(rows[i]);
+
+            let row = rows[i];
+            row.querySelector('.send-request').addEventListener('click', ()=>{
                 let container = rows[i].querySelector('.invigilator-info');
                 let form = container.querySelector('.request-form');
                 form.style.display = form.style.display === 'block' ? 'none' : 'block';
-            });
-            rows[i].querySelector('.see-requests').addEventListener('click',()=>{
-                let requestContainer = rows[i].querySelector('.invigilator-requests');
-                let list = requestContainer.querySelector('.request-container');
-                list.style.display = list.style.display === 'block' ? 'none' : 'block';
-            });
+            })
+
+            // rows[i].querySelector('.see-requests').addEventListener('click',()=>{
+            //     let requestContainer = rows[i].querySelector('.invigilator-requests');
+            //     let list = requestContainer.querySelector('.request-container');
+            //     list.style.display = list.style.display === 'block' ? 'none' : 'block';
+            // });
+        }
+        for(let i = 0; i < rows.length; i++) {
+            console.log(rows[i]);
+            let button =  rows[i].querySelector('.see-requests');
+            if(button !== null){
+                button.addEventListener('click',()=>{
+                    console.log("Hello");
+                    let requestContainer = rows[i].querySelector('.invigilator-requests');
+                    let list = requestContainer.querySelector('.request-container');
+                    list.style.display = list.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+
         }
     });
 
