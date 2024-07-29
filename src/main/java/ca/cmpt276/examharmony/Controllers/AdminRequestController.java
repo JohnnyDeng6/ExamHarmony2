@@ -1,15 +1,9 @@
 package ca.cmpt276.examharmony.Controllers;
 
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-
-import java.util.UUID;
-
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserService;
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
-import ca.cmpt276.examharmony.utils.UserAlreadyExistException;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
