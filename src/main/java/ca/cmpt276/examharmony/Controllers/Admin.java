@@ -5,6 +5,7 @@ import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.EditInterval.EditIntervalDTO;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestRepository;
+import ca.cmpt276.examharmony.Model.examSlot.examSlotRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 
@@ -25,6 +26,9 @@ import ca.cmpt276.examharmony.Model.roles.RoleRepository;
 @Controller
 @RequestMapping("/admin")
 public class Admin {
+
+    @Autowired
+    private examSlotRepository examRepo;
 
     @Autowired
     private UserRepository userRepository;
@@ -65,7 +69,7 @@ public class Admin {
                     iterator.remove();
                 }
             }
-            
+
         }
 
 
