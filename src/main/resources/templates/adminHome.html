@@ -74,9 +74,17 @@
 
     <header th:insert="fragments/header :: header"></header>
 
+    <header class="fw-bolder fs-5 mb-4 welcome" th:text="'Welcome, ' + ${admin.getUsername()}"> Welcome back </header>
+
+<!--    <section class="py-5">-->
+<!--        <div class="card border-0 shadow rounded-3 overflow-hidden main-container">-->
+<!--            <div class="card-body p-0">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+
     <!-- Page Content-->
     <section class="py-5">
-        <header class="fw-bolder fs-5 mb-4 welcome" th:text="'Welcome, ' + ${admin.getUsername()}"> Welcome back </header>
 
         <div class="container px-5">
             <div class="card border-0 shadow rounded-3 overflow-hidden main-container">
