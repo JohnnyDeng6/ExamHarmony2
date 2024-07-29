@@ -91,16 +91,14 @@
                             <h2>Your Requests</h2>
                             <div id="requestsList">
                                 <div th:each="request : ${requests}">
-                                    <div class="card mb-3" th:id="${'request-' + request.id}">
+                                    <div class="card mb-3" th:id="${'request-' + request.id}" th:if="${request.status != 'Rejected'}">
                                         <div class="card-body">
                                             <h5 class="card-title">Exam Code: <span th:text="${request.examCode}"></span></h5>
                                             <p class="card-text">Date: <span th:text="${request.examDate}"></span></p>
                                             <p class="card-text">
-                                                <span th:if="${request.status != 'pending'}" th:text="'Status: ' + ${request.status}"></span></p>
-<!--                                            <p class="card-text">Status: <span th:text="${request.status}"></span></p>-->
+                                                <span class="currentStatus" th:text="'Status: ' + ${request.status}"></span></p>
 
                                             <div class="btn-group" role="group" aria-label="Request Actions" th:if="${request.status == 'pending'}">
-<!--                                                            type="submit" th:disabled="${request.status == 'APPROVED'}">Approve</button>-->
                                                 <button type="submit" class="btn btn-success accept" th:disabled="${request.status != 'pending'}" th:attr="data-requestid=${request.id}">Accept</button>
                                                 <button type="submit" class="btn btn-danger reject" th:disabled="${request.status != 'pending'}" th:attr="data-requestid=${request.id}">Reject</button>
                                             </div>
@@ -285,9 +283,13 @@
 
                     let requestElement = document.getElementById(`request-${requestId}`);
                     if (requestElement) {
-                        let buttons = requestElement.getElementsByTagName("button");
-                        for (let button of buttons) {
-                            button.disabled = true;
+                        let buttonsContainer = requestElement.querySelector(".btn-group");
+                        if (buttonsContainer) {
+                            buttonsContainer.remove();
+                        }
+                        let statusText = requestElement.querySelector(".currentStatus");
+                        if (statusText) {
+                            statusText.textContent = 'Status: ' + status;
                         }
                     } else {
                         console.log('Request element not found on the page');
