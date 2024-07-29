@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class InvigilatorRequestService {
+
     @Autowired
     private InvigilatorRequestRepository invigilatorRequestRepository;
 
@@ -24,9 +25,9 @@ public class InvigilatorRequestService {
     }
 
 
-    public InvigilatorRequest createRequest(String username, String email, String examCode,
+    public void createRequest(String username, String email, String examCode,
     LocalDateTime examDate, String Status) {
         InvigilatorRequest request = new InvigilatorRequest(username, email, examCode, examDate, Status);
-        return invigilatorRequestRepository.save(request);
+        invigilatorRequestRepository.save(request);
     }
 }
