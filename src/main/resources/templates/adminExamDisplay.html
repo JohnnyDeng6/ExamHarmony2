@@ -62,14 +62,8 @@
                 </thead>
                 <tbody>
                     <tr th:each="examSlot : ${examSlots}">
-                        <td>
-                            <form th:action="@{/examSlot/select}" method="get" class="edit-form">
-                                <input type="hidden" name="id" th:value="${examSlot.id}" />
-                                <button type="submit" style="border: none; background: none; cursor: pointer;">
-                                    <span th:text="${examSlot.id}"></span>
-                                </button>
-                            </form>
-                        </td>
+                        
+                        <td th:text="${examSlot.id}"></td>
                         <td th:text="${examSlot.CourseID.courseName}"></td>
                         <td th:text="${examSlot.startTime}"></td>
                         <td th:text="${examSlot.duration}"></td>
@@ -78,11 +72,19 @@
                         <td th:text="${examSlot.numInvigilator}"></td>
                         <td th:text="${examSlot.status}"></td>
                         <td>
+                            <form th:action="@{/examSlot/select}" method="get" class="edit-form">
+                                <input type="hidden" name="id" th:value="${examSlot.id}" />
+                                <button type="submit" class="btn btn-primary">
+                                    Update
+                                </button>
+                            </form>
                             <form th:action="@{/examSlot/delete}" method="post" class="delete-form">
                                 <input type="hidden" name="id" th:value="${examSlot.id}">
-                                <button type="submit" class="delete-button">Delete</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
+                            
                         </td>
+                        
                     </tr>
                 </tbody>
             </table>

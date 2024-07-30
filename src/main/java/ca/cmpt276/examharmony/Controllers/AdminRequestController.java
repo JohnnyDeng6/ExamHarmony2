@@ -1,6 +1,9 @@
 package ca.cmpt276.examharmony.Controllers;
 
 import java.time.LocalDateTime;
+
+import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
+import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserService;
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
@@ -20,6 +23,9 @@ public class AdminRequestController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private IntervalRepository intervalRepository;
 
     private final InvigilatorRequestService invigilatorRequestService;
 
@@ -41,6 +47,7 @@ public class AdminRequestController {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User currentUser = userDetails.getCurrentUser();
+        EditInterval interval = intervalRepository.findById(1);
         User user = userService.findByUsername(username);
         if (user != null && user.getEmailAddress().equals(email)) {
             LocalDateTime parsedExamDate = LocalDateTime.parse(examDate);
@@ -48,6 +55,7 @@ public class AdminRequestController {
             redirectAttributes.addFlashAttribute("alertMessage", "Request sent successfully!");
             if(referer == null){
                 model.addAttribute("admin", currentUser);
+                model.addAttribute("interval", interval);
                 return "adminHome";
             } else {
                 return "redirect:" + referer;

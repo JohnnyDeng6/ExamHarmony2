@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class examSlotController {
@@ -33,12 +34,13 @@ public class examSlotController {
         System.out.println("examSlotAdd called");
 
         List<CoursesSec> courseSec = courseRepo.findAll();
+
         model.addAttribute("CoursesSec", courseSec);
         return "adminExamSlot";
     }
 
 
-    @GetMapping("/examSlot/showAll")
+    @GetMapping("/admin/examSlots")
     public String getAllExamSlots(Model model){
         List<examSlot> examSlot = examRepo.findAll();
         model.addAttribute("examSlots", examSlot);
@@ -59,6 +61,7 @@ public class examSlotController {
         
         String courseName = newExamSlot.get("courseID");
         
+        System.out.print("courseName is "+courseName);
 
         String status = newExamSlot.get("status");
         
@@ -79,7 +82,7 @@ public class examSlotController {
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         
-        return "redirect:/examSlot/showAll";
+        return "redirect:/admin/examSlots";
     }
     
     @PostMapping("/examSlot/delete")
@@ -89,7 +92,7 @@ public class examSlotController {
             System.out.println("delete successful");
             examRepo.deleteById(id);
         }
-        return "redirect:/examSlot/showAll";
+        return "redirect:/admin/examSlots";
     }
 
     @GetMapping("/examSlot/select")
@@ -99,9 +102,12 @@ public class examSlotController {
         examSlot exam = examRepo.findById(id).orElse(null);
         if(exam != null){
             model.addAttribute("examSlot",exam);
+            List<CoursesSec> courseSec = courseRepo.findAll();
+            model.addAttribute("CoursesSec", courseSec);
+
             return "/updateExamSlot";
         }
-        return "redirect:/examSlot/showAll";
+        return "redirect:/admin/examSlots";
     }
 
 
@@ -137,7 +143,9 @@ public class examSlotController {
         }
 
         if(updatedExamSlot.containsKey("courseName") && !updatedExamSlot.get("courseName").isEmpty()){
+            
             String courseName = updatedExamSlot.get("courseName");
+            
             CoursesSec CourseID = courseRepo.findByCourseName(courseName);
             exam.setCourseID(CourseID);
         }
@@ -150,7 +158,7 @@ public class examSlotController {
 
         examRepo.save(exam);
         
-        return "redirect:/examSlot/showAll";
+        return "redirect:/admin/examSlots";
     }
 
 }
