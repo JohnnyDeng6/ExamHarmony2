@@ -129,8 +129,7 @@
                                         <button type="submit" class="btn btn-success">Send Request</button>
                                     </div>
                                 </form>
-                            </div>
-                        </div>
+                                <button class="btn btn-lg btn-info" onclick="location.href='/calendar.html'">View Invigilator Availability</button>
 
                         <p class="feedback"> </p>
                     </div>
@@ -143,21 +142,21 @@
         <div class="container px-5">
             <div class="row gx-5">
                 <div class="col-xl-8">
-                    <h2 class="fw-bolder fs-5 mb-4"> Notifications </h2>
+                    <!-- <h2 class="fw-bolder fs-5 mb-4"> Notifications </h2>
 
-                    <!-- Add calendar view here-->
+                    Add calendar view here-->
 
-                    <!-- Replace all of this -->
+                    <!-- Replace all of this
                     <div class="mb-4">
                         <div class="small text-muted">May 12, 2023</div>
                         <a class="link-dark" href="#!"><h3>Start Bootstrap releases Bootstrap 5 updates for templates and themes</h3></a>
                     </div>
-                    <!-- News item-->
+                     News item
                     <div class="mb-5">
                         <div class="small text-muted">May 5, 2023</div>
                         <a class="link-dark" href="#!"><h3>Bootstrap 5 has officially landed</h3></a>
                     </div>
-                    <!-- News item-->
+                     News item
                     <div class="mb-5">
                         <div class="small text-muted">Apr 21, 2023</div>
                         <a class="link-dark" href="#!"><h3>This is another news article headline, but this one is a little bit longer</h3></a>
@@ -168,7 +167,7 @@
                             <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>
-                </div>
+                </div> -->
 
             </div>
         </div>
@@ -222,7 +221,9 @@
             let form = document.querySelector('.request-form');
             form.style.display = form.style.display === 'block' ? 'none' : 'block';
         }
-
+        // function redirectToCalendar() {
+        // window.location.href = "https://calendar.google.com/calendar/embed?src=examharmony6%40gmail.com&ctz=UTC";
+        // }
         function togglePeriodForm(){
             let periodForm = document.querySelector('.period-form')
             periodForm.style.display = periodForm.style.display === 'block' ? 'none' : 'block';
