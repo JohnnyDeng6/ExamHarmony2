@@ -9,10 +9,12 @@ import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestService;
 
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
 import ca.cmpt276.examharmony.utils.InstructorExamSlotRepository;
 import jakarta.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +29,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import ca.cmpt276.examharmony.Model.roles.RoleRepository;
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestService;
 
 @Controller
 @RequestMapping("/admin")
@@ -53,6 +58,9 @@ public class Admin {
 
     @Autowired
     private InvigilatorRequestService invService;
+
+    @Autowired
+    private ExamSlotRequestService insService;
 
     @GetMapping("/viewRequests")
     public String viewRequests(Model model) {
@@ -87,9 +95,18 @@ public class Admin {
     @GetMapping("/viewInstructors")
     public String viewInstructors(Model model) {
         List<User> instructors = userRepository.findByRoleName("INSTRUCTOR");
+    
+        // Fetch and set exam slot requests for each instructor
+        for (User instructor : instructors) {
+            List<ExamSlotRequest> requests = insService.getRequests(instructor.getUsername());
+            instructor.setExamSlotRequests(requests); // Using your provided setter method
+        }
+    
         model.addAttribute("instructors", instructors);
         return "viewInstructors";
     }
+    
+
 
     @GetMapping("/viewInvigilators")
     public String viewInvigilators(Model model) {
