@@ -3,6 +3,7 @@ package ca.cmpt276.examharmony.Controllers;
 import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
 import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.EditInterval.EditIntervalDTO;
+import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestRepository;
 import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService;
 import ca.cmpt276.examharmony.Model.emailSender.EmailService;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
@@ -11,9 +12,11 @@ import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
+import ca.cmpt276.examharmony.utils.DatabaseService;
 import ca.cmpt276.examharmony.utils.InstructorExamSlotRepository;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -53,6 +56,9 @@ public class Admin {
 
     @Autowired
     private InvigilatorRequestService invService;
+
+    @Autowired
+    private DatabaseService databaseService;
 
     @GetMapping("/viewRequests")
     public String viewRequests(Model model) {
@@ -136,6 +142,12 @@ public class Admin {
         redirectAttributes.addFlashAttribute("alertMessage", "Failed to send mass email, please try again in 24 hours");
         return "redirect:/admin/home";
 
+    }
+
+    @PostMapping("/clearDB")
+    public ResponseEntity<String> clearDatabase() {
+        databaseService.clearDatabase();
+        return ResponseEntity.ok("Database successfully reset");
     }
 
 
