@@ -20,6 +20,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     // Custom query to find users by role name
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")
     List<User> findByRoleName(@Param("roleName") String roleName);
-    
 
+    @Query("SELECT u.emailAddress FROM User u")
+    List<String> findAllEmailAddresses();
 }

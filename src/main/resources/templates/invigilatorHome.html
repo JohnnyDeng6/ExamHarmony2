@@ -91,14 +91,16 @@
                             <h2>Your Requests</h2>
                             <div id="requestsList">
                                 <div th:each="request : ${requests}">
-                                    <div class="card mb-3" th:id="${'request-' + request.id}">
+                                    <div class="card mb-3" th:id="${'request-' + request.id}" th:if="${request.status != 'Rejected'}">
                                         <div class="card-body">
                                             <h5 class="card-title">Exam Code: <span th:text="${request.examCode}"></span></h5>
                                             <p class="card-text">Date: <span th:text="${request.examDate}"></span></p>
-                                            <p class="card-text">Status: <span th:text="${request.status}"></span></p>
-                                            <div class="btn-group" role="group" aria-label="Request Actions">
-                                                <button type="button" class="btn btn-success accept" th:attr="data-username=${request.username}, data-examcode=${request.examCode}">Accept</button>
-                                                <button type="button" class="btn btn-danger reject" th:attr="data-username=${request.username}, data-examcode=${request.examCode}, data-requestid=${request.id}">Reject</button>
+                                            <p class="card-text">
+                                                <span class="currentStatus" th:text="'Status: ' + ${request.status}"></span></p>
+
+                                            <div class="btn-group" role="group" aria-label="Request Actions" th:if="${request.status == 'pending'}">
+                                                <button type="submit" class="btn btn-success accept" th:disabled="${request.status != 'pending'}" th:attr="data-requestid=${request.id}">Accept</button>
+                                                <button type="submit" class="btn btn-danger reject" th:disabled="${request.status != 'pending'}" th:attr="data-requestid=${request.id}">Reject</button>
                                             </div>
                                         </div>
                                     </div>
@@ -111,6 +113,23 @@
             </div>
         </div>
     </section>
+
+    <section class="py-5">
+        <div class="container px-5">
+            <div class="card border-0 shadow rounded-3 overflow-hidden main-container">
+                <div class="card-body p-0">
+                    <div class="container pt-3 ">
+
+                        <h2> Appointed Exams </h2>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="py-5 bg-light" style="margin-bottom: 80px">
         <div class="container px-5">
             <div class="row gx-5">
@@ -230,70 +249,56 @@
             let calendarSection = document.getElementById("calendarSection");
             let requestsSection = document.getElementById("requestsSection");
 
-            calendarButton.addEventListener("click", function() {
+            calendarButton.addEventListener("click", function () {
                 calendarSection.classList.remove("hidden");
                 requestsSection.classList.add("hidden");
             });
 
-            requestsButton.addEventListener("click", function() {
+            requestsButton.addEventListener("click", function () {
                 requestsSection.classList.remove("hidden");
                 calendarSection.classList.add("hidden");
             });
+        });
 
-            let logoutButton = document.querySelector(".log-out-button");
-            logoutButton.addEventListener("click", async () => {
-                if (confirm("Are you sure you want to log out?")) {
-                    try {
-                        const response = await fetch("/logout");
-                        if (!response.ok) {
-                            throw new Error("Error: Could not log out");
-                        }
-                        window.location.reload();
-                    } catch (err) {
-                        console.log(err);
+        // Handle Accept and Reject buttons
+        document.getElementById("requestsList").addEventListener("click", async function(event) {
+            if (event.target.classList.contains("accept") || event.target.classList.contains("reject")) {
+                let status = event.target.classList.contains("accept") ? 'Accepted' : 'Rejected';
+                let requestId = event.target.getAttribute("data-requestid");
+
+                console.log(status + requestId);
+
+                try {
+                    const response = await fetch(`/invigilator/requests/status`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({status, requestId })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Error updating request');
                     }
-                }
-            });
 
-            // Handle Accept and Reject buttons 
-            document.getElementById("requestsList").addEventListener("click", async function(event) {
-                if (event.target.classList.contains("accept") || event.target.classList.contains("reject")) {
-                    let username = event.target.getAttribute("data-username");
-                    let examCode = event.target.getAttribute("data-examcode");
-                    let status = event.target.classList.contains("accept") ? 'Accepted' : 'Rejected';
-                    let requestId = event.target.getAttribute("data-requestid");
-
-                    console.log(status + " clicked for Username:", username, "and Exam Code:", examCode);
-
-                    try {
-                        const response = await fetch(`/invigilator/requests/status`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ username, examCode, status })
-                        });
-
-                        if (!response.ok) {
-                            throw new Error('Error updating request');
+                    let requestElement = document.getElementById(`request-${requestId}`);
+                    if (requestElement) {
+                        let buttonsContainer = requestElement.querySelector(".btn-group");
+                        if (buttonsContainer) {
+                            buttonsContainer.remove();
                         }
-
-                        console.log('Request ' + status.toLowerCase() + ' successfully');
-
-                        // Remove the request element from the page if rejected
-                        if (status === 'Rejected') {
-                            let requestElement = document.getElementById(`request-${requestId}`);
-                            if (requestElement) {
-                                requestElement.remove();
-                            } else {
-                                console.log('Request element not found on the page');
-                            }
+                        let statusText = requestElement.querySelector(".currentStatus");
+                        if (statusText) {
+                            statusText.textContent = 'Status: ' + status;
                         }
-                    } catch (err) {
-                        console.error('Error updating request:', err);
+                    } else {
+                        console.log('Request element not found on the page');
                     }
+
+                } catch (err) {
+                    console.error('Error updating request:', err);
                 }
-            });
+            }
         });
     </script>
 </body>

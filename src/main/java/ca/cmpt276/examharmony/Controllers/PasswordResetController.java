@@ -59,10 +59,9 @@ public class PasswordResetController {
             User user = userDetails.getCurrentUser();
 
             UUID prtUUID = getNewPrt(user);
-
             String toEmail = userDetails.getEmail();
             String subject = "Password Reset Confirmation";
-            String body = buildPasswordResetEmailBody(userDetails.getName(), prtUUID);
+            String body = emailService.buildPasswordResetEmailBody(userDetails.getName(), prtUUID);
             emailService.sendHtmlEmail(toEmail, subject, body);
 
             return "success";
@@ -83,7 +82,7 @@ public class PasswordResetController {
             try {
                 UUID prtUUID = getNewPrt(user);
                 String subject = "Password Reset Confirmation";
-                String body = buildPasswordResetEmailBody(user.getName(), prtUUID);
+                String body = emailService.buildPasswordResetEmailBody(user.getName(), prtUUID);
                 emailService.sendHtmlEmail(email, subject, body);
                 return "redirect:/login";
 
@@ -133,17 +132,5 @@ public class PasswordResetController {
         return "redirect:/login";
     }
 
-    private String buildPasswordResetEmailBody(String name, UUID prtUUID) {
-        String link = "https://examharmony.onrender.com/reset-password?passwordResetToken=" + prtUUID;
-        return "<p>Dear " + name + ",</p>"
-                + "<p>You have requested a password reset.</p>"
-                + "<p>To get started, please set your password by clicking the link below:</p>"
-                + "<p><a href=\"" + link + "\">Set Your Password</a></p>"
-                + "<p>This link will expire in 24 hours</p>"
-                + "<p>If you did not request for a password reset, please ignore this email.</p>"
-                + "<p>Best regards,</p>"
-                + "<p>The ExamHarmony Team</p>"
-                + "<p><em>Note: This is an automated message, please do not reply.</em></p>";
-    }
 }
 

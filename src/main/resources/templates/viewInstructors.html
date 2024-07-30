@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>View Instructors</title>
+    <title>View instructors</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link href="/css/styles.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
@@ -17,15 +17,13 @@
             height: 100%;
             margin: 0;
         }
+
         h1 {
             text-align: center;
             font-weight: bold;
             font-size: 50px;
         }
-        .main-container {
-            min-width: 600px;
-            min-height: 400px;
-        }
+
         .table-hover tbody tr:hover td {
             background-color: lightgray;
         }
@@ -33,18 +31,37 @@
             background-color: lightblue;
             cursor: pointer;
         }
-        .instructor-info {
+
+        .main-container {
+            min-width: 600px;
+            min-height: 400px;
+        }
+
+        .request-form, .request-container {
             display: none;
         }
-        .instructor-info.visible {
-            display: block;
+
+        .request-form-container{
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
         }
+
+        .input-container{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
     </style>
 </head>
 
 <body>
 
 <main class="flex-shrink-0 d-flex flex-column min-vh-100">
+
     <header th:insert="fragments/header :: header"></header>
 
     <!-- Page Content-->
@@ -53,31 +70,92 @@
             <div class="card border-0 shadow rounded-3 overflow-hidden main-container">
                 <div class="card-body p-0">
                     <div class="container pt-3">
-                        <h1 class="display-4">Instructors</h1>
+                        <h1 class="display-4">Instructor</h1>
 
                         <div class="container pt-3">
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
                                     <th>Instructor Name</th>
+                                    <th>Info</th>
+                                    <th> Requests </th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <!-- Iterate over instructors and display dynamically -->
-                                <tr th:each="instructor : ${instructors}" class="instructor-row" th:data-username="${instructor.username}">
-                                    <td th:text="${instructor.username}"></td>
+                                <!-- Dynamic rows populated from server-side -->
+                                <tr class="instructor" th:each="instructor : ${instructors}">
+                                    <td  th:text="${instructor.username}">instructor Name</td>
+
+                                    <td class="instructor-info">
+
+                                        <ul>
+
+                                            <li th:text="'Email: ' + ${instructor.getEmailAddress()}">  </li>
+                                            <li th:text="'Name: ' + ${instructor.getName()}">  </li>
+
+                                        </ul>
+
+                                        <!-- <button class="btn btn-info dropdown-toggle btn-sm send-request" >Send Request to instructor</button>
+
+                                        <div class="request-form-container">
+                                            <form class="request-form" action="/admin/sendRequest" method="post">
+                                                <div class="input-container">
+                                                    <input type="hidden" id="username" name="username" th:value="${instructor.getUsername()}">
+                                                </div>
+                                                <div class="input-container">
+                                                    <input type="hidden" id="email" name="email" th:value="${instructor.getEmailAddress()}">
+                                                </div>
+                                                <div class="input-container">
+                                                    <label for="examCode">Exam Code :</label>
+                                                    <input type="text" id="examCode" name="examCode" required>
+                                                </div>
+                                                <div class="input-container">
+                                                    <label for="examDate">Exam Date (yyyy-MM-ddTHH:mm):</label>
+                                                    <input type="datetime-local" id="examDate" name="examDate" required>
+                                                </div>
+                                                <div class="input-container">
+                                                    <button type="submit" class="btn btn-success btn-sm">Send Request</button>
+                                                </div>
+                                            </form>
+                                        </div> -->
+
+                                    </td>
+
+                                    <!-- <td class="instructor-requests">
+                                        <div th:each="instructor : ${instructors}">
+                                            <h2 th:text="${instructor.name}">Instructor Name</h2>
+                                    
+                                            <div th:if="${not #lists.isEmpty(instructor.examSlotRequests)}">
+                                                <button class="btn btn-info dropdown-toggle btn-sm see-requests"> See Requests </button>
+                                    
+                                                <div class="request-container">
+                                                    <ul>
+                                                        <li th:each="request : ${instructor.examSlotRequests}">
+                                                            <div>
+                                                                <p><strong th:text="'Exam: ' + ${request.getExamCode}"> </strong></p>
+                                                                <p th:text="'Exam Date: ' + ${request.getExamDate}"> </p>
+                                                                <p th:text="'Status: ' + ${request.getExamSlotStatus}"> </p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                    
+                                            <div th:if="${#lists.isEmpty(instructor.examSlotRequests)}">
+                                                <p>No requests have been made yet</p>
+                                            </div>
+                                        </div>
+                                    </td> -->
+                                    
+
                                 </tr>
+
                                 </tbody>
                             </table>
-                            <div id="instructor-info" class="instructor-info">
-                                <h3 id="instructor-name"></h3>
-                                <p><strong>Email:</strong> <span id="instructor-email"></span></p>
-                                <p><strong>Subject:</strong> <span id="instructor-subject"></span></p>
-                                <p><strong>Exam Slot Requests:</strong></p>
-                                <ul id="exam-slot-requests"></ul>
-                            </div>
                         </div>
+
                     </div>
+
                 </div>
             </div>
         </div>
@@ -85,38 +163,48 @@
 
     <header th:insert="fragments/footer :: footer"></header>
 </main>
-<script>
-    $(document).ready(function () {
-        $('.instructor-row').click(function () {
-            const instructorUsername = $(this).data('username');
-            $.ajax({
-                url: `/admin/instructor/${instructorUsername}`,
-                method: 'GET',
-                success: function (data) {
-                    // Clear previous data
-                    $('#instructor-name').text(data.username || 'N/A');
-                    $('#instructor-email').text(data.email || 'N/A');
-                    $('#instructor-subject').text(data.subject || 'N/A');
-                    $('#exam-slot-requests').empty();
 
-                    // Append new exam slot requests
-                    if (data.examSlotRequests && data.examSlotRequests.length > 0) {
-                        data.examSlotRequests.forEach(function (request) {
-                            $('#exam-slot-requests').append(`<li>${request.courseName} on ${request.examDate}</li>`);
-                        });
-                    } else {
-                        $('#exam-slot-requests').append('<li>No exam slot requests found</li>');
-                    }
-
-                    // Show the instructor info section
-                    $('#instructor-info').addClass('visible');
-                },
-                error: function (err) {
-                    console.error('AJAX Error:', err);
-                }
-            });
-        });
-    });
-</script>
 </body>
+
+<script>
+
+    function toggleRequestForm() {
+        let form = document.querySelector('.request-form');
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+        let rows = document.getElementsByClassName('instructor');
+        for(let i = 0; i < rows.length; i++){
+            console.log(rows[i]);
+
+            let row = rows[i];
+            row.querySelector('.send-request').addEventListener('click', ()=>{
+                let container = rows[i].querySelector('.instructor-info');
+                let form = container.querySelector('.request-form');
+                form.style.display = form.style.display === 'block' ? 'none' : 'block';
+            })
+
+            // rows[i].querySelector('.see-requests').addEventListener('click',()=>{
+            //     let requestContainer = rows[i].querySelector('.instructor-requests');
+            //     let list = requestContainer.querySelector('.request-container');
+            //     list.style.display = list.style.display === 'block' ? 'none' : 'block';
+            // });
+        }
+        for(let i = 0; i < rows.length; i++) {
+            console.log(rows[i]);
+            let button =  rows[i].querySelector('.see-requests');
+            if(button !== null){
+                button.addEventListener('click',()=>{
+                    console.log("Hello");
+                    let requestContainer = rows[i].querySelector('.instructor-requests');
+                    let list = requestContainer.querySelector('.request-container');
+                    list.style.display = list.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+
+        }
+    });
+
+</script>
 </html>
