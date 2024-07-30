@@ -9,10 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import ca.cmpt276.examharmony.Model.examSlot.examSlot;
 import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import java.time.LocalDateTime;
@@ -21,6 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/admin")
 public class examSlotController {
     
     @Autowired
@@ -29,7 +27,7 @@ public class examSlotController {
     @Autowired
     private CourseRepository courseRepo;
 
-    @GetMapping("examSlot/Add")
+    @GetMapping("examSlot/add")
     public String getAllCoursesSec(Model model){
         System.out.println("examSlotAdd called");
 
@@ -40,14 +38,14 @@ public class examSlotController {
     }
 
 
-    @GetMapping("/admin/examSlots")
+    @GetMapping("/examSlots")
     public String getAllExamSlots(Model model){
         List<examSlot> examSlot = examRepo.findAll();
         model.addAttribute("examSlots", examSlot);
         return "/adminExamDisplay";
     }
     
-    @PostMapping("/admin/addExamSlot")
+    @PostMapping("/addExamSlot")
     public String addExamSlot(@RequestParam Map<String, String> newExamSlot, HttpServletResponse response) {
 
         System.out.print("In addExamSlot");
