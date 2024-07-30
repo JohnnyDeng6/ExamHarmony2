@@ -23,12 +23,7 @@ public class examSlot {
     private int numOfRooms;
     private String assignedRooms;
     private int numInvigilator;
-    
-    // @ManyToOne
-    // @JoinColumn(name = "users", referencedColumnName="uuid")
-    // private UUID admin;
-    // /*Admin ID */
-
+   
     private String status;
 
     

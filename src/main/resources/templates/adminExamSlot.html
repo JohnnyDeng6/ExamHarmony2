@@ -65,7 +65,7 @@
                     
                     <div class="mb-3">
                         <!-- <input type="text" id="courseID" name="courseID" class="form-control form-control-lg" placeholder="CourseID" required list="courseList"> -->
-                        <select id="courseList" class="form-control form-control-lg" required>
+                        <select id="courseList" name="courseID" class="form-control form-control-lg" required>
                             <option th:each="course : ${CoursesSec}" th:value="${course.courseName}" th:text="${course.courseName}"></option>
                         </select>
                     </div>

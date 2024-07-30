@@ -1,5 +1,7 @@
 package ca.cmpt276.examharmony.Controllers;
 
+import ca.cmpt276.examharmony.Model.CourseSectionInfo.CourseRepository;
+import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
 import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.EditInterval.EditIntervalDTO;
@@ -8,6 +10,8 @@ import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService;
 import ca.cmpt276.examharmony.Model.emailSender.EmailService;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestRepository;
+import ca.cmpt276.examharmony.Model.examSlot.examSlot;
+import ca.cmpt276.examharmony.Model.examSlot.examSlotRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestService;
@@ -42,6 +46,9 @@ import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestService;
 public class Admin {
 
     @Autowired
+    private examSlotRepository examRepo;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -63,6 +70,9 @@ public class Admin {
     private InvigilatorRequestService invService;
 
     @Autowired
+    private CourseRepository courseRepo;
+
+    @Autowired
     private DatabaseService databaseService;
 
     @Autowired
@@ -82,6 +92,21 @@ public class Admin {
             request.setStatus("APPROVED");
             request.setPreferenceStatus(1);
             User owner = userRepository.findByUsername(request.getInstructorName());
+            //-------------------------------------
+            examSlot exam = new examSlot();
+            exam.setStartTime(request.getExamDate());
+            exam.setDuration(request.getExamDuration());
+            exam.setNumOfRooms(-1);
+            exam.setNumInvigilator(-1);
+            exam.setAssignedRooms("EMPTY");
+            exam.setStatus(request.getStatus());
+        
+            CoursesSec CourseID = courseRepo.findByCourseName(request.getCourseName());
+            exam.setCourseID(CourseID);
+        
+            examRepo.save(exam);
+
+            //------------------------------------
             Iterator<ExamSlotRequest> iterator = owner.getExamSlotRequests().iterator();
             examRequestRepository.save(request);
             while (iterator.hasNext()){
@@ -92,7 +117,10 @@ public class Admin {
                     iterator.remove();
                 }
             }
+
+
         }
+
 
 
         return "redirect:/admin/viewRequests";
