@@ -17,6 +17,8 @@ import ca.cmpt276.examharmony.Model.user.UserRepository;
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
 import ca.cmpt276.examharmony.utils.InstructorExamSlotRepository;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -72,7 +75,11 @@ public class Admin {
     }
 
     @PostMapping("/approveRequest")
-    public String approveRequest(@RequestParam("requestId") int requestId) {
+    public String approveRequest(@RequestParam Map<String, String> examSlot,HttpServletResponse response) {
+
+        int requestId = Integer.parseInt(examSlot.get("requestId"));
+
+
         ExamSlotRequest request = examRequestRepository.findById(requestId).orElse(null);
         if (request != null) {
             request.setStatus("APPROVED");
@@ -82,9 +89,10 @@ public class Admin {
             examSlot exam = new examSlot();
             exam.setStartTime(request.getExamDate());
             exam.setDuration(request.getExamDuration());
-            exam.setNumOfRooms(-1);
-            exam.setNumInvigilator(-1);
-            exam.setAssignedRooms("EMPTY");
+
+            exam.setNumOfRooms(Integer.parseInt(examSlot.get("numberOfRooms")));
+            exam.setNumInvigilator(Integer.parseInt(examSlot.get("numberOfInvigilators")));
+            exam.setAssignedRooms(examSlot.get("assignedRooms"));
             exam.setStatus(request.getStatus());
         
             CoursesSec CourseID = courseRepo.findByCourseName(request.getCourseName());
