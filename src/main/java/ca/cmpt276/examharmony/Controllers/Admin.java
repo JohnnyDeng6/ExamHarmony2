@@ -5,6 +5,7 @@ import ca.cmpt276.examharmony.Model.CourseSectionInfo.CoursesSec;
 import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
 import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.EditInterval.EditIntervalDTO;
+import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestRepository;
 import ca.cmpt276.examharmony.Model.InvRequests.InvigilatorRequestService;
 import ca.cmpt276.examharmony.Model.emailSender.EmailService;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequest;
@@ -13,13 +14,15 @@ import ca.cmpt276.examharmony.Model.examSlot.examSlot;
 import ca.cmpt276.examharmony.Model.examSlot.examSlotRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestService;
 
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
+import ca.cmpt276.examharmony.utils.DatabaseService;
 import ca.cmpt276.examharmony.utils.InstructorExamSlotRepository;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -34,7 +37,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import ca.cmpt276.examharmony.Model.roles.RoleRepository;
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestService;
 
 @Controller
 @RequestMapping("/admin")
@@ -66,6 +72,12 @@ public class Admin {
 
     @Autowired
     private CourseRepository courseRepo;
+
+    @Autowired
+    private DatabaseService databaseService;
+
+    @Autowired
+    private ExamSlotRequestService insService;
 
     @GetMapping("/viewRequests")
     public String viewRequests(Model model) {
@@ -123,9 +135,18 @@ public class Admin {
     @GetMapping("/viewInstructors")
     public String viewInstructors(Model model) {
         List<User> instructors = userRepository.findByRoleName("INSTRUCTOR");
+    
+        // Fetch and set exam slot requests for each instructor
+        for (User instructor : instructors) {
+            List<ExamSlotRequest> requests = insService.getRequests(instructor.getUsername());
+            instructor.setExamSlotRequests(requests); // Using your provided setter method
+        }
+    
         model.addAttribute("instructors", instructors);
         return "viewInstructors";
     }
+    
+
 
     @GetMapping("/viewInvigilators")
     public String viewInvigilators(Model model) {
@@ -144,6 +165,7 @@ public class Admin {
                 interval.setTimes(intervalDTO.startDate, intervalDTO.endDate);
                 User admin = userRepository.findByUsername(userDetails.getUsername());
                 model.addAttribute("admin", admin);
+                model.addAttribute("interval", interval);
                 intervalRepository.save(interval);
                 return "adminHome";
 
@@ -151,16 +173,13 @@ public class Admin {
                 throw new InstructorController.BadRequest(err.getMessage());
             }
         }
-
-        return "redirect:/login";
+        return "redirect:/admin/home";
     }
 
     @PostMapping("/emailAll")
     public String emailAll(Model model, RedirectAttributes redirectAttributes) throws MessagingException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-            User admin = userRepository.findByUsername(userDetails.getUsername());
-            model.addAttribute("admin", admin);
 
             List<String> allEmails = userRepository.findAllEmailAddresses();
             String[] to = allEmails.toArray(new String[0]);
@@ -172,8 +191,14 @@ public class Admin {
             emailService.sendEmailWithBCC(to, subject, body);
         }
         redirectAttributes.addFlashAttribute("alertMessage", "Failed to send mass email, please try again in 24 hours");
-        return "adminHome";
+        return "redirect:/admin/home";
 
+    }
+
+    @PostMapping("/clearDB")
+    public ResponseEntity<String> clearDatabase() {
+        databaseService.clearDatabase();
+        return ResponseEntity.ok("Database successfully reset");
     }
 
 

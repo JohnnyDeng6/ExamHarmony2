@@ -118,6 +118,10 @@
                             <button class="btn btn-lg btn-info dropdown-toggle" onclick="togglePeriodForm()">Set Editing period</button>
                             <div class="period-form-container">
                                 <form class="period-form">
+                                    <div>Current editing period:
+                                        <mark class="startDate" th:text="${interval.getStartTime()}"> </mark> -
+                                        <mark class="endDate" style="margin: 5px" th:text="${interval.getEndTime()}"> </mark>
+                                    </div>
                                     <div class="input-container">
                                         <label for="startDate">Start Date (yyyy-MM-dd HH:mm):</label>
                                         <input type="datetime-local" id="startDate" name="startDate" required>
@@ -131,9 +135,10 @@
                                     </div>
                                 </form>
                             </div>
+                            <button class="btn btn-lg btn-danger clearDB">Clear Database</button>
+                            <p class="feedback"> </p>
                         </div>
 
-                        <p class="feedback"> </p>
                     </div>
 
                 </div>
@@ -179,59 +184,47 @@
 
 </main>
 
-
-
-<!--<header th:insert="fragments/header :: header"></header>-->
-<!--    <main id="mainpart">-->
-
-<!--        <h1 class="display-3" th:text="'Welcome, ' + ${admin.getUsername()}"></h1>-->
-
-<!--        <div class="container pt-3">-->
-<!--            <div class="admin-container">-->
-<!--                <button class="btn btn-lg btn-primary dropdown-toggle" onclick="toggleRequestForm()">Send Request</button>-->
-<!--                <div class="request-form">-->
-<!--                    <form action="/admin/sendRequest" method="post">-->
-<!--                        <label for="username">Username:</label>-->
-<!--                        <input type="text" id="username" name="username" required>-->
-<!--                        <label for="email">Email:</label>-->
-<!--                        <input type="email" id="email" name="email" required>-->
-<!--                        <label for="examCode">Exam Code :</label>-->
-<!--                        <input type="text" id="examCode" name="examCode" required>-->
-<!--                        <label for="examDate">Exam Date (yyyy-MM-ddTHH:mm):</label>-->
-<!--                        <input type="datetime-local" id="examDate" name="examDate" required>-->
-<!--                        <label for="status">Status:</label>-->
-<!--                        <select id="status" name="status" required>-->
-<!--                            <option value="pending">Pending</option>-->
-<!--                            <option value="approved">Approved</option>-->
-<!--                        </select>-->
-<!--                        <button type="submit">Send Request</button>-->
-<!--                    </form>-->
-<!--                </div>-->
-<!--                <button class="btn btn-lg btn-primary" onclick="location.href='/viewRequests'">View Requests</button>-->
-<!--                <button class="btn btn-lg btn-primary" onclick="location.href='/viewInstructors'">View Instructors</button>-->
-<!--                <button class="btn btn-lg btn-primary" onclick="location.href='/viewInvigilators'">View Invigilators</button>-->
-<!--                <button class="btn btn-lg btn-primary" onclick="addUser()">Add new User</button>-->
-
-<!--            </div>-->
-<!--        </div>-->
-<!--        <header th:insert="fragments/footer :: footer"></header>-->
-<!--    </main>-->
-
-
     <script>
+
+        document.querySelector('.clearDB').addEventListener('click', resetDB);
+
+        async function resetDB() {
+            if (confirm("Proceed with clearing all Invigilator availability requests, instructor exam requests, instructor courses, and exam slots")) {
+                let feedbackContainer = document.querySelector(".feedback");
+                try {
+                    const response = await fetch("clearDB", {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        const errorMessage = errorData.trace;
+                        throw new Error(errorMessage);
+                    } else {
+                        feedbackContainer.style.color = "green";
+                        feedbackContainer.innerText = "Database successfully reset";
+                    }
+                } catch (err) {
+                    feedbackContainer.style.color = "red";
+                    feedbackContainer.innerText = "Failed to reset";
+                }
+            }
+        }
+
         function toggleRequestForm() {
             let form = document.querySelector('.request-form');
             form.style.display = form.style.display === 'block' ? 'none' : 'block';
         }
 
-        function togglePeriodForm(){
+        function togglePeriodForm() {
             let periodForm = document.querySelector('.period-form')
             periodForm.style.display = periodForm.style.display === 'block' ? 'none' : 'block';
         }
 
         let periodForm = document.querySelector('.period-form');
 
-        periodForm.addEventListener('submit', async (e)=>{
+        periodForm.addEventListener('submit', async (e) => {
             e.preventDefault()
             let startDate = periodForm.querySelector('#startDate').value;
             let endDate = periodForm.querySelector('#endDate').value;
@@ -241,32 +234,34 @@
             let feedbackContainer = document.querySelector(".feedback");
 
             if (confirm("Updating editing period will send an email to all users. Press ok to proceed")) {
-                try{
+                try {
                     const response = await fetch("add/interval", {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(interval)
                     })
 
-                    if(!response.ok){
+                    if (!response.ok) {
                         const errorData = await response.json();
                         const errorMessage = errorData.trace;
                         throw new Error(errorMessage);
-                    }else {
+                    } else {
+                        document.querySelector(".endDate").innerText = endDate;
+                        document.querySelector(".startDate").innerText = startDate;
                         feedbackContainer.style.color = "green";
                         feedbackContainer.innerText = "Interval Successfully set";
 
-                        try{ //email all
+                        try { //email all
                             const response = await fetch("emailAll", {
                                 method: 'POST',
                                 headers: {'Content-Type': 'application/json'},
                                 body: JSON.stringify(interval)
                             })
-                            if(!response.ok){
+                            if (!response.ok) {
                                 const errorData = await response.json();
                                 const errorMessage = errorData.trace;
                                 throw new Error(errorMessage);
-                            }else {
+                            } else {
                                 //worked fine
                             }
                         } catch (err) {
@@ -274,7 +269,7 @@
                         }
 
                     }
-                } catch (err){
+                } catch (err) {
                     feedbackContainer.style.color = "red";
                     feedbackContainer.innerText = "Invalid request, please choose another date"
                     // feedbackContainer.innerText = err.message.split("at")[0];

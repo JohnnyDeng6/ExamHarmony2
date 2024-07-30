@@ -10,4 +10,5 @@ public interface ExamSlotRequestRepository extends JpaRepository<ExamSlotRequest
 //    ExamSlotRequest findExamRequestByExamCode(int ExamCode);
     List<ExamSlotRequest> findExamRequestsByStatus(String status);
     List<ExamSlotRequest> findExamRequestsByStatusAndCourseName(String status, String courseName);
+    List<ExamSlotRequest> findByInstructorName(String instructorName);
 }
