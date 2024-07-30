@@ -117,6 +117,10 @@
                             <button class="btn btn-lg btn-info dropdown-toggle" onclick="togglePeriodForm()">Set Editing period</button>
                             <div class="period-form-container">
                                 <form class="period-form">
+                                    <div>Current editing period:
+                                        <mark class="startDate" th:text="${interval.getStartTime()}"> </mark> -
+                                        <mark class="endDate" style="margin: 5px" th:text="${interval.getEndTime()}"> </mark>
+                                    </div>
                                     <div class="input-container">
                                         <label for="startDate">Start Date (yyyy-MM-dd HH:mm):</label>
                                         <input type="datetime-local" id="startDate" name="startDate" required>
@@ -130,9 +134,10 @@
                                     </div>
                                 </form>
                             </div>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewRequests'">View Requests</button>
+                            <p class="feedback"> </p>
                         </div>
 
-                        <p class="feedback"> </p>
                     </div>
 
                 </div>
@@ -252,6 +257,8 @@
                         const errorMessage = errorData.trace;
                         throw new Error(errorMessage);
                     }else {
+                        document.querySelector(".endDate").innerText = endDate;
+                        document.querySelector(".startDate").innerText = startDate;
                         feedbackContainer.style.color = "green";
                         feedbackContainer.innerText = "Interval Successfully set";
 

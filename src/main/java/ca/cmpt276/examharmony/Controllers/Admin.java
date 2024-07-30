@@ -108,6 +108,7 @@ public class Admin {
                 interval.setTimes(intervalDTO.startDate, intervalDTO.endDate);
                 User admin = userRepository.findByUsername(userDetails.getUsername());
                 model.addAttribute("admin", admin);
+                model.addAttribute("interval", interval);
                 intervalRepository.save(interval);
                 return "adminHome";
 
@@ -115,16 +116,13 @@ public class Admin {
                 throw new InstructorController.BadRequest(err.getMessage());
             }
         }
-
-        return "redirect:/login";
+        return "redirect:/admin/home";
     }
 
     @PostMapping("/emailAll")
     public String emailAll(Model model, RedirectAttributes redirectAttributes) throws MessagingException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-            User admin = userRepository.findByUsername(userDetails.getUsername());
-            model.addAttribute("admin", admin);
 
             List<String> allEmails = userRepository.findAllEmailAddresses();
             String[] to = allEmails.toArray(new String[0]);
@@ -136,7 +134,7 @@ public class Admin {
             emailService.sendEmailWithBCC(to, subject, body);
         }
         redirectAttributes.addFlashAttribute("alertMessage", "Failed to send mass email, please try again in 24 hours");
-        return "adminHome";
+        return "redirect:/admin/home";
 
     }
 

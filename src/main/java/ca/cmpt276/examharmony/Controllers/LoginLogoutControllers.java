@@ -1,5 +1,7 @@
 package ca.cmpt276.examharmony.Controllers;
 
+import ca.cmpt276.examharmony.Model.EditInterval.EditInterval;
+import ca.cmpt276.examharmony.Model.EditInterval.IntervalRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
@@ -16,6 +18,9 @@ public class LoginLogoutControllers {
     @Autowired
     private UserRepository userRepo;
 
+    @Autowired
+    private IntervalRepository intervalRepository;
+
     @GetMapping("/login")
     public String login(){
         return "loginPage";
@@ -26,6 +31,8 @@ public class LoginLogoutControllers {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails){
             User admin = userRepo.findByUsername(userDetails.getUsername());
+            EditInterval interval = intervalRepository.findById(1);
+            model.addAttribute("interval", interval);
             model.addAttribute("admin", admin);
             return "adminHome";
         }
