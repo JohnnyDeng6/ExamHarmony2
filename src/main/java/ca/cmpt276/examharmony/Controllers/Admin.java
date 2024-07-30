@@ -15,6 +15,7 @@ import ca.cmpt276.examharmony.Model.examSlot.examSlotRepository;
 import ca.cmpt276.examharmony.Model.user.User;
 import ca.cmpt276.examharmony.Model.user.UserRepository;
 import ca.cmpt276.examharmony.Model.examRequest.ExamSlotRequestService;
+import jakarta.servlet.http.HttpServletResponse;
 
 import ca.cmpt276.examharmony.utils.CustomUserDetails;
 import ca.cmpt276.examharmony.utils.DatabaseService;
