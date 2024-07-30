@@ -110,10 +110,10 @@
                                     </div>
                                 </form>
                             </div>
-                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewRequests'">View Requests</button>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewRequests'">View Exam Requests</button>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/calendar.html'">View Invigilator Availability</button>
                             <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewInstructors'">View Instructors</button>
                             <button class="btn btn-lg btn-info" onclick="location.href='/admin/viewInvigilators'">View Invigilators</button>
-                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/register'">Add new User</button>
                             <button class="btn btn-lg btn-info" onclick="location.href='/admin/examSlots'">View ExamSlots</button>
                             <button class="btn btn-lg btn-info dropdown-toggle" onclick="togglePeriodForm()">Set Editing period</button>
                             <div class="period-form-container">
@@ -135,47 +135,12 @@
                                     </div>
                                 </form>
                             </div>
+                            <button class="btn btn-lg btn-info" onclick="location.href='/admin/register'">Add new User</button>
                             <button class="btn btn-lg btn-danger clearDB">Clear Database</button>
                             <p class="feedback"> </p>
                         </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="py-5 bg-light" style="margin-bottom: 80px">
-        <div class="container px-5">
-            <div class="row gx-5">
-                <div class="col-xl-8">
-                    <h2 class="fw-bolder fs-5 mb-4"> Notifications </h2>
-
-                    <!-- Add calendar view here-->
-
-                    <!-- Replace all of this -->
-                    <div class="mb-4">
-                        <div class="small text-muted">May 12, 2023</div>
-                        <a class="link-dark" href="#!"><h3>Start Bootstrap releases Bootstrap 5 updates for templates and themes</h3></a>
-                    </div>
-                    <!-- News item-->
-                    <div class="mb-5">
-                        <div class="small text-muted">May 5, 2023</div>
-                        <a class="link-dark" href="#!"><h3>Bootstrap 5 has officially landed</h3></a>
-                    </div>
-                    <!-- News item-->
-                    <div class="mb-5">
-                        <div class="small text-muted">Apr 21, 2023</div>
-                        <a class="link-dark" href="#!"><h3>This is another news article headline, but this one is a little bit longer</h3></a>
-                    </div>
-                    <div class="text-end mb-5 mb-xl-0">
-                        <a class="text-decoration-none" href="#!">
-                            More news
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -216,7 +181,9 @@
             let form = document.querySelector('.request-form');
             form.style.display = form.style.display === 'block' ? 'none' : 'block';
         }
-
+        // function redirectToCalendar() {
+        // window.location.href = "https://calendar.google.com/calendar/embed?src=examharmony6%40gmail.com&ctz=UTC";
+        // }
         function togglePeriodForm() {
             let periodForm = document.querySelector('.period-form')
             periodForm.style.display = periodForm.style.display === 'block' ? 'none' : 'block';
@@ -272,7 +239,6 @@
                 } catch (err) {
                     feedbackContainer.style.color = "red";
                     feedbackContainer.innerText = "Invalid request, please choose another date"
-                    // feedbackContainer.innerText = err.message.split("at")[0];
                 }
             }
 
