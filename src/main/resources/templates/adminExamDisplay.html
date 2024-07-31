@@ -72,13 +72,13 @@
                         <td th:text="${examSlot.numInvigilator}"></td>
                         <td th:text="${examSlot.status}"></td>
                         <td>
-                            <form th:action="@{/examSlot/select}" method="get" class="edit-form">
+                            <form th:action="@{/admin/examSlot/select}" method="get" class="edit-form">
                                 <input type="hidden" name="id" th:value="${examSlot.id}" />
                                 <button type="submit" class="btn btn-primary">
                                     Update
                                 </button>
                             </form>
-                            <form th:action="@{/examSlot/delete}" method="post" class="delete-form">
+                            <form th:action="@{/admin/examSlot/delete}" method="post" class="delete-form">
                                 <input type="hidden" name="id" th:value="${examSlot.id}">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
@@ -88,7 +88,7 @@
                     </tr>
                 </tbody>
             </table>
-            <a href="/examSlot/Add" class="btn btn-primary btn-sm">Add</a>
+            <a href="/admin/examSlot/add" class="btn btn-primary btn-sm">Add</a>
         </div>
         <header th:insert="fragments/footer :: footer"></header>
     </main>
